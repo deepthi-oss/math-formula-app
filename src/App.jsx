@@ -11,6 +11,7 @@ function NavBar() {
       <div className="nav-links">
         <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Formula Explorer</Link>
         <Link to="/challenge" className={location.pathname === '/challenge' ? 'active' : ''}>Identity Challenge</Link>
+
       </div>
     </nav>
   )
