@@ -69,14 +69,15 @@ function Whiteboard({ team, question, onScoreChange, onCorrect }) {
     const sidesOk = answers.sides.trim() === question.sides
     const cornersOk = answers.corners.trim() === question.corners
     const anglesOk = answers.angles.trim() === question.angles
-    setResults({
+    const newResults = {
       sides: sidesOk ? 'correct' : 'wrong',
       corners: cornersOk ? 'correct' : 'wrong',
       angles: anglesOk ? 'correct' : 'wrong',
-    })
+    }
+    setResults(newResults)
     if (sidesOk && cornersOk && anglesOk) {
       onScoreChange(1)
-      onCorrect()
+      setTimeout(() => onCorrect(), 0)
     }
   }
 
@@ -282,12 +283,12 @@ export default function MythMathChallenge() {
               {team.score === topScore && team.score > 0 && <span className="leader-badge">👑 Leading</span>}
               <button className="remove-btn" onClick={() => removeTeam(i)}>✕ Remove</button>
             </div>
-            <Whiteboard
-              team={team}
-              question={selectedQuestion}
-              onScoreChange={(delta) => updateScore(i, delta)}
-              onCorrect={() => setTimerActive(false)}
-            />
+           <Whiteboard
+  team={team}
+  question={selectedQuestion}
+  onScoreChange={(delta) => updateScore(i, delta)}
+  onCorrect={() => setTimerActive(false)}
+/>
           </div>
         ))}
       </div>
