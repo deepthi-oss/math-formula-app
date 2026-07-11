@@ -180,11 +180,11 @@ export default function MythMathChallenge() {
     setTimerActive(false)
   }
 
-  const handleSelectQuestion = (name) => {
+ const handleSelectQuestion = (name) => {
     const found = list.find(f => f.name === name)
     setSelectedQuestion(found || null)
     setTimeLeft(60)
-    setTimerActive(false)
+    setTimerActive(true)
   }
 
   const addTeam = () => {
