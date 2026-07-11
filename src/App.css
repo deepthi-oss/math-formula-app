@@ -1,40 +1,133 @@
-.explorer-v2 { padding: 24px; max-width: 800px; margin: 0 auto; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #F4F3F1; }
+
+.navbar { display: flex; align-items: center; justify-content: space-between; background: #fff; border-bottom: 1px solid #E5E3DE; padding: 12px 24px; }
+.nav-title { font-size: 17px; font-weight: 600; color: #222; }
+.nav-links { display: flex; gap: 16px; }
+.nav-links a { text-decoration: none; color: #666; font-size: 14px; padding: 6px 14px; border-radius: 20px; }
+.nav-links a.active { background: #EEEDFE; color: #534AB7; font-weight: 500; }
+
+.explorer-v2 { padding: 24px; max-width: 900px; margin: 0 auto; }
 .sector-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
 .sector-tab { padding: 10px 22px; border-radius: 10px; border: 1px solid #E5E3DE; background: #fff; font-size: 15px; cursor: pointer; color: #666; }
 .sector-tab.active { background: #534AB7; color: #fff; border-color: #534AB7; font-weight: 600; }
 .sector-tab:hover:not(.active) { background: #F4F3F1; }
+
+.grade-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.grade-tab { padding: 6px 14px; border-radius: 20px; border: 1px solid #E5E3DE; background: #F4F3F1; font-size: 13px; cursor: pointer; color: #666; }
+.grade-tab.active { background: #222; color: #fff; border-color: #222; font-weight: 600; }
+.grade-tab:hover:not(.active) { background: #E5E3DE; }
 
 .formula-list-box { background: #fff; border: 1px solid #E5E3DE; border-radius: 12px; padding: 24px 28px; }
 .formula-list-box h2 { font-size: 18px; margin-bottom: 16px; color: #222; }
 .formula-list-box ul { margin: 0; padding-left: 20px; }
 .formula-list-box li { font-family: monospace; font-size: 15px; color: #222; margin-bottom: 10px; line-height: 1.6; }
 .empty-note { color: #999; font-size: 14px; }
-.grade-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
-.grade-tab { padding: 6px 14px; border-radius: 20px; border: 1px solid #E5E3DE; background: #F4F3F1; font-size: 13px; cursor: pointer; color: #666; }
-.grade-tab.active { background: #222; color: #fff; border-color: #222; font-weight: 600; }
-.grade-tab:hover:not(.active) { background: #E5E3DE; }
-.myth-math-page { padding: 24px; max-width: 1000px; margin: 0 auto; }
-.myth-title { font-size: 22px; margin-bottom: 20px; text-align: center; color: #222; }
-.whiteboards-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.whiteboard-panel { background: #fff; border: 1px solid #E5E3DE; border-radius: 12px; padding: 16px; }
-.whiteboard-panel h3 { text-align: center; margin-bottom: 12px; font-size: 16px; color: #333; }
-.draw-canvas-big { display: block; width: 100%; height: 280px; cursor: crosshair; touch-action: none; border: 2px solid #ccc; border-radius: 8px; }
-.canvas-tools { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
-.cdot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #ccc; cursor: pointer; }
-.cdot.active { border-color: #534AB7; border-width: 3px; }
-.pen-sz { width: 70px; }
 
-@media (max-width: 700px) {
-  .whiteboards-row { grid-template-columns: 1fr; }
-}
+.myth-math-page { padding: 20px; max-width: 1100px; margin: 0 auto; }
+.add-team-row { display: flex; gap: 8px; margin: 14px 0; align-items: center; flex-wrap: wrap; }
+.team-name-input { flex: 1; min-width: 160px; padding: 8px 12px; border: 1.5px solid #ccc; border-radius: 8px; font-size: 14px; }
+.add-team-btn { padding: 8px 16px; background: #534AB7; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.add-team-btn:hover { background: #3C3489; }
+
 .question-picker { text-align: center; margin-bottom: 12px; font-size: 14px; }
 .question-picker select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; margin-left: 8px; }
-.active-question { text-align: center; background: #EEEDFE; color: #3C3489; padding: 8px; border-radius: 8px; margin-bottom: 20px; font-family: monospace; }
+.active-question { text-align: center; background: #EEEDFE; color: #3C3489; padding: 8px; border-radius: 8px; margin-bottom: 12px; font-family: monospace; }
 
-.answer-row { display: flex; gap: 8px; margin-top: 10px; }
-.answer-box { flex: 1; padding: 8px 10px; font-family: monospace; font-size: 13px; border: 2px solid #ccc; border-radius: 6px; }
-.check-btn { padding: 8px 14px; background: #534AB7; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.timer-row { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 14px auto; padding: 10px 20px; background: #fff; border-radius: 12px; border: 1px solid #E5E3DE; max-width: 500px; }
+.timer-circle { min-width: 80px; width: 80px; height: 80px; border-radius: 50%; border: 5px solid; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; background: #fff; box-sizing: border-box; }
+.timer-number { font-size: 28px; font-weight: 800; line-height: 1; font-family: monospace; }
+.timer-sec { font-size: 11px; font-weight: 600; opacity: 0.75; margin-top: 2px; }
+.timer-bar { flex: 1; height: 12px; background: #E5E3DE; border-radius: 6px; overflow: hidden; min-width: 100px; }
+.timer-fill { height: 12px; border-radius: 6px; }
+.timer-toggle-btn { padding: 8px 16px; border-radius: 8px; border: none; background: #534AB7; color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
+.timer-toggle-btn:hover { background: #3C3489; }
+.timer-toggle-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+.whiteboards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; }
+.whiteboard-wrapper { border: 2px solid transparent; border-radius: 14px; padding: 4px; }
+.whiteboard-wrapper.is-leading { border-color: #BA7517; background: #FAEEDA33; }
+.whiteboard-header-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; padding: 0 4px; }
+.whiteboard-rank { font-size: 12px; color: #999; }
+.leader-badge { font-size: 12px; color: #BA7517; font-weight: 600; }
+.remove-btn { margin-left: auto; background: none; border: none; color: #ccc; cursor: pointer; font-size: 12px; }
+.remove-btn:hover { color: #C62828; }
+
+.whiteboard-panel { background: #fff; border: 1px solid #E5E3DE; border-radius: 12px; padding: 16px; }
+.whiteboard-panel h3 { text-align: center; margin-bottom: 12px; font-size: 16px; color: #333; }
+.canvas-wrap { border: 2px solid #ccc; border-radius: 8px; overflow: hidden; background: #fff; }
+.draw-canvas-big { display: block; width: 100%; cursor: crosshair; touch-action: none; }
+.canvas-tools { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+.tool-btn { padding: 5px 10px; border: 1px solid #ccc; border-radius: 6px; background: #fff; cursor: pointer; font-size: 12px; }
+.cdot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #ccc; cursor: pointer; flex-shrink: 0; }
+.cdot.active { border-color: #534AB7; border-width: 3px; }
+.pen-sz { width: 60px; }
+
+.geometry-fields { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.geo-field { display: flex; align-items: center; gap: 10px; }
+.geo-field label { font-size: 13px; font-weight: 500; width: 70px; color: #444; }
+.geo-input { flex: 1; padding: 7px 10px; border: 2px solid #ccc; border-radius: 6px; font-size: 14px; font-family: monospace; }
+.geo-correct { border-color: #2E7D32; background: #E8F5E9; }
+.geo-wrong { border-color: #C62828; background: #FFEBEE; }
+.check-btn { padding: 8px 14px; background: #534AB7; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; margin-top: 4px; }
 
 .thumbs-row { display: flex; justify-content: center; gap: 24px; margin-top: 12px; }
 .thumb { font-size: 32px; opacity: 0.25; filter: grayscale(1); transition: 0.2s; }
 .thumb.active { opacity: 1; filter: grayscale(0); transform: scale(1.15); }
+
+.team-score-bar { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 12px; padding: 10px; background: #F4F3F1; border-radius: 10px; }
+.team-score-display { font-size: 18px; font-weight: 700; color: #222; min-width: 80px; text-align: center; }
+.score-btn { width: 32px; height: 32px; border-radius: 50%; border: none; font-size: 20px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.score-btn.plus { background: #EAF3DE; color: #27500A; }
+.score-btn.minus { background: #FFEBEE; color: #C62828; }
+.reset-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid #ccc; background: #fff; color: #666; cursor: pointer; font-size: 13px; }
+.reset-btn:hover { background: #FFEBEE; color: #C62828; border-color: #C62828; }
+
+.home-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 40%, #f64f59 100%); padding: 20px; }
+.home-card { background: #fff; border-radius: 24px; padding: 48px 40px; text-align: center; max-width: 480px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.home-emoji { font-size: 48px; margin-bottom: 16px; letter-spacing: 8px; }
+.home-title { font-size: 32px; font-weight: 800; color: #222; margin-bottom: 12px; }
+.home-tagline { font-size: 15px; color: #666; line-height: 1.7; margin-bottom: 24px; }
+.home-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 32px; }
+.home-badges span { background: #EEEDFE; color: #534AB7; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+.home-btn { background: linear-gradient(135deg, #534AB7, #764ba2); color: #fff; border: none; padding: 14px 40px; border-radius: 50px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 20px rgba(83,74,183,0.4); }
+.home-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(83,74,183,0.5); }
+
+@media (max-width: 700px) { .whiteboards-grid { grid-template-columns: 1fr; } .myth-math-layout { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+  .navbar { flex-direction: column; gap: 8px; padding: 10px 12px; }
+  .nav-links { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .nav-links a { font-size: 12px; padding: 5px 10px; }
+  .nav-title { font-size: 14px; }
+
+  .explorer-v2 { padding: 12px; }
+  .sector-tab { font-size: 13px; padding: 8px 12px; }
+  .grade-tab { font-size: 11px; padding: 4px 10px; }
+
+  .players { grid-template-columns: 1fr; }
+  .player-side { padding: 10px; border-right: none; border-bottom: 1px solid #E5E3DE; }
+
+  .arena { padding: 12px; }
+  .scores { padding: 10px 12px; font-size: 14px; }
+  .formula-display { font-size: 16px; padding: 10px; }
+  .phase2-box { margin-top: 8px; }
+  .type-input { font-size: 13px; padding: 7px 8px; }
+
+  .whiteboards-grid { grid-template-columns: 1fr; }
+  .myth-math-page { padding: 12px; }
+  .add-team-row { flex-direction: column; }
+  .team-name-input { width: 100%; }
+  .add-team-btn { width: 100%; }
+
+  .home-card { padding: 32px 20px; }
+  .home-title { font-size: 24px; }
+  .home-btn { font-size: 16px; padding: 12px 28px; }
+  .home-emoji { font-size: 36px; }
+
+  .timer-row { flex-direction: column; gap: 10px; padding: 10px; }
+  .timer-bar { width: 100%; min-width: unset; }
+
+  .formula-list-box { padding: 16px; }
+  .formula-list-box h2 { font-size: 15px; }
+  .formula-list-box li { font-size: 13px; }
+}
