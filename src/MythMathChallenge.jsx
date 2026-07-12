@@ -69,12 +69,11 @@ function Whiteboard({ team, question, onScoreChange, onCorrect }) {
     const sidesOk = answers.sides.trim() === question.sides
     const cornersOk = answers.corners.trim() === question.corners
     const anglesOk = answers.angles.trim() === question.angles
-    const newResults = {
+    setResults({
       sides: sidesOk ? 'correct' : 'wrong',
       corners: cornersOk ? 'correct' : 'wrong',
       angles: anglesOk ? 'correct' : 'wrong',
-    }
-    setResults(newResults)
+    })
     if (sidesOk && cornersOk && anglesOk) {
       onScoreChange(1)
       setTimeout(() => onCorrect(), 0)
@@ -115,15 +114,42 @@ function Whiteboard({ team, question, onScoreChange, onCorrect }) {
         <div className="geometry-fields">
           <div className="geo-field">
             <label>Sides:</label>
-            <input type="text" value={answers.sides} onChange={(e) => setAnswers({ ...answers, sides: e.target.value })} className={`geo-input ${results.sides ? 'geo-' + results.sides : ''}`} placeholder="?" />
+            <input
+              type="text"
+              value={answers.sides}
+              onChange={(e) => {
+                setAnswers({ ...answers, sides: e.target.value })
+                setResults(r => ({ ...r, sides: null }))
+              }}
+              className={`geo-input ${results.sides ? 'geo-' + results.sides : ''}`}
+              placeholder="?"
+            />
           </div>
           <div className="geo-field">
             <label>Corners:</label>
-            <input type="text" value={answers.corners} onChange={(e) => setAnswers({ ...answers, corners: e.target.value })} className={`geo-input ${results.corners ? 'geo-' + results.corners : ''}`} placeholder="?" />
+            <input
+              type="text"
+              value={answers.corners}
+              onChange={(e) => {
+                setAnswers({ ...answers, corners: e.target.value })
+                setResults(r => ({ ...r, corners: null }))
+              }}
+              className={`geo-input ${results.corners ? 'geo-' + results.corners : ''}`}
+              placeholder="?"
+            />
           </div>
           <div className="geo-field">
             <label>Angles:</label>
-            <input type="text" value={answers.angles} onChange={(e) => setAnswers({ ...answers, angles: e.target.value })} className={`geo-input ${results.angles ? 'geo-' + results.angles : ''}`} placeholder="?" />
+            <input
+              type="text"
+              value={answers.angles}
+              onChange={(e) => {
+                setAnswers({ ...answers, angles: e.target.value })
+                setResults(r => ({ ...r, angles: null }))
+              }}
+              className={`geo-input ${results.angles ? 'geo-' + results.angles : ''}`}
+              placeholder="?"
+            />
           </div>
           <button className="check-btn" onClick={checkAnswers}>Check</button>
         </div>
@@ -181,7 +207,7 @@ export default function MythMathChallenge() {
     setTimerActive(false)
   }
 
- const handleSelectQuestion = (name) => {
+  const handleSelectQuestion = (name) => {
     const found = list.find(f => f.name === name)
     setSelectedQuestion(found || null)
     setTimeLeft(60)
@@ -264,7 +290,7 @@ export default function MythMathChallenge() {
               onClick={() => setTimerActive(a => !a)}
               disabled={timeLeft === 0}
             >
-              {timerActive ? '⏸ Pause' : '▶ Start'}
+              {timerActive ? '⏸ Pause' : '▶ Resume'}
             </button>
           </div>
           {timeLeft === 0 && (
@@ -283,12 +309,12 @@ export default function MythMathChallenge() {
               {team.score === topScore && team.score > 0 && <span className="leader-badge">👑 Leading</span>}
               <button className="remove-btn" onClick={() => removeTeam(i)}>✕ Remove</button>
             </div>
-           <Whiteboard
-  team={team}
-  question={selectedQuestion}
-  onScoreChange={(delta) => updateScore(i, delta)}
-  onCorrect={() => setTimerActive(false)}
-/>
+            <Whiteboard
+              team={team}
+              question={selectedQuestion}
+              onScoreChange={(delta) => updateScore(i, delta)}
+              onCorrect={() => setTimerActive(false)}
+            />
           </div>
         ))}
       </div>
