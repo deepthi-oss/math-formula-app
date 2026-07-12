@@ -195,17 +195,37 @@ export default function IdentityChallenge() {
 
   return (
     <div className="arena">
+  <div className="arena-hero">
+    <div className="arena-hero-title">⚡ Identity Challenge</div>
+    <div className="arena-hero-sub">Race to complete the identity — write, then type your answer!</div>
+  </div>
       <div className="scores">
-        <div>Player 1: {scores[0]}</div>
-        <div>Player 2: {scores[1]}</div>
-      </div>
+  <div className="score-p1">
+    <div className="score-avatar score-avatar-p1">P1</div>
+    <div className="score-info">
+      <span className="score-name">Player 1</span>
+      <span className="score-val">{scores[0]}</span>
+    </div>
+  </div>
+  <div className="score-p2">
+    <div className="score-info" style={{textAlign:'right'}}>
+      <span className="score-name">Player 2</span>
+      <span className="score-val">{scores[1]}</span>
+    </div>
+    <div className="score-avatar score-avatar-p2">P2</div>
+  </div>
+</div>
       <div className="round-label">Round {round + 1} of {identities.length} — {phase === 'write' ? 'Writing' : 'Typing'} ({Math.ceil(timeLeft)}s)</div>
       <div className="formula-display">{id.q}</div>
       <div className="hint-badge">{id.hint}</div>
 
       <div className="players">
         <div className="player-side">
-          <h3>Player 1</h3>
+  <div className="player-header-badge p1">
+    <div className="player-badge-dot"></div>
+    <span className="player-badge-name">PLAYER 1</span>
+    <span className="player-badge-hint">Tab to submit</span>
+  </div>
           <DrawCanvas playerNum={1} locked={phase !== 'write'} color="#1a1a1a" penSize={2} />
           {phase === 'type' && (
             <div className="phase2-box">
@@ -223,7 +243,11 @@ export default function IdentityChallenge() {
         </div>
 
         <div className="player-side">
-          <h3>Player 2</h3>
+  <div className="player-header-badge p2">
+    <div className="player-badge-dot"></div>
+    <span className="player-badge-name">PLAYER 2</span>
+    <span className="player-badge-hint">Enter to submit</span>
+  </div>
           <DrawCanvas playerNum={2} locked={phase !== 'write'} color="#1a1a1a" penSize={2} />
           {phase === 'type' && (
             <div className="phase2-box">

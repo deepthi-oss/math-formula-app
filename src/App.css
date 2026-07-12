@@ -178,3 +178,110 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
   .formula-list-box li { font-size: 12px; }
   .explorer-v2 { padding: 14px; }
 }
+/* ===== EXPLORER REDESIGN ===== */
+.explorer-v2 { padding: 0; max-width: 100%; margin: 0; }
+
+.explorer-hero { background: linear-gradient(135deg, #667eea20, #764ba220); padding: 32px 40px 24px; border-bottom: 2px solid #E8EDFF; }
+.explorer-heading { font-size: 28px; font-weight: 900; color: #1a1a2e; margin-bottom: 6px; }
+.explorer-subheading { font-size: 15px; color: #6B7280; font-weight: 500; }
+
+.sector-cards { display: flex; gap: 12px; padding: 24px 40px; flex-wrap: wrap; background: #fff; border-bottom: 2px solid #E8EDFF; }
+.sector-card { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 14px; border: 2px solid #E8EDFF; background: #F8FAFF; cursor: pointer; font-size: 14px; font-weight: 700; color: #9CA3AF; transition: all 0.2s; }
+.sector-card:hover { border-color: #6366F1; color: #6366F1; background: #EEF2FF; transform: translateY(-2px); }
+.sector-card-active { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.sector-card-icon { font-size: 22px; }
+.sector-card-name { white-space: nowrap; }
+
+.grade-section { display: flex; align-items: center; gap: 12px; padding: 20px 40px; flex-wrap: wrap; }
+.grade-label { font-size: 13px; font-weight: 800; color: #6B7280; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; }
+.grade-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.grade-pill { padding: 7px 16px; border-radius: 20px; border: 2px solid #E8EDFF; background: #fff; font-size: 12px; font-weight: 700; cursor: pointer; color: #9CA3AF; transition: all 0.2s; }
+.grade-pill:hover { border-color: #6366F1; color: #6366F1; }
+.grade-pill-active { color: #fff !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+.formula-box { margin: 0 40px 40px; border-radius: 20px; border: 2px solid #E8EDFF; border-left: 5px solid #6366F1; overflow: hidden; box-shadow: 0 4px 24px rgba(99,102,241,0.08); }
+.formula-box-header { display: flex; align-items: center; gap: 14px; padding: 18px 24px; border-bottom: 2px solid #E8EDFF; }
+.formula-box-icon { font-size: 28px; }
+.formula-box-title { font-size: 18px; font-weight: 900; margin-bottom: 2px; }
+.formula-box-sub { font-size: 12px; color: #9CA3AF; font-weight: 600; }
+.formula-count-badge { margin-left: auto; color: #fff; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+
+.formula-box-body { padding: 20px 24px; background: #fff; }
+
+.empty-state { text-align: center; padding: 40px 20px; }
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-title { font-size: 16px; font-weight: 800; color: #374151; margin-bottom: 6px; }
+.empty-sub { font-size: 13px; color: #9CA3AF; }
+
+.formula-items { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.formula-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; background: #F8FAFF; border: 2px solid #E8EDFF; border-radius: 12px; transition: all 0.15s; }
+.formula-item:hover { border-color: #6366F1; background: #EEF2FF; transform: translateX(4px); }
+.formula-num { min-width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+.formula-text { font-family: 'Courier New', monospace; font-size: 14px; color: #374151; line-height: 1.6; }
+
+@media (max-width: 600px) {
+  .explorer-hero { padding: 20px 16px 16px; }
+  .explorer-heading { font-size: 22px; }
+  .sector-cards { padding: 16px; gap: 8px; }
+  .sector-card { padding: 10px 14px; font-size: 13px; }
+  .grade-section { padding: 14px 16px; }
+  .formula-box { margin: 0 16px 24px; }
+  .formula-box-header { padding: 14px 16px; }
+  .formula-box-body { padding: 14px 16px; }
+}
+/* ===== IDENTITY CHALLENGE REDESIGN ===== */
+.arena { padding: 0; max-width: 100%; }
+
+.arena-hero { background: linear-gradient(135deg, #6366F1, #8B5CF6, #EC4899); padding: 24px 40px; color: #fff; }
+.arena-hero-title { font-size: 26px; font-weight: 900; margin-bottom: 4px; }
+.arena-hero-sub { font-size: 14px; opacity: 0.85; font-weight: 500; }
+
+.scores { display: flex; justify-content: space-between; align-items: center; background: #fff; border: none; border-radius: 0; padding: 0; margin: 0; box-shadow: none; }
+.score-p1 { flex: 1; display: flex; align-items: center; gap: 14px; padding: 18px 28px; background: linear-gradient(135deg, #EEF2FF, #E0E7FF); border-right: 2px solid #E8EDFF; }
+.score-p2 { flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 14px; padding: 18px 28px; background: linear-gradient(135deg, #FDF2F8, #FCE7F3); }
+.score-avatar { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; color: #fff; }
+.score-avatar-p1 { background: linear-gradient(135deg, #6366F1, #8B5CF6); }
+.score-avatar-p2 { background: linear-gradient(135deg, #EC4899, #F43F5E); }
+.score-info { display: flex; flex-direction: column; }
+.score-name { font-size: 12px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px; }
+.score-val { font-size: 28px; font-weight: 900; color: #1a1a2e; line-height: 1; }
+
+.round-label { text-align: center; padding: 10px; background: #F8FAFF; border-bottom: 2px solid #E8EDFF; font-size: 13px; font-weight: 700; color: #6B7280; }
+
+.formula-display { margin: 20px 40px 8px; text-align: center; font-family: 'Courier New', monospace; font-size: 28px; font-weight: 900; background: linear-gradient(135deg, #EEF2FF, #F5F3FF); border: 3px solid #C7D2FE; padding: 24px; border-radius: 20px; color: #4F46E5; letter-spacing: 1px; box-shadow: 0 4px 20px rgba(99,102,241,0.12); }
+
+.hint-badge { text-align: center; font-size: 12px; color: #9CA3AF; margin: 0 40px 20px; font-weight: 600; background: #F9FAFB; padding: 8px; border-radius: 10px; border: 1px solid #E8EDFF; }
+
+.players { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 0; }
+.player-side { background: #fff; border: none; border-radius: 0; padding: 20px 28px; box-shadow: none; border-top: 2px solid #E8EDFF; }
+.player-side:first-child { border-right: 2px solid #E8EDFF; }
+
+.player-header-badge { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding: 10px 14px; border-radius: 12px; }
+.player-header-badge.p1 { background: linear-gradient(135deg, #EEF2FF, #E0E7FF); }
+.player-header-badge.p2 { background: linear-gradient(135deg, #FDF2F8, #FCE7F3); }
+.player-badge-dot { width: 10px; height: 10px; border-radius: 50%; }
+.p1 .player-badge-dot { background: #6366F1; }
+.p2 .player-badge-dot { background: #EC4899; }
+.player-badge-name { font-size: 13px; font-weight: 800; }
+.p1 .player-badge-name { color: #4F46E5; }
+.p2 .player-badge-name { color: #DB2777; }
+.player-badge-hint { font-size: 11px; color: #9CA3AF; margin-left: auto; font-weight: 600; }
+
+.answer-reveal { text-align: center; margin: 0; background: #ECFDF5; border: none; border-top: 3px solid #A7F3D0; padding: 18px 40px; border-radius: 0; color: #065F46; font-size: 14px; font-weight: 700; }
+.answer-reveal span { font-family: monospace; font-weight: 900; color: #059669; font-size: 16px; }
+.next-btn { display: inline-block; margin: 0 0 0 16px; padding: 10px 24px; background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #fff; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 13px; }
+
+.winner-screen { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #EEF2FF, #FDF2F8); min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.winner-screen h2 { font-size: 36px; font-weight: 900; background: linear-gradient(135deg, #6366F1, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+.winner-screen p { color: #6B7280; font-size: 15px; margin-bottom: 24px; }
+.final-scores { display: flex; gap: 20px; justify-content: center; margin: 0 0 28px; }
+.fc { background: #fff; border: 3px solid #E8EDFF; padding: 20px 32px; border-radius: 20px; font-weight: 900; color: #1a1a2e; font-size: 20px; box-shadow: 0 4px 16px rgba(99,102,241,0.1); }
+
+@media (max-width: 600px) {
+  .arena-hero { padding: 16px; }
+  .formula-display { margin: 16px; font-size: 20px; padding: 16px; }
+  .hint-badge { margin: 0 16px 16px; }
+  .player-side { padding: 14px; }
+  .score-p1, .score-p2 { padding: 14px 16px; }
+  .answer-reveal { padding: 14px 16px; }
+}

@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react'
 import MythMathChallenge from './MythMathChallenge'
 import { formulaData, gradeRanges } from './formulaConfig'
 
-const sectors = ['Arithmetic', 'Algebra', 'Geometry', 'Myth Math Challenge']
+const sectors = [
+  { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
+  { name: 'Algebra', icon: '📊', color: '#6366F1', bg: '#EEF2FF', border: '#C7D2FE' },
+  { name: 'Geometry', icon: '📐', color: '#10B981', bg: '#ECFDF5', border: '#A7F3D0' },
+  { name: 'Myth Math Challenge', icon: '🏆', color: '#EC4899', bg: '#FDF2F8', border: '#FBCFE8' },
+]
 
 export default function FormulaExplorer() {
   const [sector, setSector] = useState('Algebra')
@@ -16,17 +21,28 @@ export default function FormulaExplorer() {
 
   const isMythMath = sector === 'Myth Math Challenge'
   const list = !isMythMath ? (formulaData[sector]?.[grade] || []) : []
+  const activeSector = sectors.find(s => s.name === sector)
 
   return (
     <div className="explorer-v2">
-      <div className="sector-tabs">
+
+      <div className="explorer-hero">
+        <div className="explorer-hero-text">
+          <h1 className="explorer-heading">📚 Formula Explorer</h1>
+          <p className="explorer-subheading">Pick a subject and discover the formulas you need!</p>
+        </div>
+      </div>
+
+      <div className="sector-cards">
         {sectors.map(s => (
           <button
-            key={s}
-            className={`sector-tab ${sector === s ? 'active' : ''}`}
-            onClick={() => setSector(s)}
+            key={s.name}
+            className={`sector-card ${sector === s.name ? 'sector-card-active' : ''}`}
+            style={sector === s.name ? { background: s.bg, borderColor: s.color, color: s.color } : {}}
+            onClick={() => setSector(s.name)}
           >
-            {s}
+            <span className="sector-card-icon">{s.icon}</span>
+            <span className="sector-card-name">{s.name}</span>
           </button>
         ))}
       </div>
@@ -35,33 +51,60 @@ export default function FormulaExplorer() {
         <MythMathChallenge />
       ) : (
         <>
-          <div className="grade-tabs">
-            {gradeRanges[sector].map(g => (
-              <button
-                key={g}
-                className={`grade-tab ${grade === g ? 'active' : ''}`}
-                onClick={() => setGrade(g)}
-              >
-                {g}
-              </button>
-            ))}
+          <div className="grade-section">
+            <span className="grade-label">Select Grade:</span>
+            <div className="grade-pills">
+              {gradeRanges[sector].map(g => (
+                <button
+                  key={g}
+                  className={`grade-pill ${grade === g ? 'grade-pill-active' : ''}`}
+                  style={grade === g ? { background: activeSector?.color, borderColor: activeSector?.color } : {}}
+                  onClick={() => setGrade(g)}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="formula-list-box">
-            <h2>Important formulas in {sector.toLowerCase()} — {grade}</h2>
-            {list.length === 0 ? (
-              <p className="empty-note">No formulas added yet.</p>
-            ) : (
-              <ul>
-                {list.map((f, i) => (
-                  <li key={i}>
-                    {typeof f === 'object'
-                      ? `${f.name} — sides: ${f.sides}, corners: ${f.corners}, angles: ${f.angles} (${f.note})`
-                      : f}
-                  </li>
-                ))}
-              </ul>
-            )}
+          <div className="formula-box" style={{ borderLeftColor: activeSector?.color }}>
+            <div className="formula-box-header" style={{ background: activeSector?.bg }}>
+              <span className="formula-box-icon">{activeSector?.icon}</span>
+              <div>
+                <h2 className="formula-box-title" style={{ color: activeSector?.color }}>
+                  {sector} Formulas
+                </h2>
+                <p className="formula-box-sub">{grade}</p>
+              </div>
+              <span className="formula-count-badge" style={{ background: activeSector?.color }}>
+                {list.length} formulas
+              </span>
+            </div>
+
+            <div className="formula-box-body">
+              {list.length === 0 ? (
+                <div className="empty-state">
+                  <div className="empty-icon">📭</div>
+                  <p className="empty-title">No formulas added yet</p>
+                  <p className="empty-sub">Formulas for this grade will appear here once added.</p>
+                </div>
+              ) : (
+                <ul className="formula-items">
+                  {list.map((f, i) => (
+                    <li key={i} className="formula-item">
+                      <span className="formula-num" style={{ background: activeSector?.bg, color: activeSector?.color }}>
+                        {i + 1}
+                      </span>
+                      <span className="formula-text">
+                        {typeof f === 'object'
+                          ? `${f.name} — sides: ${f.sides}, corners: ${f.corners}, angles: ${f.angles} (${f.note})`
+                          : f}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </>
       )}
