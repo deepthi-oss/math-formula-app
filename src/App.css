@@ -285,3 +285,81 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
   .score-p1, .score-p2 { padding: 14px 16px; }
   .answer-reveal { padding: 14px 16px; }
 }
+/* ===== TUG OF WAR ===== */
+.tow-page { max-width: 1100px; margin: 0 auto; padding: 0 0 40px; }
+
+.tow-hero { background: linear-gradient(135deg, #F59E0B, #EF4444, #EC4899); padding: 24px 40px; color: #fff; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.tow-hero-title { font-size: 26px; font-weight: 900; margin-bottom: 4px; }
+.tow-hero-sub { font-size: 14px; opacity: 0.9; font-weight: 500; }
+.tow-hero-btns { display: flex; gap: 10px; }
+.tow-winner-btn { padding: 10px 20px; background: #fff; color: #D97706; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 14px; }
+.tow-reset-btn { padding: 10px 20px; background: rgba(255,255,255,0.2); color: #fff; border: 2px solid rgba(255,255,255,0.4); border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; }
+
+.tow-winner-banner { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); border: 3px solid #34D399; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: 800; color: #065F46; }
+.tow-play-again-btn { padding: 10px 24px; background: #10B981; color: #fff; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; }
+
+.tow-bar-section { padding: 24px 40px; background: #fff; border-bottom: 2px solid #E8EDFF; }
+.tow-bar-labels { display: flex; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+.tow-bar-team-label { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.tow-bar-team-name { font-size: 12px; font-weight: 800; }
+.tow-bar-team-score { font-size: 18px; font-weight: 900; }
+.tow-bar-track { position: relative; height: 32px; background: #F3F4F6; border-radius: 16px; overflow: visible; display: flex; border: 2px solid #E8EDFF; }
+.tow-bar-fill { height: 100%; transition: width 0.6s ease; first-child { border-radius: 14px 0 0 14px; } }
+.tow-rope-knot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; z-index: 10; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+.tow-bar-team-names { display: flex; justify-content: space-between; margin-top: 6px; }
+
+.tow-controls { padding: 20px 40px; background: #F8FAFF; border-bottom: 2px solid #E8EDFF; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.tow-sector-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.tow-sector-tab { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; font-size: 13px; font-weight: 700; cursor: pointer; color: #9CA3AF; }
+.tow-sector-tab.active { background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #fff; border-color: transparent; }
+.tow-grade-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.tow-grade-btn { padding: 5px 12px; border-radius: 16px; border: 2px solid #E8EDFF; background: #fff; font-size: 12px; font-weight: 600; cursor: pointer; color: #9CA3AF; }
+.tow-grade-btn.active { background: #6366F1; border-color: #6366F1; color: #fff; }
+.tow-q-picker { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #6B7280; }
+.tow-q-picker select { flex: 1; padding: 8px 12px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #1a1a2e; font-size: 13px; cursor: pointer; }
+
+.tow-question-card { background: #fff; border: 3px solid #E8EDFF; border-radius: 16px; padding: 20px; }
+.tow-q-label { font-size: 11px; font-weight: 800; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.tow-q-text { font-family: monospace; font-size: 20px; font-weight: 900; color: #4F46E5; margin-bottom: 10px; }
+.tow-q-answer-hint { font-size: 13px; color: #6B7280; font-weight: 600; background: #F8FAFF; padding: 8px 12px; border-radius: 8px; }
+.tow-no-question { text-align: center; padding: 30px; color: #9CA3AF; }
+.tow-no-q-icon { font-size: 40px; margin-bottom: 10px; }
+
+.tow-teams-section { padding: 24px 40px; }
+.tow-add-team-row { display: flex; gap: 8px; margin-bottom: 20px; }
+.tow-team-input { flex: 1; padding: 10px 14px; border: 2px solid #E8EDFF; border-radius: 10px; font-size: 14px; background: #fff; color: #1a1a2e; }
+.tow-add-btn { padding: 10px 20px; background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #fff; border: none; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; }
+
+.tow-teams-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.tow-team-card { border: 3px solid; border-radius: 20px; overflow: hidden; transition: transform 0.2s; }
+.tow-team-card:hover { transform: translateY(-3px); }
+.tow-team-card-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 2px solid; }
+.tow-team-emoji { font-size: 20px; }
+.tow-team-card-name { font-size: 14px; font-weight: 800; flex: 1; }
+.tow-leading-badge { font-size: 11px; font-weight: 700; color: #D97706; }
+.tow-remove-btn { background: none; border: none; color: #D1D5DB; cursor: pointer; font-size: 13px; }
+.tow-remove-btn:hover { color: #EF4444; }
+.tow-team-card-body { padding: 20px 16px; text-align: center; }
+.tow-team-score-big { font-size: 52px; font-weight: 900; line-height: 1; }
+.tow-team-score-label { font-size: 12px; font-weight: 700; color: #9CA3AF; margin-bottom: 14px; text-transform: uppercase; }
+.tow-award-btn { width: 100%; padding: 12px; border: none; border-radius: 12px; color: #fff; font-weight: 800; font-size: 15px; cursor: pointer; transition: opacity 0.2s; }
+.tow-award-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.tow-history { padding: 0 40px 20px; }
+.tow-history-title { font-size: 15px; font-weight: 800; color: #374151; margin-bottom: 12px; }
+.tow-history-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
+.tow-history-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #F8FAFF; border: 2px solid #E8EDFF; border-radius: 10px; }
+.tow-history-team { font-size: 13px; font-weight: 800; color: #6366F1; min-width: 80px; }
+.tow-history-q { font-size: 12px; color: #6B7280; flex: 1; font-family: monospace; }
+.tow-history-pts { font-size: 14px; font-weight: 900; color: #10B981; }
+
+.feat-orange { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border-color: #FDE68A; }
+
+@media (max-width: 600px) {
+  .tow-hero { padding: 16px; flex-direction: column; }
+  .tow-bar-section { padding: 16px; }
+  .tow-controls { padding: 16px; grid-template-columns: 1fr; }
+  .tow-teams-section { padding: 16px; }
+  .tow-history { padding: 0 16px 16px; }
+  .tow-winner-banner { flex-direction: column; gap: 10px; padding: 16px; }
+}
