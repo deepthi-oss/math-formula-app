@@ -363,3 +363,77 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
   .tow-history { padding: 0 16px 16px; }
   .tow-winner-banner { flex-direction: column; gap: 10px; padding: 16px; }
 }
+/* ===== TUG OF WAR V2 ===== */
+.tow2-page { max-width: 1100px; margin: 0 auto; padding: 0 0 40px; background: #F0F4FF; min-height: 100vh; }
+
+.tow2-header { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; background: #fff; border-bottom: 3px solid #E8EDFF; padding: 16px 24px; align-items: center; }
+.tow2-score-box { padding: 12px 24px; border-radius: 16px; border: 3px solid; text-align: center; }
+.tow2-team-label { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.tow2-score-val { font-size: 40px; font-weight: 900; line-height: 1; }
+.tow2-center { text-align: center; padding: 0 20px; }
+.tow2-title { font-size: 18px; font-weight: 900; color: #1a1a2e; margin-bottom: 6px; }
+.tow2-timer { font-size: 28px; font-weight: 900; color: #1a1a2e; font-family: monospace; margin-bottom: 8px; }
+.tow2-timer-danger { color: #EF4444; animation: pulse 0.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.5 } }
+.tow2-ctrl-btns { display: flex; gap: 8px; justify-content: center; }
+.tow2-start-btn { padding: 8px 20px; background: linear-gradient(135deg, #10B981, #059669); color: #fff; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 14px; }
+.tow2-pause-btn { padding: 8px 20px; background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 14px; }
+.tow2-reset-btn { padding: 8px 14px; background: #F3F4F6; border: 2px solid #E5E7EB; color: #6B7280; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 16px; }
+
+/* Tug animation */
+.tow-animation { background: linear-gradient(180deg, #DBEAFE 0%, #EFF6FF 60%, #D1FAE5 100%); padding: 20px 0 10px; border-bottom: 3px solid #E8EDFF; }
+.tow-scene { display: flex; align-items: center; justify-content: center; gap: 0; max-width: 700px; margin: 0 auto; }
+.tow-chars { display: flex; gap: -8px; }
+.tow-chars-left { flex-direction: row-reverse; }
+.tow-char { font-size: 36px; transition: transform 0.3s ease; display: block; }
+.tow-rope-container { flex: 1; padding: 0 8px; }
+.tow-rope { position: relative; height: 24px; display: flex; align-items: center; }
+.tow-rope-line { height: 8px; border-radius: 4px; }
+.tow-rope-left { flex: 1; }
+.tow-rope-right { flex: 1; }
+.tow-rope-knob { position: absolute; font-size: 20px; transform: translateX(-50%); transition: left 0.6s ease; z-index: 2; }
+
+/* Winner */
+.tow2-winner-banner { background: linear-gradient(135deg, #FEF3C7, #ECFDF5); border: 3px solid #34D399; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: 800; color: #065F46; }
+.tow2-play-again { padding: 10px 24px; background: linear-gradient(135deg, #10B981, #059669); color: #fff; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 14px; }
+
+/* Game area */
+.tow2-game-area { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.tow2-team-panel { border-right: 3px solid #E8EDFF; padding: 0; transition: background 0.3s; }
+.tow2-team2 { border-right: none; }
+.flash-correct { animation: flashGreen 0.6s ease; }
+.flash-wrong { animation: flashRed 0.6s ease; }
+@keyframes flashGreen { 0%,100% { background: #fff } 50% { background: #D1FAE5 } }
+@keyframes flashRed { 0%,100% { background: #fff } 50% { background: #FEE2E2 } }
+
+.tow2-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; color: #fff; font-size: 15px; font-weight: 900; }
+.tow2-panel-score { font-size: 20px; font-weight: 900; }
+
+.tow2-question { font-family: 'Courier New', monospace; font-size: 26px; font-weight: 900; color: #1a1a2e; text-align: center; padding: 20px; background: #F8FAFF; border-bottom: 2px solid #E8EDFF; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+
+.tow2-feedback { text-align: center; padding: 10px; font-size: 14px; font-weight: 800; }
+.tow2-feedback.correct { background: #ECFDF5; color: #059669; }
+.tow2-feedback.wrong { background: #FEF2F2; color: #DC2626; }
+
+/* Numpad */
+.tow-numpad { padding: 16px; }
+.tow-numpad-display { background: #F8FAFF; border: 3px solid #E8EDFF; border-radius: 12px; padding: 12px 16px; font-family: monospace; font-size: 22px; font-weight: 800; color: #1a1a2e; text-align: center; margin-bottom: 12px; min-height: 52px; }
+.tow-numpad-placeholder { color: #D1D5DB; font-weight: 400; font-size: 16px; }
+.tow-numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+.tow-numpad-btn { padding: 14px; border-radius: 12px; border: 2px solid #E8EDFF; background: #fff; font-size: 18px; font-weight: 800; cursor: pointer; color: #1a1a2e; transition: all 0.15s; box-shadow: 0 2px 4px rgba(0,0,0,0.06); }
+.tow-numpad-btn:hover:not(:disabled) { background: #EEF2FF; border-color: #6366F1; color: #6366F1; transform: translateY(-1px); }
+.tow-numpad-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.tow-numpad-actions { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 8px; }
+.tow-numpad-del { padding: 12px; border-radius: 12px; border: 2px solid #FDE68A; background: #FFFBEB; font-size: 18px; font-weight: 800; cursor: pointer; color: #D97706; }
+.tow-numpad-clear { padding: 12px; border-radius: 12px; border: 2px solid #FECACA; background: #FEF2F2; font-size: 16px; font-weight: 800; cursor: pointer; color: #DC2626; }
+.tow-numpad-submit { padding: 12px; border-radius: 12px; border: none; background: linear-gradient(135deg, #10B981, #059669); font-size: 22px; font-weight: 900; cursor: pointer; color: #fff; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+.tow-numpad-submit:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+.tow-numpad-del:disabled, .tow-numpad-clear:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (max-width: 600px) {
+  .tow2-header { grid-template-columns: 1fr; gap: 10px; }
+  .tow2-game-area { grid-template-columns: 1fr; }
+  .tow2-team-panel { border-right: none; border-bottom: 3px solid #E8EDFF; }
+  .tow2-question { font-size: 20px; }
+  .tow-numpad-btn { padding: 10px; font-size: 16px; }
+}
