@@ -437,3 +437,30 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
   .tow2-question { font-size: 20px; }
   .tow-numpad-btn { padding: 10px; font-size: 16px; }
 }
+/* ===== TUG OF WAR SETUP SCREEN ===== */
+.tow2-setup { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; background: linear-gradient(135deg, #EEF2FF, #FDF2F8); }
+.tow2-setup-card { background: #fff; border-radius: 24px; padding: 40px; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 8px 40px rgba(99,102,241,0.12); border: 2px solid #E8EDFF; }
+.tow2-setup-icon { font-size: 56px; margin-bottom: 16px; }
+.tow2-setup-title { font-size: 26px; font-weight: 900; color: #1a1a2e; margin-bottom: 8px; }
+.tow2-setup-sub { font-size: 14px; color: #6B7280; margin-bottom: 28px; line-height: 1.6; }
+.tow2-setup-section { margin-bottom: 24px; text-align: left; }
+.tow2-setup-label { font-size: 12px; font-weight: 800; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px; }
+.tow2-mode-btns { display: flex; gap: 10px; }
+.tow2-mode-btn { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #E8EDFF; background: #F8FAFF; font-size: 14px; font-weight: 700; cursor: pointer; color: #9CA3AF; transition: all 0.2s; }
+.tow2-mode-btn.active { background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
+.tow2-diff-btns { display: flex; gap: 8px; }
+.tow2-diff-btn { flex: 1; padding: 10px; border-radius: 12px; border: 2px solid #E8EDFF; background: #F8FAFF; font-size: 13px; font-weight: 700; cursor: pointer; color: #9CA3AF; transition: all 0.2s; }
+.tow2-diff-easy.active { background: #ECFDF5; color: #059669; border-color: #34D399; }
+.tow2-diff-medium.active { background: #FFFBEB; color: #D97706; border-color: #F59E0B; }
+.tow2-diff-hard.active { background: #FEF2F2; color: #DC2626; border-color: #EF4444; }
+.tow2-setup-start { width: 100%; padding: 16px; background: linear-gradient(135deg, #6366F1, #8B5CF6, #EC4899); color: #fff; border: none; border-radius: 14px; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 8px; box-shadow: 0 8px 24px rgba(99,102,241,0.3); transition: transform 0.2s; }
+.tow2-setup-start:hover { transform: translateY(-2px); }
+
+/* BOT thinking animation */
+.tow2-bot-thinking { padding: 40px 20px; text-align: center; }
+.tow2-bot-dots { display: flex; justify-content: center; gap: 8px; }
+.tow2-bot-dots span { width: 12px; height: 12px; border-radius: 50%; background: #EF4444; animation: botBounce 1s ease-in-out infinite; display: block; }
+.tow2-bot-dots span:nth-child(2) { animation-delay: 0.2s; }
+.tow2-bot-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes botBounce { 0%,100% { transform: translateY(0); opacity:0.5 } 50% { transform: translateY(-12px); opacity:1 } }
+.tow2-bot-wait { color: #9CA3AF; font-size: 14px; font-weight: 600; }
