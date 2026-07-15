@@ -32,22 +32,67 @@ function generateQuestions() {
 }
 
 function NumPad({ value, onChange, onSubmit, disabled }) {
+  const [useKeyboard, setUseKeyboard] = useState(false)
   const handleNum = (n) => { if (disabled) return; onChange(prev => prev + n) }
   const handleDelete = () => { if (disabled) return; onChange(prev => prev.slice(0, -1)) }
   const handleClear = () => { if (disabled) return; onChange('') }
+
   return (
     <div className="tow-numpad">
-      <div className="tow-numpad-display">{value || <span className="tow-numpad-placeholder">Your answer</span>}</div>
-      <div className="tow-numpad-grid">
-        {['1','2','3','4','5','6','7','8','9','0','.','-'].map(n => (
-          <button key={n} className="tow-numpad-btn" onClick={() => handleNum(n)} disabled={disabled}>{n}</button>
-        ))}
+      <div className="tow-input-toggle">
+        <button
+          className={`tow-toggle-btn ${!useKeyboard ? 'active' : ''}`}
+          onClick={() => setUseKeyboard(false)}
+          disabled={disabled}
+        >
+          🔢 Numpad
+        </button>
+        <button
+          className={`tow-toggle-btn ${useKeyboard ? 'active' : ''}`}
+          onClick={() => setUseKeyboard(true)}
+          disabled={disabled}
+        >
+          ⌨️ Keyboard
+        </button>
       </div>
-      <div className="tow-numpad-actions">
-        <button className="tow-numpad-del" onClick={handleDelete} disabled={disabled}>⌫</button>
-        <button className="tow-numpad-clear" onClick={handleClear} disabled={disabled}>C</button>
-        <button className="tow-numpad-submit" onClick={onSubmit} disabled={disabled || !value}>✓</button>
+
+      <div className="tow-numpad-display">
+        {useKeyboard ? (
+          <input
+            className="tow-keyboard-input"
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && !disabled && value) onSubmit() }}
+            placeholder="Type your answer..."
+            disabled={disabled}
+            autoFocus
+          />
+        ) : (
+          value || <span className="tow-numpad-placeholder">Your answer</span>
+        )}
       </div>
+
+      {!useKeyboard && (
+        <>
+          <div className="tow-numpad-grid">
+            {['1','2','3','4','5','6','7','8','9','0','.','-'].map(n => (
+              <button key={n} className="tow-numpad-btn" onClick={() => handleNum(n)} disabled={disabled}>{n}</button>
+            ))}
+          </div>
+          <div className="tow-numpad-actions">
+            <button className="tow-numpad-del" onClick={handleDelete} disabled={disabled}>⌫</button>
+            <button className="tow-numpad-clear" onClick={handleClear} disabled={disabled}>C</button>
+            <button className="tow-numpad-submit" onClick={onSubmit} disabled={disabled || !value}>✓</button>
+          </div>
+        </>
+      )}
+
+      {useKeyboard && (
+        <div className="tow-numpad-actions">
+          <button className="tow-numpad-clear" onClick={handleClear} disabled={disabled} style={{ flex: 1 }}>Clear</button>
+          <button className="tow-numpad-submit" onClick={onSubmit} disabled={disabled || !value} style={{ flex: 2 }}>✓ Submit</button>
+        </div>
+      )}
     </div>
   )
 }
@@ -93,10 +138,16 @@ function DifficultySelector({ onStart }) {
         <div className="tow2-setup-section">
           <label className="tow2-setup-label">Game Mode</label>
           <div className="tow2-mode-btns">
-            <button className={`tow2-mode-btn ${!botEnabled ? 'active' : ''}`} onClick={() => setBotEnabled(false)}>
+            <button
+              className={`tow2-mode-btn ${!botEnabled ? 'active' : ''}`}
+              onClick={() => setBotEnabled(false)}
+            >
               👥 2 Players
             </button>
-            <button className={`tow2-mode-btn ${botEnabled ? 'active' : ''}`} onClick={() => setBotEnabled(true)}>
+            <button
+              className={`tow2-mode-btn ${botEnabled ? 'active' : ''}`}
+              onClick={() => setBotEnabled(true)}
+            >
               🤖 vs BOT
             </button>
           </div>
@@ -119,7 +170,10 @@ function DifficultySelector({ onStart }) {
           </div>
         )}
 
-        <button className="tow2-setup-start" onClick={() => onStart(botEnabled, difficulty)}>
+        <button
+          className="tow2-setup-start"
+          onClick={() => onStart(botEnabled, difficulty)}
+        >
           Let's Play! 🎮
         </button>
       </div>
@@ -127,7 +181,6 @@ function DifficultySelector({ onStart }) {
   )
 }
 
-// ── Main Game ──────────────────────────────────────────
 function Game({ botEnabled, difficulty }) {
   const questions = useRef(generateQuestions()).current
   const [q1idx, setQ1idx] = useState(0)
@@ -145,7 +198,6 @@ function Game({ botEnabled, difficulty }) {
   const runningRef = useRef(false)
   const gameOverRef = useRef(false)
 
-  // keep refs in sync
   useEffect(() => { feedbackRef.current = feedback }, [feedback])
   useEffect(() => { runningRef.current = running }, [running])
   useEffect(() => { gameOverRef.current = gameOver }, [gameOver])
@@ -154,7 +206,6 @@ function Game({ botEnabled, difficulty }) {
     ? 50
     : Math.round((scores[1] / (scores[0] + scores[1])) * 100)
 
-  // Main countdown timer
   useEffect(() => {
     if (running && !gameOver) {
       timerRef.current = setInterval(() => {
@@ -172,7 +223,6 @@ function Game({ botEnabled, difficulty }) {
     return () => clearInterval(timerRef.current)
   }, [running, gameOver])
 
-  // BOT scheduler
   const scheduleBotAnswer = (currentQ2idx) => {
     clearTimeout(botRef.current)
     if (!botEnabled) return
@@ -182,11 +232,7 @@ function Game({ botEnabled, difficulty }) {
       if (!runningRef.current || gameOverRef.current) return
       if (feedbackRef.current[1] !== null) return
       const correct = Math.random() < accuracy
-      setFeedback(f => {
-        const n = [...f]
-        n[1] = correct ? 'correct' : 'wrong'
-        return n
-      })
+      setFeedback(f => { const n = [...f]; n[1] = correct ? 'correct' : 'wrong'; return n })
       if (correct) setScores(s => { const n = [...s]; n[1]++; return n })
       setTimeout(() => {
         setFeedback(f => { const n = [...f]; n[1] = null; return n })
@@ -199,7 +245,6 @@ function Game({ botEnabled, difficulty }) {
     }, delay)
   }
 
-  // Start BOT when game starts
   useEffect(() => {
     if (running && botEnabled) {
       scheduleBotAnswer(q2idx)
@@ -246,8 +291,12 @@ function Game({ botEnabled, difficulty }) {
           <div className="tow2-title">🪢 {botEnabled ? `vs 🤖 BOT (${difficulty})` : 'Tug of War'}</div>
           <div className={`tow2-timer ${timeLeft <= 10 ? 'tow2-timer-danger' : ''}`}>⏱ {mins}:{secs}</div>
           <div className="tow2-ctrl-btns">
-            {!running && !gameOver && <button className="tow2-start-btn" onClick={() => setRunning(true)}>▶ Start</button>}
-            {running && <button className="tow2-pause-btn" onClick={() => setRunning(false)}>⏸ Pause</button>}
+            {!running && !gameOver && (
+              <button className="tow2-start-btn" onClick={() => setRunning(true)}>▶ Start</button>
+            )}
+            {running && (
+              <button className="tow2-pause-btn" onClick={() => setRunning(false)}>⏸ Pause</button>
+            )}
           </div>
         </div>
         <div className="tow2-score-box" style={{ background: '#FEF2F2', borderColor: '#FECACA' }}>
@@ -266,7 +315,6 @@ function Game({ botEnabled, difficulty }) {
       )}
 
       <div className="tow2-game-area">
-        {/* Team 1 */}
         <div className={`tow2-team-panel tow2-team1 ${feedback[0] === 'correct' ? 'flash-correct' : ''} ${feedback[0] === 'wrong' ? 'flash-wrong' : ''}`}>
           <div className="tow2-panel-header" style={{ background: TEAM1_COLOR }}>
             <span>👥 TEAM 1</span>
@@ -286,7 +334,6 @@ function Game({ botEnabled, difficulty }) {
           />
         </div>
 
-        {/* Team 2 / BOT */}
         <div className={`tow2-team-panel tow2-team2 ${feedback[1] === 'correct' ? 'flash-correct' : ''} ${feedback[1] === 'wrong' ? 'flash-wrong' : ''}`}>
           <div className="tow2-panel-header" style={{ background: TEAM2_COLOR }}>
             <span>{botEnabled ? '🤖 BOT' : '👥 TEAM 2'}</span>
@@ -321,12 +368,16 @@ function Game({ botEnabled, difficulty }) {
 
 export default function TugOfWar() {
   const [config, setConfig] = useState(null)
+  const [key, setKey] = useState(0)
 
-  if (!config) {
-    return (
-      <DifficultySelector onStart={(bot, diff) => setConfig({ bot, diff })} />
-    )
+  const handleStart = (bot, diff) => {
+    setConfig({ bot, diff })
+    setKey(k => k + 1)
   }
 
-  return <Game botEnabled={config.bot} difficulty={config.diff} />
+  if (!config) {
+    return <DifficultySelector onStart={handleStart} />
+  }
+
+  return <Game key={key} botEnabled={config.bot} difficulty={config.diff} />
 }
