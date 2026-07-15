@@ -93,16 +93,10 @@ function DifficultySelector({ onStart }) {
         <div className="tow2-setup-section">
           <label className="tow2-setup-label">Game Mode</label>
           <div className="tow2-mode-btns">
-            <button
-              className={`tow2-mode-btn ${!botEnabled ? 'active' : ''}`}
-              onClick={() => setBotEnabled(false)}
-            >
+            <button className={`tow2-mode-btn ${!botEnabled ? 'active' : ''}`} onClick={() => setBotEnabled(false)}>
               👥 2 Players
             </button>
-            <button
-              className={`tow2-mode-btn ${botEnabled ? 'active' : ''}`}
-              onClick={() => setBotEnabled(true)}
-            >
+            <button className={`tow2-mode-btn ${botEnabled ? 'active' : ''}`} onClick={() => setBotEnabled(true)}>
               🤖 vs BOT
             </button>
           </div>
@@ -133,11 +127,9 @@ function DifficultySelector({ onStart }) {
   )
 }
 
-export default function TugOfWar() {
-  const [gameStarted, setGameStarted] = useState(false)
-  const [botEnabled, setBotEnabled] = useState(false)
-  const [difficulty, setDifficulty] = useState('Medium')
-  const [questions] = useState(generateQuestions)
+// ── Main Game ──────────────────────────────────────────
+function Game({ botEnabled, difficulty }) {
+  const questions = useRef(generateQuestions()).current
   const [q1idx, setQ1idx] = useState(0)
   const [q2idx, setQ2idx] = useState(1)
   const [scores, setScores] = useState([0, 0])
@@ -146,20 +138,29 @@ export default function TugOfWar() {
   const [timeLeft, setTimeLeft] = useState(60)
   const [running, setRunning] = useState(false)
   const [gameOver, setGameOver] = useState(false)
-  const intervalRef = useRef(null)
-  const botTimerRef = useRef(null)
+
+  const timerRef = useRef(null)
+  const botRef = useRef(null)
+  const feedbackRef = useRef([null, null])
+  const runningRef = useRef(false)
+  const gameOverRef = useRef(false)
+
+  // keep refs in sync
+  useEffect(() => { feedbackRef.current = feedback }, [feedback])
+  useEffect(() => { runningRef.current = running }, [running])
+  useEffect(() => { gameOverRef.current = gameOver }, [gameOver])
 
   const ropePos = scores[0] + scores[1] === 0
     ? 50
     : Math.round((scores[1] / (scores[0] + scores[1])) * 100)
 
-  // Main timer
+  // Main countdown timer
   useEffect(() => {
     if (running && !gameOver) {
-      intervalRef.current = setInterval(() => {
+      timerRef.current = setInterval(() => {
         setTimeLeft(t => {
           if (t <= 1) {
-            clearInterval(intervalRef.current)
+            clearInterval(timerRef.current)
             setRunning(false)
             setGameOver(true)
             return 0
@@ -168,67 +169,70 @@ export default function TugOfWar() {
         })
       }, 1000)
     }
-    return () => clearInterval(intervalRef.current)
+    return () => clearInterval(timerRef.current)
   }, [running, gameOver])
 
-  // BOT logic
-  useEffect(() => {
-    if (!running || !botEnabled || gameOver || feedback[1] !== null) return
+  // BOT scheduler
+  const scheduleBotAnswer = (currentQ2idx) => {
+    clearTimeout(botRef.current)
+    if (!botEnabled) return
     const { speed, accuracy } = BOT_DIFFICULTY[difficulty]
     const delay = speed * (0.7 + Math.random() * 0.6)
-    botTimerRef.current = setTimeout(() => {
+    botRef.current = setTimeout(() => {
+      if (!runningRef.current || gameOverRef.current) return
+      if (feedbackRef.current[1] !== null) return
       const correct = Math.random() < accuracy
-      const newFeedback = [feedback[0], correct ? 'correct' : 'wrong']
-      setFeedback(newFeedback)
+      setFeedback(f => {
+        const n = [...f]
+        n[1] = correct ? 'correct' : 'wrong'
+        return n
+      })
       if (correct) setScores(s => { const n = [...s]; n[1]++; return n })
       setTimeout(() => {
-        setFeedback(f => [f[0], null])
-        setQ2idx(i => (i + 2) % questions.length)
+        setFeedback(f => { const n = [...f]; n[1] = null; return n })
+        setQ2idx(i => {
+          const next = (i + 2) % questions.length
+          scheduleBotAnswer(next)
+          return next
+        })
       }, 1000)
     }, delay)
-    return () => clearTimeout(botTimerRef.current)
-  }, [running, botEnabled, gameOver, feedback[1], q2idx, difficulty])
+  }
 
-  const submit = (player) => {
-    if (feedback[player] !== null) return
+  // Start BOT when game starts
+  useEffect(() => {
+    if (running && botEnabled) {
+      scheduleBotAnswer(q2idx)
+    }
+    if (!running) {
+      clearTimeout(botRef.current)
+    }
+    return () => clearTimeout(botRef.current)
+  }, [running])
+
+  const submitAnswer = (player) => {
+    if (feedback[player] !== null || !running || gameOver) return
     const idx = player === 0 ? q1idx : q2idx
     const ans = answers[player].trim().toLowerCase().replace(/\s+/g, '')
     const correct = ans === questions[idx].a.toLowerCase().replace(/\s+/g, '')
-    const newFeedback = [...feedback]
-    newFeedback[player] = correct ? 'correct' : 'wrong'
-    setFeedback(newFeedback)
+    setFeedback(f => { const n = [...f]; n[player] = correct ? 'correct' : 'wrong'; return n })
     if (correct) setScores(s => { const n = [...s]; n[player]++; return n })
     setTimeout(() => {
       setFeedback(f => { const n = [...f]; n[player] = null; return n })
-      const newAnswers = [...answers]
-      newAnswers[player] = ''
-      setAnswers(newAnswers)
+      setAnswers(a => { const n = [...a]; n[player] = ''; return n })
       if (player === 0) setQ1idx(i => (i + 2) % questions.length)
       else setQ2idx(i => (i + 2) % questions.length)
     }, 1000)
   }
 
-  const reset = () => {
-    setScores([0, 0]); setAnswers(['', '']); setFeedback([null, null])
-    setTimeLeft(60); setRunning(false); setGameOver(false)
-    setQ1idx(0); setQ2idx(1)
-    clearInterval(intervalRef.current); clearTimeout(botTimerRef.current)
-    setGameStarted(false)
-  }
-
-  const handleStart = (bot, diff) => {
-    setBotEnabled(bot); setDifficulty(diff); setGameStarted(true)
-  }
-
-  if (!gameStarted) return <DifficultySelector onStart={handleStart} />
-
   const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0')
   const secs = String(timeLeft % 60).padStart(2, '0')
+
   let winner = null
   if (gameOver) {
-    if (scores[0] > scores[1]) winner = 'You win! 🎉'
-    else if (scores[1] > scores[0]) winner = botEnabled ? 'BOT wins! 🤖' : 'Team 2 wins!'
-    else winner = "It's a Tie! 🤝"
+    if (scores[0] > scores[1]) winner = '🎉 You win!'
+    else if (scores[1] > scores[0]) winner = botEnabled ? '🤖 BOT wins!' : '🎉 Team 2 wins!'
+    else winner = "🤝 It's a Tie!"
   }
 
   return (
@@ -239,12 +243,11 @@ export default function TugOfWar() {
           <div className="tow2-score-val" style={{ color: TEAM1_COLOR }}>{scores[0]}</div>
         </div>
         <div className="tow2-center">
-          <div className="tow2-title">🪢 Tug of War {botEnabled ? `vs 🤖 BOT (${difficulty})` : ''}</div>
+          <div className="tow2-title">🪢 {botEnabled ? `vs 🤖 BOT (${difficulty})` : 'Tug of War'}</div>
           <div className={`tow2-timer ${timeLeft <= 10 ? 'tow2-timer-danger' : ''}`}>⏱ {mins}:{secs}</div>
           <div className="tow2-ctrl-btns">
             {!running && !gameOver && <button className="tow2-start-btn" onClick={() => setRunning(true)}>▶ Start</button>}
-            {running && <button className="tow2-pause-btn" onClick={() => { setRunning(false); clearInterval(intervalRef.current) }}>⏸ Pause</button>}
-            <button className="tow2-reset-btn" onClick={reset}>🔄</button>
+            {running && <button className="tow2-pause-btn" onClick={() => setRunning(false)}>⏸ Pause</button>}
           </div>
         </div>
         <div className="tow2-score-box" style={{ background: '#FEF2F2', borderColor: '#FECACA' }}>
@@ -257,12 +260,13 @@ export default function TugOfWar() {
 
       {gameOver && (
         <div className="tow2-winner-banner">
-          {winner}
-          <button className="tow2-play-again" onClick={reset}>Play Again</button>
+          <span>{winner}</span>
+          <button className="tow2-play-again" onClick={() => window.location.reload()}>Play Again</button>
         </div>
       )}
 
       <div className="tow2-game-area">
+        {/* Team 1 */}
         <div className={`tow2-team-panel tow2-team1 ${feedback[0] === 'correct' ? 'flash-correct' : ''} ${feedback[0] === 'wrong' ? 'flash-wrong' : ''}`}>
           <div className="tow2-panel-header" style={{ background: TEAM1_COLOR }}>
             <span>👥 TEAM 1</span>
@@ -277,11 +281,12 @@ export default function TugOfWar() {
           <NumPad
             value={answers[0]}
             onChange={(fn) => setAnswers(a => { const n = [...a]; n[0] = typeof fn === 'function' ? fn(a[0]) : fn; return n })}
-            onSubmit={() => submit(0)}
+            onSubmit={() => submitAnswer(0)}
             disabled={!running || gameOver || feedback[0] !== null}
           />
         </div>
 
+        {/* Team 2 / BOT */}
         <div className={`tow2-team-panel tow2-team2 ${feedback[1] === 'correct' ? 'flash-correct' : ''} ${feedback[1] === 'wrong' ? 'flash-wrong' : ''}`}>
           <div className="tow2-panel-header" style={{ background: TEAM2_COLOR }}>
             <span>{botEnabled ? '🤖 BOT' : '👥 TEAM 2'}</span>
@@ -290,19 +295,21 @@ export default function TugOfWar() {
           <div className="tow2-question">{questions[q2idx]?.q}</div>
           {feedback[1] && (
             <div className={`tow2-feedback ${feedback[1]}`}>
-              {feedback[1] === 'correct' ? '✅ Correct! +1' : `❌ Wrong!`}
+              {feedback[1] === 'correct' ? '✅ Correct! +1' : '❌ Wrong!'}
             </div>
           )}
           {botEnabled ? (
             <div className="tow2-bot-thinking">
-              {running && feedback[1] === null && <div className="tow2-bot-dots"><span>•</span><span>•</span><span>•</span></div>}
-              {!running && <p className="tow2-bot-wait">BOT is waiting...</p>}
+              {running && !gameOver && feedback[1] === null && (
+                <div className="tow2-bot-dots"><span /><span /><span /></div>
+              )}
+              {(!running || gameOver) && <p className="tow2-bot-wait">🤖 BOT is waiting...</p>}
             </div>
           ) : (
             <NumPad
               value={answers[1]}
               onChange={(fn) => setAnswers(a => { const n = [...a]; n[1] = typeof fn === 'function' ? fn(a[1]) : fn; return n })}
-              onSubmit={() => submit(1)}
+              onSubmit={() => submitAnswer(1)}
               disabled={!running || gameOver || feedback[1] !== null}
             />
           )}
@@ -310,4 +317,16 @@ export default function TugOfWar() {
       </div>
     </div>
   )
+}
+
+export default function TugOfWar() {
+  const [config, setConfig] = useState(null)
+
+  if (!config) {
+    return (
+      <DifficultySelector onStart={(bot, diff) => setConfig({ bot, diff })} />
+    )
+  }
+
+  return <Game botEnabled={config.bot} difficulty={config.diff} />
 }
