@@ -9,25 +9,53 @@ const BOT_DIFFICULTY = {
   Hard: { speed: 1500, accuracy: 0.95 },
 }
 
-function generateQuestions() {
+const TOPICS = [
+  { id: 'addition', label: 'Addition', icon: '➕' },
+  { id: 'subtraction', label: 'Subtraction', icon: '➖' },
+  { id: 'multiplication', label: 'Multiplication', icon: '✖️' },
+  { id: 'division', label: 'Division', icon: '➗' },
+  { id: 'formulas', label: 'Formulas', icon: '📐' },
+]
+
+function generateQuestions(topic) {
   const questions = []
-  for (let i = 0; i < 20; i++) {
-    const a = Math.floor(Math.random() * 15) + 1
-    const b = Math.floor(Math.random() * 15) + 1
-    const type = Math.floor(Math.random() * 3)
-    if (type === 0) questions.push({ q: `${a} + ${b} = ?`, a: String(a + b) })
-    else if (type === 1) questions.push({ q: `${a + b} − ${b} = ?`, a: String(a) })
-    else questions.push({ q: `${a} × ${b} = ?`, a: String(a * b) })
+  if (topic === 'addition') {
+    for (let i = 0; i < 25; i++) {
+      const a = Math.floor(Math.random() * 50) + 1
+      const b = Math.floor(Math.random() * 50) + 1
+      questions.push({ q: `${a} + ${b} = ?`, a: String(a + b) })
+    }
+  } else if (topic === 'subtraction') {
+    for (let i = 0; i < 25; i++) {
+      const a = Math.floor(Math.random() * 50) + 10
+      const b = Math.floor(Math.random() * (a - 1)) + 1
+      questions.push({ q: `${a} − ${b} = ?`, a: String(a - b) })
+    }
+  } else if (topic === 'multiplication') {
+    for (let i = 0; i < 25; i++) {
+      const a = Math.floor(Math.random() * 12) + 1
+      const b = Math.floor(Math.random() * 12) + 1
+      questions.push({ q: `${a} × ${b} = ?`, a: String(a * b) })
+    }
+  } else if (topic === 'division') {
+    for (let i = 0; i < 25; i++) {
+      const b = Math.floor(Math.random() * 10) + 1
+      const ans = Math.floor(Math.random() * 10) + 1
+      const a = b * ans
+      questions.push({ q: `${a} ÷ ${b} = ?`, a: String(ans) })
+    }
+  } else if (topic === 'formulas') {
+    questions.push(
+      { q: '(a + b)² = ?', a: 'a²+2ab+b²' },
+      { q: '(a − b)² = ?', a: 'a²-2ab+b²' },
+      { q: '(a+b)(a−b) = ?', a: 'a²-b²' },
+      { q: 'Area of circle = ?', a: 'πr²' },
+      { q: 'Area of rectangle = ?', a: 'l×w' },
+      { q: 'Perimeter of square = ?', a: '4s' },
+      { q: 'Area of triangle = ?', a: '½bh' },
+      { q: 'Perimeter of rectangle = ?', a: '2(l+w)' },
+    )
   }
-  const formulas = [
-    { q: '(a + b)² = ?', a: 'a²+2ab+b²' },
-    { q: '(a − b)² = ?', a: 'a²-2ab+b²' },
-    { q: '(a+b)(a−b) = ?', a: 'a²-b²' },
-    { q: 'Area of circle = ?', a: 'πr²' },
-    { q: 'Area of rectangle = ?', a: 'l×w' },
-    { q: 'Perimeter of square = ?', a: '4s' },
-  ]
-  questions.push(...formulas)
   return questions.sort(() => Math.random() - 0.5)
 }
 
@@ -40,38 +68,18 @@ function NumPad({ value, onChange, onSubmit, disabled }) {
   return (
     <div className="tow-numpad">
       <div className="tow-input-toggle">
-        <button
-          className={`tow-toggle-btn ${!useKeyboard ? 'active' : ''}`}
-          onClick={() => setUseKeyboard(false)}
-          disabled={disabled}
-        >
-          🔢 Numpad
-        </button>
-        <button
-          className={`tow-toggle-btn ${useKeyboard ? 'active' : ''}`}
-          onClick={() => setUseKeyboard(true)}
-          disabled={disabled}
-        >
-          ⌨️ Keyboard
-        </button>
+        <button className={`tow-toggle-btn ${!useKeyboard ? 'active' : ''}`} onClick={() => setUseKeyboard(false)} disabled={disabled}>🔢 Numpad</button>
+        <button className={`tow-toggle-btn ${useKeyboard ? 'active' : ''}`} onClick={() => setUseKeyboard(true)} disabled={disabled}>⌨️ Keyboard</button>
       </div>
-
       <div className="tow-numpad-display">
         {useKeyboard ? (
-          <input
-            className="tow-keyboard-input"
-            value={value}
-            onChange={e => onChange(e.target.value)}
+          <input className="tow-keyboard-input" value={value} onChange={e => onChange(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && !disabled && value) onSubmit() }}
-            placeholder="Type your answer..."
-            disabled={disabled}
-            autoFocus
-          />
+            placeholder="Type your answer..." disabled={disabled} autoFocus />
         ) : (
           value || <span className="tow-numpad-placeholder">Your answer</span>
         )}
       </div>
-
       {!useKeyboard && (
         <>
           <div className="tow-numpad-grid">
@@ -86,7 +94,6 @@ function NumPad({ value, onChange, onSubmit, disabled }) {
           </div>
         </>
       )}
-
       {useKeyboard && (
         <div className="tow-numpad-actions">
           <button className="tow-numpad-clear" onClick={handleClear} disabled={disabled} style={{ flex: 1 }}>Clear</button>
@@ -98,7 +105,6 @@ function NumPad({ value, onChange, onSubmit, disabled }) {
 }
 
 function TugAnimation({ ropePos }) {
-  const knobLeft = ropePos + '%'
   return (
     <div className="tow-animation">
       <div className="tow-scene">
@@ -110,7 +116,7 @@ function TugAnimation({ ropePos }) {
         <div className="tow-rope-container">
           <div className="tow-rope">
             <div className="tow-rope-line tow-rope-left" style={{ background: TEAM1_COLOR }} />
-            <div className="tow-rope-knob" style={{ left: knobLeft }}>🔴</div>
+            <div className="tow-rope-knob" style={{ left: ropePos + '%' }}>🔴</div>
             <div className="tow-rope-line tow-rope-right" style={{ background: TEAM2_COLOR }} />
           </div>
         </div>
@@ -127,29 +133,36 @@ function TugAnimation({ ropePos }) {
 function DifficultySelector({ onStart }) {
   const [difficulty, setDifficulty] = useState('Medium')
   const [botEnabled, setBotEnabled] = useState(false)
+  const [topic, setTopic] = useState('addition')
 
   return (
     <div className="tow2-setup">
       <div className="tow2-setup-card">
         <div className="tow2-setup-icon">🪢</div>
         <h2 className="tow2-setup-title">Tug of War Challenge</h2>
-        <p className="tow2-setup-sub">Race against a friend or challenge the BOT!</p>
+        <p className="tow2-setup-sub">Pick a topic, choose your mode and play!</p>
+
+        <div className="tow2-setup-section">
+          <label className="tow2-setup-label">Select Topic</label>
+          <div className="tow2-topic-grid">
+            {TOPICS.map(t => (
+              <button
+                key={t.id}
+                className={`tow2-topic-btn ${topic === t.id ? 'active' : ''}`}
+                onClick={() => setTopic(t.id)}
+              >
+                <span className="tow2-topic-icon">{t.icon}</span>
+                <span className="tow2-topic-label">{t.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="tow2-setup-section">
           <label className="tow2-setup-label">Game Mode</label>
           <div className="tow2-mode-btns">
-            <button
-              className={`tow2-mode-btn ${!botEnabled ? 'active' : ''}`}
-              onClick={() => setBotEnabled(false)}
-            >
-              👥 2 Players
-            </button>
-            <button
-              className={`tow2-mode-btn ${botEnabled ? 'active' : ''}`}
-              onClick={() => setBotEnabled(true)}
-            >
-              🤖 vs BOT
-            </button>
+            <button className={`tow2-mode-btn ${!botEnabled ? 'active' : ''}`} onClick={() => setBotEnabled(false)}>👥 2 Players</button>
+            <button className={`tow2-mode-btn ${botEnabled ? 'active' : ''}`} onClick={() => setBotEnabled(true)}>🤖 vs BOT</button>
           </div>
         </div>
 
@@ -170,10 +183,7 @@ function DifficultySelector({ onStart }) {
           </div>
         )}
 
-        <button
-          className="tow2-setup-start"
-          onClick={() => onStart(botEnabled, difficulty)}
-        >
+        <button className="tow2-setup-start" onClick={() => onStart(botEnabled, difficulty, topic)}>
           Let's Play! 🎮
         </button>
       </div>
@@ -181,8 +191,8 @@ function DifficultySelector({ onStart }) {
   )
 }
 
-function Game({ botEnabled, difficulty }) {
-  const questions = useRef(generateQuestions()).current
+function Game({ botEnabled, difficulty, topic }) {
+  const questions = useRef(generateQuestions(topic)).current
   const [q1idx, setQ1idx] = useState(0)
   const [q2idx, setQ2idx] = useState(1)
   const [scores, setScores] = useState([0, 0])
@@ -210,12 +220,7 @@ function Game({ botEnabled, difficulty }) {
     if (running && !gameOver) {
       timerRef.current = setInterval(() => {
         setTimeLeft(t => {
-          if (t <= 1) {
-            clearInterval(timerRef.current)
-            setRunning(false)
-            setGameOver(true)
-            return 0
-          }
+          if (t <= 1) { clearInterval(timerRef.current); setRunning(false); setGameOver(true); return 0 }
           return t - 1
         })
       }, 1000)
@@ -223,35 +228,27 @@ function Game({ botEnabled, difficulty }) {
     return () => clearInterval(timerRef.current)
   }, [running, gameOver])
 
-  const scheduleBotAnswer = (currentQ2idx) => {
+  const scheduleBotAnswer = () => {
     clearTimeout(botRef.current)
     if (!botEnabled) return
     const { speed, accuracy } = BOT_DIFFICULTY[difficulty]
     const delay = speed * (0.7 + Math.random() * 0.6)
     botRef.current = setTimeout(() => {
-      if (!runningRef.current || gameOverRef.current) return
-      if (feedbackRef.current[1] !== null) return
+      if (!runningRef.current || gameOverRef.current || feedbackRef.current[1] !== null) return
       const correct = Math.random() < accuracy
       setFeedback(f => { const n = [...f]; n[1] = correct ? 'correct' : 'wrong'; return n })
       if (correct) setScores(s => { const n = [...s]; n[1]++; return n })
       setTimeout(() => {
         setFeedback(f => { const n = [...f]; n[1] = null; return n })
-        setQ2idx(i => {
-          const next = (i + 2) % questions.length
-          scheduleBotAnswer(next)
-          return next
-        })
+        setQ2idx(i => (i + 2) % questions.length)
+        scheduleBotAnswer()
       }, 1000)
     }, delay)
   }
 
   useEffect(() => {
-    if (running && botEnabled) {
-      scheduleBotAnswer(q2idx)
-    }
-    if (!running) {
-      clearTimeout(botRef.current)
-    }
+    if (running && botEnabled) scheduleBotAnswer()
+    if (!running) clearTimeout(botRef.current)
     return () => clearTimeout(botRef.current)
   }, [running])
 
@@ -272,10 +269,11 @@ function Game({ botEnabled, difficulty }) {
 
   const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0')
   const secs = String(timeLeft % 60).padStart(2, '0')
+  const topicInfo = TOPICS.find(t => t.id === topic)
 
   let winner = null
   if (gameOver) {
-    if (scores[0] > scores[1]) winner = '🎉 You win!'
+    if (scores[0] > scores[1]) winner = '🎉 Team 1 wins!'
     else if (scores[1] > scores[0]) winner = botEnabled ? '🤖 BOT wins!' : '🎉 Team 2 wins!'
     else winner = "🤝 It's a Tie!"
   }
@@ -288,15 +286,12 @@ function Game({ botEnabled, difficulty }) {
           <div className="tow2-score-val" style={{ color: TEAM1_COLOR }}>{scores[0]}</div>
         </div>
         <div className="tow2-center">
-          <div className="tow2-title">🪢 {botEnabled ? `vs 🤖 BOT (${difficulty})` : 'Tug of War'}</div>
+          <div className="tow2-title">{topicInfo?.icon} {topicInfo?.label} {botEnabled ? `· 🤖 BOT (${difficulty})` : ''}</div>
           <div className={`tow2-timer ${timeLeft <= 10 ? 'tow2-timer-danger' : ''}`}>⏱ {mins}:{secs}</div>
           <div className="tow2-ctrl-btns">
-            {!running && !gameOver && (
-              <button className="tow2-start-btn" onClick={() => setRunning(true)}>▶ Start</button>
-            )}
-            {running && (
-              <button className="tow2-pause-btn" onClick={() => setRunning(false)}>⏸ Pause</button>
-            )}
+            {!running && !gameOver && <button className="tow2-start-btn" onClick={() => setRunning(true)}>▶ Start</button>}
+            {running && <button className="tow2-pause-btn" onClick={() => setRunning(false)}>⏸ Pause</button>}
+            <button className="tow2-reset-btn" onClick={() => window.location.reload()}>🔄</button>
           </div>
         </div>
         <div className="tow2-score-box" style={{ background: '#FEF2F2', borderColor: '#FECACA' }}>
@@ -370,14 +365,11 @@ export default function TugOfWar() {
   const [config, setConfig] = useState(null)
   const [key, setKey] = useState(0)
 
-  const handleStart = (bot, diff) => {
-    setConfig({ bot, diff })
+  const handleStart = (bot, diff, topic) => {
+    setConfig({ bot, diff, topic })
     setKey(k => k + 1)
   }
 
-  if (!config) {
-    return <DifficultySelector onStart={handleStart} />
-  }
-
-  return <Game key={key} botEnabled={config.bot} difficulty={config.diff} />
+  if (!config) return <DifficultySelector onStart={handleStart} />
+  return <Game key={key} botEnabled={config.bot} difficulty={config.diff} topic={config.topic} />
 }

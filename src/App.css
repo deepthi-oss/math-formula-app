@@ -464,3 +464,10 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .tow2-bot-dots span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes botBounce { 0%,100% { transform: translateY(0); opacity:0.5 } 50% { transform: translateY(-12px); opacity:1 } }
 .tow2-bot-wait { color: #9CA3AF; font-size: 14px; font-weight: 600; }
+.tow2-topic-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; }
+.tow2-topic-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 10px; border-radius: 12px; border: 2px solid #E8EDFF; background: #F8FAFF; cursor: pointer; transition: all 0.2s; }
+.tow2-topic-btn:hover { border-color: #6366F1; background: #EEF2FF; }
+.tow2-topic-btn.active { background: linear-gradient(135deg, #EEF2FF, #E0E7FF); border-color: #6366F1; box-shadow: 0 2px 12px rgba(99,102,241,0.2); }
+.tow2-topic-icon { font-size: 24px; }
+.tow2-topic-label { font-size: 12px; font-weight: 700; color: #374151; }
+.tow2-topic-btn.active .tow2-topic-label { color: #4F46E5; }
