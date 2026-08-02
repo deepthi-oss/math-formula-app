@@ -31,7 +31,6 @@ function checkAnswer(input, ans) {
   return norm(input) === norm(ans)
 }
 
-// ── Setup Screen ──────────────────────────────────────
 function SetupScreen({ onStart }) {
   const [mode, setMode] = useState('2player')
   const [difficulty, setDifficulty] = useState('Medium')
@@ -46,10 +45,16 @@ function SetupScreen({ onStart }) {
         <div className="tow2-setup-section">
           <label className="tow2-setup-label">Game Mode</label>
           <div className="tow2-mode-btns">
-            <button className={`tow2-mode-btn ${mode === '2player' ? 'active' : ''}`} onClick={() => setMode('2player')}>
+            <button
+              className={`tow2-mode-btn ${mode === '2player' ? 'active' : ''}`}
+              onClick={() => setMode('2player')}
+            >
               👥 2 Players
             </button>
-            <button className={`tow2-mode-btn ${mode === 'bot' ? 'active' : ''}`} onClick={() => setMode('bot')}>
+            <button
+              className={`tow2-mode-btn ${mode === 'bot' ? 'active' : ''}`}
+              onClick={() => setMode('bot')}
+            >
               🤖 vs BOT
             </button>
           </div>
@@ -80,7 +85,6 @@ function SetupScreen({ onStart }) {
   )
 }
 
-// ── Draw Canvas ───────────────────────────────────────
 function DrawCanvas({ locked }) {
   const canvasRef = useRef(null)
   const ctxRef = useRef(null)
@@ -107,17 +111,46 @@ function DrawCanvas({ locked }) {
     return { x: (e.clientX - r.left) * sx, y: (e.clientY - r.top) * sy }
   }
 
-  const start = (e) => { if (locked) return; e.preventDefault(); drawingRef.current = true; const pos = getPos(e); ctxRef.current.beginPath(); ctxRef.current.moveTo(pos.x, pos.y) }
-  const move = (e) => { if (!drawingRef.current || locked) return; e.preventDefault(); const pos = getPos(e); ctxRef.current.lineWidth = penSize; ctxRef.current.strokeStyle = color; ctxRef.current.lineTo(pos.x, pos.y); ctxRef.current.stroke() }
+  const start = (e) => {
+    if (locked) return
+    e.preventDefault()
+    drawingRef.current = true
+    const pos = getPos(e)
+    ctxRef.current.beginPath()
+    ctxRef.current.moveTo(pos.x, pos.y)
+  }
+  const move = (e) => {
+    if (!drawingRef.current || locked) return
+    e.preventDefault()
+    const pos = getPos(e)
+    ctxRef.current.lineWidth = penSize
+    ctxRef.current.strokeStyle = color
+    ctxRef.current.lineTo(pos.x, pos.y)
+    ctxRef.current.stroke()
+  }
   const end = () => { drawingRef.current = false }
-  const clear = () => { const canvas = canvasRef.current; ctxRef.current.fillStyle = '#ffffff'; ctxRef.current.fillRect(0, 0, canvas.width, canvas.height) }
+  const clear = () => {
+    const canvas = canvasRef.current
+    ctxRef.current.fillStyle = '#ffffff'
+    ctxRef.current.fillRect(0, 0, canvas.width, canvas.height)
+  }
 
   return (
     <div>
       <div className="canvas-wrap">
-        <canvas ref={canvasRef} width={300} height={140} className="draw-canvas"
-          onMouseDown={start} onMouseMove={move} onMouseUp={end} onMouseLeave={end}
-          onTouchStart={start} onTouchMove={move} onTouchEnd={end} />
+        <canvas
+          ref={canvasRef}
+          width={300}
+          height={140}
+          className="draw-canvas"
+          onMouseDown={start}
+          onMouseMove={move}
+          onMouseUp={end}
+          onMouseLeave={end}
+          onTouchStart={start}
+          onTouchMove={move}
+          onTouchEnd={end}
+        />
       </div>
       <div className="canvas-tools">
         <button className="tool-btn" onClick={clear} disabled={locked}>Clear</button>
@@ -130,12 +163,12 @@ function DrawCanvas({ locked }) {
   )
 }
 
-// ── Main Game ─────────────────────────────────────────
 function Game({ botEnabled, difficulty }) {
   const [round, setRound] = useState(0)
   const [scores, setScores] = useState([0, 0])
   const [phase, setPhase] = useState('write')
   const [timeLeft, setTimeLeft] = useState(WRITE_TIME)
+  const [started, setStarted] = useState(false)
   const [submitted, setSubmitted] = useState([false, false])
   const [results, setResults] = useState([null, null])
   const [type1, setType1] = useState('')
@@ -144,15 +177,13 @@ function Game({ botEnabled, difficulty }) {
 
   const id = identities[round]
   const botRef = useRef(null)
-  const phaseRef = useRef('write')
   const submittedRef = useRef([false, false])
 
-  useEffect(() => { phaseRef.current = phase }, [phase])
   useEffect(() => { submittedRef.current = submitted }, [submitted])
 
-  // Timer
+  // Timer — only runs when started
   useEffect(() => {
-    if (phase === 'done') return
+    if (phase === 'done' || !started) return
     const interval = setInterval(() => {
       setTimeLeft(t => {
         if (t <= 0.1) {
@@ -169,11 +200,11 @@ function Game({ botEnabled, difficulty }) {
       })
     }, 100)
     return () => clearInterval(interval)
-  }, [phase, round])
+  }, [phase, round, started])
 
-  // BOT logic for type phase
+  // BOT logic
   useEffect(() => {
-    if (!botEnabled || phase !== 'type' || submitted[1]) return
+    if (!botEnabled || phase !== 'type' || submitted[1] || !started) return
     const { speed, accuracy } = BOT_DIFFICULTY[difficulty]
     const delay = speed * (0.5 + Math.random() * 0.8)
     botRef.current = setTimeout(() => {
@@ -184,7 +215,7 @@ function Game({ botEnabled, difficulty }) {
       if (correct) setScores(sc => { const n = [...sc]; n[1]++; return n })
     }, delay)
     return () => clearTimeout(botRef.current)
-  }, [phase, round, botEnabled])
+  }, [phase, round, botEnabled, started])
 
   const forceFinish = () => {
     setSubmitted([true, true])
@@ -210,6 +241,7 @@ function Game({ botEnabled, difficulty }) {
     setRound(r => r + 1)
     setPhase('write')
     setTimeLeft(WRITE_TIME)
+    setStarted(false)
     setSubmitted([false, false])
     setResults([null, null])
     setType1(''); setType2('')
@@ -242,7 +274,9 @@ function Game({ botEnabled, difficulty }) {
     )
   }
 
-  const timerPct = phase === 'write' ? (timeLeft / WRITE_TIME) * 100 : (timeLeft / TYPE_TIME) * 100
+  const timerPct = phase === 'write'
+    ? (timeLeft / WRITE_TIME) * 100
+    : (timeLeft / TYPE_TIME) * 100
   const timerColor = timeLeft > 15 ? '#10B981' : timeLeft > 5 ? '#F59E0B' : '#EF4444'
 
   return (
@@ -269,10 +303,25 @@ function Game({ botEnabled, difficulty }) {
         </div>
       </div>
 
-      <div className="round-label">Round {round + 1} of {identities.length} — {phase === 'write' ? '✏️ Writing' : '⌨️ Typing'} ({Math.ceil(timeLeft)}s)</div>
+      <div className="round-label">
+        Round {round + 1} of {identities.length} — {phase === 'write' ? '✏️ Writing' : '⌨️ Typing'} ({Math.ceil(timeLeft)}s)
+      </div>
 
-      <div style={{ margin: '0 40px 8px', height: 8, background: '#F3F4F6', borderRadius: 4, overflow: 'hidden' }}>
-        <div style={{ height: 8, borderRadius: 4, width: timerPct + '%', background: timerColor, transition: 'width 0.1s linear' }} />
+      {/* Timer bar + Start/Pause button */}
+      <div style={{ margin: '0 40px 8px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ flex: 1, height: 8, background: '#F3F4F6', borderRadius: 4, overflow: 'hidden' }}>
+          <div style={{ height: 8, borderRadius: 4, width: timerPct + '%', background: timerColor, transition: 'width 0.1s linear' }} />
+        </div>
+        {!started && phase !== 'done' && (
+          <button className="tow2-start-btn" style={{ padding: '6px 18px', fontSize: 13 }} onClick={() => setStarted(true)}>
+            ▶ Start
+          </button>
+        )}
+        {started && (
+          <button className="tow2-pause-btn" style={{ padding: '6px 18px', fontSize: 13 }} onClick={() => setStarted(false)}>
+            ⏸ Pause
+          </button>
+        )}
       </div>
 
       <div className="formula-display">{id.q}</div>
@@ -288,10 +337,14 @@ function Game({ botEnabled, difficulty }) {
           <DrawCanvas locked={phase !== 'write'} />
           {phase === 'type' && (
             <div className="phase2-box">
-              <input className="type-input" value={type1}
+              <input
+                className="type-input"
+                value={type1}
                 onChange={e => setType1(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Tab') { e.preventDefault(); submitAnswer(0) } }}
                 disabled={submitted[0]}
-                placeholder="Type your answer..." />
+                placeholder="Type your answer..."
+              />
               <button className="submit-btn" onClick={() => submitAnswer(0)} disabled={submitted[0]}>Submit</button>
             </div>
           )}
@@ -313,8 +366,11 @@ function Game({ botEnabled, difficulty }) {
             <div style={{ padding: '20px', textAlign: 'center' }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>🤖</div>
               {phase === 'write' && <p style={{ color: '#6B7280', fontSize: 14 }}>BOT is writing...</p>}
-              {phase === 'type' && !submitted[1] && (
+              {phase === 'type' && !submitted[1] && started && (
                 <div className="tow2-bot-dots"><span /><span /><span /></div>
+              )}
+              {phase === 'type' && !started && (
+                <p style={{ color: '#9CA3AF', fontSize: 13 }}>BOT waiting for timer to start...</p>
               )}
               {submitted[1] && results[1] && (
                 <div className={`result-banner ${results[1] === 'correct' ? 'rb-ok' : 'rb-bad'}`}>
@@ -327,10 +383,14 @@ function Game({ botEnabled, difficulty }) {
               <DrawCanvas locked={phase !== 'write'} />
               {phase === 'type' && (
                 <div className="phase2-box">
-                  <input className="type-input" value={type2}
+                  <input
+                    className="type-input"
+                    value={type2}
                     onChange={e => setType2(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); submitAnswer(1) } }}
                     disabled={submitted[1]}
-                    placeholder="Type your answer..." />
+                    placeholder="Type your answer..."
+                  />
                   <button className="submit-btn" onClick={() => submitAnswer(1)} disabled={submitted[1]}>Submit</button>
                 </div>
               )}
