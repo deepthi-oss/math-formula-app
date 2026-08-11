@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
-export default function Home() {
+export default function Home({ user }) {
   const navigate = useNavigate()
 
   return (
@@ -13,7 +13,9 @@ export default function Home() {
       </div>
 
       <div className="home-content">
-        <div className="home-top-badge">✨ Made for students, by teachers</div>
+        <div className="home-top-badge">
+          {user?.role === 'teacher' ? '👩‍🏫 Welcome back, Teacher!' : `👋 Hello, ${user?.name || 'Student'}!`}
+        </div>
         <h1 className="home-title">
           Learn Math<br />
           <span className="home-title-accent">The Fun Way!</span>
@@ -28,10 +30,10 @@ export default function Home() {
             <span className="feat-label">Formula Explorer</span>
           </div>
           <div className="home-feat-card feat-blue" onClick={() => navigate('/challenge')}>
-            <span className="feat-icon">🏆</span>
+            <span className="feat-icon">⚡</span>
             <span className="feat-label">Identity Challenge</span>
           </div>
-          <div className="home-feat-card feat-green" onClick={() => navigate('/explore')}>
+          <div className="home-feat-card feat-green" onClick={() => navigate('/myth')}>
             <span className="feat-icon">🎯</span>
             <span className="feat-label">Myth Math Challenge</span>
           </div>
@@ -40,10 +42,6 @@ export default function Home() {
             <span className="feat-label">Tug of War</span>
           </div>
         </div>
-
-        <button className="home-btn" onClick={() => navigate('/explore')}>
-          Let's Go! 🚀
-        </button>
       </div>
     </div>
   )
