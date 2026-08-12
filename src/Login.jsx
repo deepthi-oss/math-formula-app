@@ -34,7 +34,7 @@ export default function Login({ onLogin }) {
   }
 
   return (
-    <div className="login-grid-page">
+    <div className="login-page">
       <div className="login-grid-header">
         <span className="login-grid-logo">📐 MATH FORMULA APP</span>
         <span className="login-grid-tag">// sandbox environment — select your role to continue</span>
