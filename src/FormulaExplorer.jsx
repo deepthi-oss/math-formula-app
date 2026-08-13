@@ -89,20 +89,44 @@ export default function FormulaExplorer() {
                   <p className="empty-sub">Formulas for this grade will appear here once added.</p>
                 </div>
               ) : (
-                <ul className="formula-items">
-                  {list.map((f, i) => (
-                    <li key={i} className="formula-item">
-                      <span className="formula-num" style={{ background: activeSector?.bg, color: activeSector?.color }}>
-                        {i + 1}
-                      </span>
-                      <span className="formula-text">
-                        {typeof f === 'object'
-                          ? `${f.name} — sides: ${f.sides}, corners: ${f.corners}, angles: ${f.angles} (${f.note})`
-                          : f}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="formula-concepts">
+  {list.map((item, i) => {
+    if (item.concept) {
+      return (
+        <div key={i} className="formula-concept-group">
+          <div className="formula-concept-heading">
+            <span className="formula-concept-icon">{activeSector?.icon}</span>
+            {item.concept}
+          </div>
+          <ul className="formula-items">
+            {item.items.map((f, j) => (
+              <li key={j} className="formula-item">
+                <span className="formula-num" style={{ background: activeSector?.bg, color: activeSector?.color }}>
+                  {j + 1}
+                </span>
+                <span className="formula-text">{f}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+    return (
+      <ul key={i} className="formula-items">
+        <li className="formula-item">
+          <span className="formula-num" style={{ background: activeSector?.bg, color: activeSector?.color }}>
+            {i + 1}
+          </span>
+          <span className="formula-text">
+            {typeof item === 'object'
+              ? `${item.name} — sides: ${item.sides}, corners: ${item.corners}, angles: ${item.angles} (${item.note})`
+              : item}
+          </span>
+        </li>
+      </ul>
+    )
+  })}
+</div>
               )}
             </div>
           </div>

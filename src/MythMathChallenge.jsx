@@ -241,7 +241,8 @@ function Game({ botEnabled, difficulty }) {
   ])
   const [newName, setNewName] = useState('')
 
-  const list = formulaData[sector]?.[grade] || []
+  const rawList = formulaData[sector]?.[grade] || []
+  const list = rawList.flatMap(item => item.concept ? item.items.map(q => ({ name: q.split('?')[0].replace('What is ', '').trim() + '?', question: q, answer: q.split('= ')[1] })) : [item])
 
   useEffect(() => {
     if (!timerActive) return

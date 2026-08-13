@@ -510,3 +510,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
   .login-title { font-size: 26px; }
   .nav-user-name { display: none; }
 }
+.formula-concepts { display: flex; flex-direction: column; gap: 24px; }
+.formula-concept-group { border: 2px solid #E8EDFF; border-radius: 14px; overflow: hidden; }
+.formula-concept-heading { display: flex; align-items: center; gap: 10px; padding: 14px 20px; font-size: 16px; font-weight: 800; color: #1a1a2e; background: linear-gradient(135deg, #EEF2FF, #E0E7FF); border-bottom: 2px solid #E8EDFF; }
+.formula-concept-icon { font-size: 20px; }
