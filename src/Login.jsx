@@ -35,64 +35,56 @@ export default function Login({ onLogin }) {
 
   return (
     <div className="login-page">
-      <div className="login-grid-header">
-        <span className="login-grid-logo">📐 MATH FORMULA APP</span>
-        <span className="login-grid-tag">// sandbox environment — select your role to continue</span>
+      <div className="login-bg-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+        <div className="shape shape-3"></div>
+        <div className="shape shape-4"></div>
       </div>
 
-      <div className="login-grid-content">
-        <div className="login-grid-card">
-          <div className="login-grid-card-label">TEACHER LOGIN <span className="login-ref">FORM-01</span></div>
-          <div className="login-grid-card-body">
-            <div className="login-grid-field-label">ROLE</div>
-            <div className="login-grid-role-display">👩‍🏫 Teacher — Full Access</div>
-            <div className="login-grid-field-label" style={{ marginTop: 16 }}>AUTHENTICATION</div>
-            <div className="login-grid-role-display" style={{ color: '#6B7280', fontSize: 13 }}>Google Account Required</div>
+      <div className="login-content">
+        <div className="login-logo">📐</div>
+        <h1 className="login-title">Math Formula App</h1>
+        <p className="login-sub">Who are you today?</p>
+
+        <div className="login-cards">
+          {/* Teacher Card */}
+          <div className="login-card login-card-teacher">
+            <div className="login-card-icon">👩‍🏫</div>
+            <h2 className="login-card-title">I'm a Teacher</h2>
+            <p className="login-card-desc">Access formula editor, control games, and manage student activities</p>
             <button
-              className="login-grid-btn login-grid-btn-teacher"
+              className="login-btn login-btn-teacher"
               onClick={handleTeacherLogin}
               disabled={loading}
             >
-              {loading ? 'SIGNING IN...' : '🔐 SIGN IN WITH GOOGLE'}
+              {loading ? 'Signing in...' : '🔐 Sign in with Google'}
             </button>
           </div>
-        </div>
 
-        <div className="login-grid-card">
-          <div className="login-grid-card-label">STUDENT LOGIN <span className="login-ref">FORM-02</span></div>
-          <div className="login-grid-card-body">
-            <div className="login-grid-field-label">NAME</div>
+          {/* Student Card */}
+          <div className="login-card login-card-student">
+            <div className="login-card-icon">🧑‍🎓</div>
+            <h2 className="login-card-title">I'm a Student</h2>
+            <p className="login-card-desc">Explore formulas, play games, and challenge your friends!</p>
             <input
-              className="login-grid-input"
-              placeholder="e.g. Arjun, Priya..."
+              className="login-student-input"
+              placeholder="Enter your name..."
               value={studentName}
               onChange={e => setStudentName(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleStudentLogin()}
             />
-            <div className="login-grid-field-label" style={{ marginTop: 12 }}>ACCESS LEVEL</div>
-            <div className="login-grid-role-display" style={{ color: '#6B7280', fontSize: 13 }}>Full access to all games & formulas</div>
             <button
-              className="login-grid-btn login-grid-btn-student"
+              className="login-btn login-btn-student"
               onClick={handleStudentLogin}
             >
-              🚀 LET'S GO
+              🚀 Let's Go!
             </button>
           </div>
         </div>
-      </div>
 
-      <div className="login-grid-test-cases">
-        <div className="login-grid-tc-label">ACCESS LEVELS <span className="login-ref">REF-01</span></div>
-        <div className="login-grid-tc-list">
-          <div className="login-grid-tc-item">01 &nbsp; Teacher login — Google account required, full edit access</div>
-          <div className="login-grid-tc-item">02 &nbsp; Student login — name only, access to all games and formulas</div>
-          <div className="login-grid-tc-item">03 &nbsp; Teacher can add and edit formulas across all grades</div>
-          <div className="login-grid-tc-item">04 &nbsp; Student can play Identity Challenge, Tug of War, Myth Math</div>
-          <div className="login-grid-tc-item">05 &nbsp; Both roles can explore Formula Explorer by sector and grade</div>
-        </div>
+        {error && <p className="login-error">{error}</p>}
       </div>
-
-      {error && <div className="login-grid-error">{error}</div>}
     </div>
   )
 }
