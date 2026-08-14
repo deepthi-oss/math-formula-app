@@ -9,6 +9,35 @@ const sectors = [
   { name: 'Myth Math Challenge', icon: '🏆', color: '#EC4899', bg: '#FDF2F8', border: '#FBCFE8' },
 ]
 
+function ConceptGroup({ concept, items, icon, bg, color }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="formula-concept-group">
+      <div
+        className="formula-concept-heading"
+        onClick={() => setOpen(o => !o)}
+        style={{ cursor: 'pointer', userSelect: 'none' }}
+      >
+        <span className="formula-concept-icon">{icon}</span>
+        <span style={{ flex: 1 }}>{concept}</span>
+        <span className="formula-concept-count">{items.length} formulas</span>
+        <span className="formula-concept-arrow">{open ? '▼' : '▶'}</span>
+      </div>
+      {open && (
+        <ul className="formula-items" style={{ padding: '16px 20px' }}>
+          {items.map((f, j) => (
+            <li key={j} className="formula-item">
+              <span className="formula-num" style={{ background: bg, color }}>
+                {j + 1}
+              </span>
+              <span className="formula-text">{f}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
 export default function FormulaExplorer() {
   const [sector, setSector] = useState('Algebra')
   const [grade, setGrade] = useState(gradeRanges['Algebra'][0])
@@ -92,25 +121,17 @@ export default function FormulaExplorer() {
                 <div className="formula-concepts">
   {list.map((item, i) => {
     if (item.concept) {
-      return (
-        <div key={i} className="formula-concept-group">
-          <div className="formula-concept-heading">
-            <span className="formula-concept-icon">{activeSector?.icon}</span>
-            {item.concept}
-          </div>
-          <ul className="formula-items">
-            {item.items.map((f, j) => (
-              <li key={j} className="formula-item">
-                <span className="formula-num" style={{ background: activeSector?.bg, color: activeSector?.color }}>
-                  {j + 1}
-                </span>
-                <span className="formula-text">{f}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )
-    }
+  return (
+    <ConceptGroup
+      key={i}
+      concept={item.concept}
+      items={item.items}
+      icon={activeSector?.icon}
+      bg={activeSector?.bg}
+      color={activeSector?.color}
+    />
+  )
+}
     return (
       <ul key={i} className="formula-items">
         <li className="formula-item">
