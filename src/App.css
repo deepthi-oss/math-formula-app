@@ -516,3 +516,8 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .formula-concept-icon { font-size: 20px; }
 .formula-concept-count { font-size: 12px; font-weight: 600; color: #9CA3AF; margin-right: 10px; }
 .formula-concept-arrow { font-size: 12px; color: #6B7280; transition: transform 0.2s; }
+.myth-answer-row { display: flex; gap: 8px; margin-top: 12px; }
+.myth-answer-input { flex: 1; padding: 10px 12px; font-family: monospace; font-size: 15px; border: 2px solid #E8EDFF; border-radius: 8px; background: #fff; color: #1a1a2e; }
+.myth-answer-input:focus { outline: none; border-color: #6366F1; }
+.myth-answer-correct { border-color: #10B981 !important; background: #ECFDF5 !important; }
+.myth-answer-wrong { border-color: #EF4444 !important; background: #FEF2F2 !important; }

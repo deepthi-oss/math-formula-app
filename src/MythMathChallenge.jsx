@@ -9,7 +9,6 @@ const BOT_DIFFICULTY = {
   Hard: { speed: 3000, accuracy: 0.95 },
 }
 
-// ── Setup Screen ──────────────────────────────────────
 function SetupScreen({ onStart }) {
   const [mode, setMode] = useState('2team')
   const [difficulty, setDifficulty] = useState('Medium')
@@ -19,55 +18,138 @@ function SetupScreen({ onStart }) {
       <div className="tow2-setup-card">
         <div className="tow2-setup-icon">🎯</div>
         <h2 className="tow2-setup-title">Myth Math Challenge</h2>
-        <p className="tow2-setup-sub">Write the properties of shapes — compete or practice with BOT!</p>
-
+        <p className="tow2-setup-sub">Write the answer — compete or practice with BOT!</p>
         <div className="tow2-setup-section">
           <label className="tow2-setup-label">Game Mode</label>
           <div className="tow2-mode-btns">
-            <button className={`tow2-mode-btn ${mode === '2team' ? 'active' : ''}`} onClick={() => setMode('2team')}>
-              👥 2 Teams
-            </button>
-            <button className={`tow2-mode-btn ${mode === 'bot' ? 'active' : ''}`} onClick={() => setMode('bot')}>
-              🤖 vs BOT
-            </button>
+            <button className={`tow2-mode-btn ${mode === '2team' ? 'active' : ''}`} onClick={() => setMode('2team')}>👥 2 Teams</button>
+            <button className={`tow2-mode-btn ${mode === 'bot' ? 'active' : ''}`} onClick={() => setMode('bot')}>🤖 vs BOT</button>
           </div>
         </div>
-
         {mode === 'bot' && (
           <div className="tow2-setup-section">
             <label className="tow2-setup-label">BOT Difficulty</label>
             <div className="tow2-diff-btns">
               {['Easy', 'Medium', 'Hard'].map(d => (
-                <button
-                  key={d}
-                  className={`tow2-diff-btn tow2-diff-${d.toLowerCase()} ${difficulty === d ? 'active' : ''}`}
-                  onClick={() => setDifficulty(d)}
-                >
+                <button key={d} className={`tow2-diff-btn tow2-diff-${d.toLowerCase()} ${difficulty === d ? 'active' : ''}`} onClick={() => setDifficulty(d)}>
                   {d === 'Easy' ? '🐢 Easy' : d === 'Medium' ? '🦊 Medium' : '🚀 Hard'}
                 </button>
               ))}
             </div>
           </div>
         )}
-
-        <button className="tow2-setup-start" onClick={() => onStart(mode === 'bot', difficulty)}>
-          Let's Play! 🎮
-        </button>
+        <button className="tow2-setup-start" onClick={() => onStart(mode === 'bot', difficulty)}>Let's Play! 🎮</button>
       </div>
     </div>
   )
 }
 
+// ── Answer Fields based on sector ─────────────────────
+function AnswerFields({ sector, question, onCorrect, onWrong }) {
+  const [answer, setAnswer] = useState('')
+  const [result, setResult] = useState(null)
+
+  useEffect(() => {
+    setAnswer('')
+    setResult(null)
+  }, [question])
+
+  // Geometry fields
+  const [geoAnswers, setGeoAnswers] = useState({ sides: '', corners: '', angles: '' })
+  const [geoResults, setGeoResults] = useState({ sides: null, corners: null, angles: null })
+
+  useEffect(() => {
+    setGeoAnswers({ sides: '', corners: '', angles: '' })
+    setGeoResults({ sides: null, corners: null, angles: null })
+  }, [question])
+
+  const checkText = () => {
+    if (!question || !answer.trim()) return
+    const correct = answer.trim() === question.answer?.trim()
+    setResult(correct ? 'correct' : 'wrong')
+    if (correct) onCorrect()
+    else onWrong()
+  }
+
+  const checkGeo = () => {
+    if (!question) return
+    const sidesOk = geoAnswers.sides.trim() === question.sides
+    const cornersOk = geoAnswers.corners.trim() === question.corners
+    const anglesOk = geoAnswers.angles.trim() === question.angles
+    setGeoResults({
+      sides: sidesOk ? 'correct' : 'wrong',
+      corners: cornersOk ? 'correct' : 'wrong',
+      angles: anglesOk ? 'correct' : 'wrong',
+    })
+    if (sidesOk && cornersOk && anglesOk) onCorrect()
+    else onWrong()
+  }
+
+  if (sector === 'Geometry') {
+    const allCorrect = geoResults.sides === 'correct' && geoResults.corners === 'correct' && geoResults.angles === 'correct'
+    const anyWrong = geoResults.sides === 'wrong' || geoResults.corners === 'wrong' || geoResults.angles === 'wrong'
+    return (
+      <>
+        <div className="geometry-fields">
+          <div className="geo-field">
+            <label>Sides:</label>
+            <input type="text" value={geoAnswers.sides}
+              onChange={e => { setGeoAnswers({ ...geoAnswers, sides: e.target.value }); setGeoResults(r => ({ ...r, sides: null })) }}
+              className={`geo-input ${geoResults.sides ? 'geo-' + geoResults.sides : ''}`} placeholder="?" />
+          </div>
+          <div className="geo-field">
+            <label>Corners:</label>
+            <input type="text" value={geoAnswers.corners}
+              onChange={e => { setGeoAnswers({ ...geoAnswers, corners: e.target.value }); setGeoResults(r => ({ ...r, corners: null })) }}
+              className={`geo-input ${geoResults.corners ? 'geo-' + geoResults.corners : ''}`} placeholder="?" />
+          </div>
+          <div className="geo-field">
+            <label>Angles:</label>
+            <input type="text" value={geoAnswers.angles}
+              onChange={e => { setGeoAnswers({ ...geoAnswers, angles: e.target.value }); setGeoResults(r => ({ ...r, angles: null })) }}
+              className={`geo-input ${geoResults.angles ? 'geo-' + geoResults.angles : ''}`} placeholder="?" />
+          </div>
+          <button className="check-btn" onClick={checkGeo}>Check</button>
+        </div>
+        <div className="thumbs-row">
+          <div className={`thumb ${geoResults.sides && allCorrect ? 'active' : ''}`}>👍</div>
+          <div className={`thumb ${geoResults.sides && anyWrong ? 'active' : ''}`}>👎</div>
+        </div>
+      </>
+    )
+  }
+
+  // Arithmetic / Algebra — simple answer box
+  return (
+    <>
+      <div className="myth-answer-row">
+        <input
+          type="text"
+          className={`myth-answer-input ${result ? 'myth-answer-' + result : ''}`}
+          placeholder="Type your answer..."
+          value={answer}
+          onChange={e => { setAnswer(e.target.value); setResult(null) }}
+          onKeyDown={e => { if (e.key === 'Enter') checkText() }}
+        />
+        <button className="check-btn" onClick={checkText}>Check</button>
+      </div>
+      <div className="thumbs-row">
+        <div className={`thumb ${result === 'correct' ? 'active' : ''}`}>👍</div>
+        <div className={`thumb ${result === 'wrong' ? 'active' : ''}`}>👎</div>
+      </div>
+    </>
+  )
+}
+
 // ── Whiteboard ────────────────────────────────────────
-function Whiteboard({ team, question, onScoreChange, onCorrect, isBot, botDifficulty }) {
+function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, botDifficulty }) {
   const canvasRef = useRef(null)
   const ctxRef = useRef(null)
   const drawingRef = useRef(false)
   const [color, setColor] = useState('#1a1a1a')
   const [penSize, setPenSize] = useState(3)
-  const [answers, setAnswers] = useState({ sides: '', corners: '', angles: '' })
-  const [results, setResults] = useState({ sides: null, corners: null, angles: null })
   const [botAnswered, setBotAnswered] = useState(false)
+  const [botResult, setBotResult] = useState(null)
   const botRef = useRef(null)
 
   useEffect(() => {
@@ -81,13 +163,11 @@ function Whiteboard({ team, question, onScoreChange, onCorrect, isBot, botDiffic
   }, [])
 
   useEffect(() => {
-    setAnswers({ sides: '', corners: '', angles: '' })
-    setResults({ sides: null, corners: null, angles: null })
     setBotAnswered(false)
+    setBotResult(null)
     clearTimeout(botRef.current)
   }, [question])
 
-  // BOT auto-answer
   useEffect(() => {
     if (!isBot || !question || botAnswered) return
     const { speed, accuracy } = BOT_DIFFICULTY[botDifficulty]
@@ -95,13 +175,8 @@ function Whiteboard({ team, question, onScoreChange, onCorrect, isBot, botDiffic
     botRef.current = setTimeout(() => {
       const correct = Math.random() < accuracy
       setBotAnswered(true)
-      if (correct) {
-        setResults({ sides: 'correct', corners: 'correct', angles: 'correct' })
-        onScoreChange(1)
-        onCorrect()
-      } else {
-        setResults({ sides: 'wrong', corners: 'wrong', angles: 'wrong' })
-      }
+      setBotResult(correct ? 'correct' : 'wrong')
+      if (correct) { onScoreChange(1); onCorrect() }
     }, delay)
     return () => clearTimeout(botRef.current)
   }, [question, isBot, botAnswered])
@@ -118,49 +193,24 @@ function Whiteboard({ team, question, onScoreChange, onCorrect, isBot, botDiffic
   const start = (e) => { if (isBot) return; e.preventDefault(); drawingRef.current = true; const pos = getPos(e); ctxRef.current.beginPath(); ctxRef.current.moveTo(pos.x, pos.y) }
   const move = (e) => { if (!drawingRef.current || isBot) return; e.preventDefault(); const pos = getPos(e); ctxRef.current.lineWidth = penSize; ctxRef.current.strokeStyle = color; ctxRef.current.lineTo(pos.x, pos.y); ctxRef.current.stroke() }
   const end = () => { drawingRef.current = false }
-
   const clear = () => {
     if (isBot) return
     const canvas = canvasRef.current
     ctxRef.current.fillStyle = '#ffffff'
     ctxRef.current.fillRect(0, 0, canvas.width, canvas.height)
-    setAnswers({ sides: '', corners: '', angles: '' })
-    setResults({ sides: null, corners: null, angles: null })
   }
-
-  const checkAnswers = () => {
-    if (!question) return
-    const sidesOk = answers.sides.trim() === question.sides
-    const cornersOk = answers.corners.trim() === question.corners
-    const anglesOk = answers.angles.trim() === question.angles
-    setResults({
-      sides: sidesOk ? 'correct' : 'wrong',
-      corners: cornersOk ? 'correct' : 'wrong',
-      angles: anglesOk ? 'correct' : 'wrong',
-    })
-    if (sidesOk && cornersOk && anglesOk) {
-      onScoreChange(1)
-      setTimeout(() => onCorrect(), 0)
-    }
-  }
-
-  const allCorrect = results.sides === 'correct' && results.corners === 'correct' && results.angles === 'correct'
-  const anyWrong = results.sides === 'wrong' || results.corners === 'wrong' || results.angles === 'wrong'
-  const checked = results.sides !== null
 
   return (
     <div className="whiteboard-panel">
       <h3>{isBot ? '🤖 BOT' : team.name}</h3>
 
       {isBot ? (
-        <div style={{ background: '#F8FAFF', border: '2px solid #E8EDFF', borderRadius: 12, height: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-          <div style={{ fontSize: 48 }}>🤖</div>
-          {question && !botAnswered && (
-            <div className="tow2-bot-dots"><span /><span /><span /></div>
-          )}
+        <div style={{ background: '#F8FAFF', border: '2px solid #E8EDFF', borderRadius: 12, height: 160, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+          <div style={{ fontSize: 40 }}>🤖</div>
+          {question && !botAnswered && <div className="tow2-bot-dots"><span /><span /><span /></div>}
           {botAnswered && (
-            <p style={{ fontSize: 13, fontWeight: 700, color: allCorrect ? '#059669' : '#DC2626' }}>
-              {allCorrect ? '✅ BOT answered correctly!' : '❌ BOT got it wrong!'}
+            <p style={{ fontSize: 13, fontWeight: 700, color: botResult === 'correct' ? '#059669' : '#DC2626' }}>
+              {botResult === 'correct' ? '✅ BOT answered correctly!' : '❌ BOT got it wrong!'}
             </p>
           )}
           {!question && <p style={{ color: '#9CA3AF', fontSize: 13 }}>Waiting for question...</p>}
@@ -168,7 +218,7 @@ function Whiteboard({ team, question, onScoreChange, onCorrect, isBot, botDiffic
       ) : (
         <>
           <div className="canvas-wrap">
-            <canvas ref={canvasRef} width={380} height={200} className="draw-canvas-big"
+            <canvas ref={canvasRef} width={380} height={160} className="draw-canvas-big"
               onMouseDown={start} onMouseMove={move} onMouseUp={end} onMouseLeave={end}
               onTouchStart={start} onTouchMove={move} onTouchEnd={end} />
           </div>
@@ -183,41 +233,13 @@ function Whiteboard({ team, question, onScoreChange, onCorrect, isBot, botDiffic
       )}
 
       {question && !isBot && (
-        <div className="geometry-fields">
-          <div className="geo-field">
-            <label>Sides:</label>
-            <input type="text" value={answers.sides}
-              onChange={e => { setAnswers({ ...answers, sides: e.target.value }); setResults(r => ({ ...r, sides: null })) }}
-              className={`geo-input ${results.sides ? 'geo-' + results.sides : ''}`} placeholder="?" />
-          </div>
-          <div className="geo-field">
-            <label>Corners:</label>
-            <input type="text" value={answers.corners}
-              onChange={e => { setAnswers({ ...answers, corners: e.target.value }); setResults(r => ({ ...r, corners: null })) }}
-              className={`geo-input ${results.corners ? 'geo-' + results.corners : ''}`} placeholder="?" />
-          </div>
-          <div className="geo-field">
-            <label>Angles:</label>
-            <input type="text" value={answers.angles}
-              onChange={e => { setAnswers({ ...answers, angles: e.target.value }); setResults(r => ({ ...r, angles: null })) }}
-              className={`geo-input ${results.angles ? 'geo-' + results.angles : ''}`} placeholder="?" />
-          </div>
-          <button className="check-btn" onClick={checkAnswers}>Check</button>
-        </div>
+        <AnswerFields
+          sector={sector}
+          question={question}
+          onCorrect={() => { onScoreChange(1); onCorrect() }}
+          onWrong={() => {}}
+        />
       )}
-
-      {question && isBot && checked && (
-        <div className="geometry-fields" style={{ opacity: 0.6 }}>
-          <div className="geo-field"><label>Sides:</label><input className={`geo-input geo-${results.sides}`} value={allCorrect ? question.sides : '?'} readOnly /></div>
-          <div className="geo-field"><label>Corners:</label><input className={`geo-input geo-${results.corners}`} value={allCorrect ? question.corners : '?'} readOnly /></div>
-          <div className="geo-field"><label>Angles:</label><input className={`geo-input geo-${results.angles}`} value={allCorrect ? question.angles : '?'} readOnly /></div>
-        </div>
-      )}
-
-      <div className="thumbs-row">
-        <div className={`thumb ${checked && allCorrect ? 'active' : ''}`}>👍</div>
-        <div className={`thumb ${checked && anyWrong ? 'active' : ''}`}>👎</div>
-      </div>
 
       <div className="team-score-bar">
         <button className="score-btn minus" onClick={() => onScoreChange(-1)}>−</button>
@@ -230,8 +252,8 @@ function Whiteboard({ team, question, onScoreChange, onCorrect, isBot, botDiffic
 
 // ── Main Game ─────────────────────────────────────────
 function Game({ botEnabled, difficulty }) {
-  const [sector, setSector] = useState('Geometry')
-  const [grade, setGrade] = useState(gradeRanges['Geometry'][0])
+  const [sector, setSector] = useState('Arithmetic')
+  const [grade, setGrade] = useState(gradeRanges['Arithmetic'][0])
   const [selectedQuestion, setSelectedQuestion] = useState(null)
   const [timeLeft, setTimeLeft] = useState(60)
   const [timerActive, setTimerActive] = useState(false)
@@ -241,8 +263,19 @@ function Game({ botEnabled, difficulty }) {
   ])
   const [newName, setNewName] = useState('')
 
+  // Flatten questions based on sector
   const rawList = formulaData[sector]?.[grade] || []
-  const list = rawList.flatMap(item => item.concept ? item.items.map(q => ({ name: q.split('?')[0].replace('What is ', '').trim() + '?', question: q, answer: q.split('= ')[1] })) : [item])
+  const list = rawList.flatMap(item => {
+    if (item.concept) {
+      return item.items.map(q => ({
+        name: q.split('?')[0].replace('What is ', '').trim() + '?',
+        question: q.split('?')[0].replace('What is ', '').trim() + '?',
+        answer: q.split('= ')[1]?.trim() || '',
+        display: q,
+      }))
+    }
+    return item.name ? [item] : []
+  })
 
   useEffect(() => {
     if (!timerActive) return
@@ -253,7 +286,12 @@ function Game({ botEnabled, difficulty }) {
 
   const handleSector = (s) => { setSector(s); setGrade(gradeRanges[s][0]); setSelectedQuestion(null); setTimeLeft(60); setTimerActive(false) }
   const handleGrade = (g) => { setGrade(g); setSelectedQuestion(null); setTimeLeft(60); setTimerActive(false) }
-  const handleSelectQuestion = (name) => { const found = list.find(f => f.name === name); setSelectedQuestion(found || null); setTimeLeft(60); setTimerActive(true) }
+  const handleSelectQuestion = (name) => {
+    const found = list.find(f => (f.name || f.question) === name)
+    setSelectedQuestion(found || null)
+    setTimeLeft(60)
+    setTimerActive(true)
+  }
   const addTeam = () => { if (botEnabled) return; const name = newName.trim() || `Team ${teams.length + 1}`; setTeams([...teams, { name, score: 0 }]); setNewName('') }
   const removeTeam = (i) => setTeams(teams.filter((_, idx) => idx !== i))
   const updateScore = (i, delta) => setTeams(teams.map((t, idx) => idx === i ? { ...t, score: Math.max(0, t.score + delta) } : t))
@@ -280,8 +318,7 @@ function Game({ botEnabled, difficulty }) {
       {!botEnabled && (
         <div className="add-team-row">
           <input className="team-name-input" placeholder="Enter team name..." value={newName}
-            onChange={e => setNewName(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && addTeam()} />
+            onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTeam()} />
           <button className="add-team-btn" onClick={addTeam}>+ Add Team</button>
           <button className="reset-btn" onClick={resetScores}>Reset Scores</button>
         </div>
@@ -298,16 +335,22 @@ function Game({ botEnabled, difficulty }) {
 
       <div className="question-picker">
         <label>Pick the active question: </label>
-        <select value={selectedQuestion ? selectedQuestion.name : ''} onChange={e => handleSelectQuestion(e.target.value)}>
-          <option value="">-- Select a shape --</option>
-          {list.map((f, i) => <option key={i} value={f.name}>{f.name}</option>)}
+        <select value={selectedQuestion ? (selectedQuestion.name || selectedQuestion.question) : ''}
+          onChange={e => handleSelectQuestion(e.target.value)}>
+          <option value="">-- Select a question --</option>
+          {list.map((f, i) => (
+            <option key={i} value={f.name || f.question}>{f.name || f.question}</option>
+          ))}
         </select>
       </div>
 
       {selectedQuestion && (
         <>
           <div className="active-question">
-            What are the properties of: <strong>{selectedQuestion.name}</strong>?
+            {sector === 'Geometry'
+              ? <>What are the properties of: <strong>{selectedQuestion.name}</strong>?</>
+              : <><strong>{selectedQuestion.display || selectedQuestion.question}</strong></>
+            }
           </div>
           <div className="timer-row">
             <div className="timer-circle" style={{ borderColor: timerColor, color: timerColor }}>
@@ -340,6 +383,7 @@ function Game({ botEnabled, difficulty }) {
               <Whiteboard
                 team={team}
                 question={selectedQuestion}
+                sector={sector}
                 onScoreChange={(delta) => updateScore(i, delta)}
                 onCorrect={() => setTimerActive(false)}
                 isBot={isBot}
