@@ -44,104 +44,6 @@ function SetupScreen({ onStart }) {
   )
 }
 
-// ── Answer Fields based on sector ─────────────────────
-function AnswerFields({ sector, question, onCorrect, onWrong }) {
-  const [answer, setAnswer] = useState('')
-  const [result, setResult] = useState(null)
-
-  useEffect(() => {
-    setAnswer('')
-    setResult(null)
-  }, [question])
-
-  // Geometry fields
-  const [geoAnswers, setGeoAnswers] = useState({ sides: '', corners: '', angles: '' })
-  const [geoResults, setGeoResults] = useState({ sides: null, corners: null, angles: null })
-
-  useEffect(() => {
-    setGeoAnswers({ sides: '', corners: '', angles: '' })
-    setGeoResults({ sides: null, corners: null, angles: null })
-  }, [question])
-
-  const checkText = () => {
-    if (!question || !answer.trim()) return
-    const correct = answer.trim() === question.answer?.trim()
-    setResult(correct ? 'correct' : 'wrong')
-    if (correct) onCorrect()
-    else onWrong()
-  }
-
-  const checkGeo = () => {
-    if (!question) return
-    const sidesOk = geoAnswers.sides.trim() === question.sides
-    const cornersOk = geoAnswers.corners.trim() === question.corners
-    const anglesOk = geoAnswers.angles.trim() === question.angles
-    setGeoResults({
-      sides: sidesOk ? 'correct' : 'wrong',
-      corners: cornersOk ? 'correct' : 'wrong',
-      angles: anglesOk ? 'correct' : 'wrong',
-    })
-    if (sidesOk && cornersOk && anglesOk) onCorrect()
-    else onWrong()
-  }
-
-  if (sector === 'Geometry') {
-    const allCorrect = geoResults.sides === 'correct' && geoResults.corners === 'correct' && geoResults.angles === 'correct'
-    const anyWrong = geoResults.sides === 'wrong' || geoResults.corners === 'wrong' || geoResults.angles === 'wrong'
-    return (
-      <>
-        <div className="geometry-fields">
-          <div className="geo-field">
-            <label>Sides:</label>
-            <input type="text" value={geoAnswers.sides}
-              onChange={e => { setGeoAnswers({ ...geoAnswers, sides: e.target.value }); setGeoResults(r => ({ ...r, sides: null })) }}
-              className={`geo-input ${geoResults.sides ? 'geo-' + geoResults.sides : ''}`} placeholder="?" />
-          </div>
-          <div className="geo-field">
-            <label>Corners:</label>
-            <input type="text" value={geoAnswers.corners}
-              onChange={e => { setGeoAnswers({ ...geoAnswers, corners: e.target.value }); setGeoResults(r => ({ ...r, corners: null })) }}
-              className={`geo-input ${geoResults.corners ? 'geo-' + geoResults.corners : ''}`} placeholder="?" />
-          </div>
-          <div className="geo-field">
-            <label>Angles:</label>
-            <input type="text" value={geoAnswers.angles}
-              onChange={e => { setGeoAnswers({ ...geoAnswers, angles: e.target.value }); setGeoResults(r => ({ ...r, angles: null })) }}
-              className={`geo-input ${geoResults.angles ? 'geo-' + geoResults.angles : ''}`} placeholder="?" />
-          </div>
-          <button className="check-btn" onClick={checkGeo}>Check</button>
-        </div>
-        <div className="thumbs-row">
-          <div className={`thumb ${geoResults.sides && allCorrect ? 'active' : ''}`}>👍</div>
-          <div className={`thumb ${geoResults.sides && anyWrong ? 'active' : ''}`}>👎</div>
-        </div>
-      </>
-    )
-  }
-
-  // Arithmetic / Algebra — simple answer box
-  return (
-    <>
-      <div className="myth-answer-row">
-        <input
-          type="text"
-          className={`myth-answer-input ${result ? 'myth-answer-' + result : ''}`}
-          placeholder="Type your answer..."
-          value={answer}
-          onChange={e => { setAnswer(e.target.value); setResult(null) }}
-          onKeyDown={e => { if (e.key === 'Enter') checkText() }}
-        />
-        <button className="check-btn" onClick={checkText}>Check</button>
-      </div>
-      <div className="thumbs-row">
-        <div className={`thumb ${result === 'correct' ? 'active' : ''}`}>👍</div>
-        <div className={`thumb ${result === 'wrong' ? 'active' : ''}`}>👎</div>
-      </div>
-    </>
-  )
-}
-
-// ── Whiteboard ────────────────────────────────────────
 function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, botDifficulty }) {
   const canvasRef = useRef(null)
   const ctxRef = useRef(null)
@@ -150,10 +52,15 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
   const [penSize, setPenSize] = useState(3)
   const [botAnswered, setBotAnswered] = useState(false)
   const [botResult, setBotResult] = useState(null)
+  const [answer, setAnswer] = useState('')
+  const [result, setResult] = useState(null)
+  const [geoAnswers, setGeoAnswers] = useState({ sides: '', corners: '', angles: '' })
+  const [geoResults, setGeoResults] = useState({ sides: null, corners: null, angles: null })
   const botRef = useRef(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
+    if (!canvas) return
     const ctx = canvas.getContext('2d')
     ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -165,24 +72,32 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
   useEffect(() => {
     setBotAnswered(false)
     setBotResult(null)
+    setAnswer('')
+    setResult(null)
+    setGeoAnswers({ sides: '', corners: '', angles: '' })
+    setGeoResults({ sides: null, corners: null, angles: null })
     clearTimeout(botRef.current)
   }, [question])
 
   useEffect(() => {
     if (!isBot || !question || botAnswered) return
-    const { speed, accuracy } = BOT_DIFFICULTY[botDifficulty]
-    const delay = speed * (0.6 + Math.random() * 0.8)
+    const diff = BOT_DIFFICULTY[botDifficulty] || BOT_DIFFICULTY['Medium']
+    const delay = diff.speed * (0.6 + Math.random() * 0.8)
     botRef.current = setTimeout(() => {
-      const correct = Math.random() < accuracy
+      const correct = Math.random() < diff.accuracy
       setBotAnswered(true)
       setBotResult(correct ? 'correct' : 'wrong')
-      if (correct) { onScoreChange(1); onCorrect() }
+      if (correct) {
+        onScoreChange(1)
+        onCorrect()
+      }
     }, delay)
     return () => clearTimeout(botRef.current)
-  }, [question, isBot, botAnswered])
+  }, [question, isBot, botAnswered, botDifficulty])
 
   const getPos = (e) => {
     const canvas = canvasRef.current
+    if (!canvas) return { x: 0, y: 0 }
     const r = canvas.getBoundingClientRect()
     const sx = canvas.width / r.width
     const sy = canvas.height / r.height
@@ -190,15 +105,42 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
     return { x: (e.clientX - r.left) * sx, y: (e.clientY - r.top) * sy }
   }
 
-  const start = (e) => { if (isBot) return; e.preventDefault(); drawingRef.current = true; const pos = getPos(e); ctxRef.current.beginPath(); ctxRef.current.moveTo(pos.x, pos.y) }
-  const move = (e) => { if (!drawingRef.current || isBot) return; e.preventDefault(); const pos = getPos(e); ctxRef.current.lineWidth = penSize; ctxRef.current.strokeStyle = color; ctxRef.current.lineTo(pos.x, pos.y); ctxRef.current.stroke() }
+  const start = (e) => { if (isBot) return; e.preventDefault(); drawingRef.current = true; const pos = getPos(e); if (ctxRef.current) { ctxRef.current.beginPath(); ctxRef.current.moveTo(pos.x, pos.y) } }
+  const move = (e) => { if (!drawingRef.current || isBot || !ctxRef.current) return; e.preventDefault(); const pos = getPos(e); ctxRef.current.lineWidth = penSize; ctxRef.current.strokeStyle = color; ctxRef.current.lineTo(pos.x, pos.y); ctxRef.current.stroke() }
   const end = () => { drawingRef.current = false }
+
   const clear = () => {
-    if (isBot) return
-    const canvas = canvasRef.current
+    if (isBot || !canvasRef.current || !ctxRef.current) return
     ctxRef.current.fillStyle = '#ffffff'
-    ctxRef.current.fillRect(0, 0, canvas.width, canvas.height)
+    ctxRef.current.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+    setAnswer('')
+    setResult(null)
+    setGeoAnswers({ sides: '', corners: '', angles: '' })
+    setGeoResults({ sides: null, corners: null, angles: null })
   }
+
+  const checkText = () => {
+    if (!question || !answer.trim()) return
+    const correct = answer.trim() === String(question.answer || '').trim()
+    setResult(correct ? 'correct' : 'wrong')
+    if (correct) { onScoreChange(1); onCorrect() }
+  }
+
+  const checkGeo = () => {
+    if (!question) return
+    const sidesOk = geoAnswers.sides.trim() === String(question.sides || '')
+    const cornersOk = geoAnswers.corners.trim() === String(question.corners || '')
+    const anglesOk = geoAnswers.angles.trim() === String(question.angles || '')
+    setGeoResults({
+      sides: sidesOk ? 'correct' : 'wrong',
+      corners: cornersOk ? 'correct' : 'wrong',
+      angles: anglesOk ? 'correct' : 'wrong',
+    })
+    if (sidesOk && cornersOk && anglesOk) { onScoreChange(1); onCorrect() }
+  }
+
+  const allGeoCorrect = geoResults.sides === 'correct' && geoResults.corners === 'correct' && geoResults.angles === 'correct'
+  const anyGeoWrong = geoResults.sides === 'wrong' || geoResults.corners === 'wrong' || geoResults.angles === 'wrong'
 
   return (
     <div className="whiteboard-panel">
@@ -232,13 +174,54 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
         </>
       )}
 
-      {question && !isBot && (
-        <AnswerFields
-          sector={sector}
-          question={question}
-          onCorrect={() => { onScoreChange(1); onCorrect() }}
-          onWrong={() => {}}
-        />
+      {question && !isBot && sector === 'Geometry' && (
+        <>
+          <div className="geometry-fields">
+            <div className="geo-field">
+              <label>Sides:</label>
+              <input type="text" value={geoAnswers.sides}
+                onChange={e => { setGeoAnswers({ ...geoAnswers, sides: e.target.value }); setGeoResults(r => ({ ...r, sides: null })) }}
+                className={`geo-input ${geoResults.sides ? 'geo-' + geoResults.sides : ''}`} placeholder="?" />
+            </div>
+            <div className="geo-field">
+              <label>Corners:</label>
+              <input type="text" value={geoAnswers.corners}
+                onChange={e => { setGeoAnswers({ ...geoAnswers, corners: e.target.value }); setGeoResults(r => ({ ...r, corners: null })) }}
+                className={`geo-input ${geoResults.corners ? 'geo-' + geoResults.corners : ''}`} placeholder="?" />
+            </div>
+            <div className="geo-field">
+              <label>Angles:</label>
+              <input type="text" value={geoAnswers.angles}
+                onChange={e => { setGeoAnswers({ ...geoAnswers, angles: e.target.value }); setGeoResults(r => ({ ...r, angles: null })) }}
+                className={`geo-input ${geoResults.angles ? 'geo-' + geoResults.angles : ''}`} placeholder="?" />
+            </div>
+            <button className="check-btn" onClick={checkGeo}>Check</button>
+          </div>
+          <div className="thumbs-row">
+            <div className={`thumb ${geoResults.sides && allGeoCorrect ? 'active' : ''}`}>👍</div>
+            <div className={`thumb ${geoResults.sides && anyGeoWrong ? 'active' : ''}`}>👎</div>
+          </div>
+        </>
+      )}
+
+      {question && !isBot && sector !== 'Geometry' && (
+        <>
+          <div className="myth-answer-row">
+            <input
+              type="text"
+              className={`myth-answer-input ${result ? 'myth-answer-' + result : ''}`}
+              placeholder="Type your answer..."
+              value={answer}
+              onChange={e => { setAnswer(e.target.value); setResult(null) }}
+              onKeyDown={e => { if (e.key === 'Enter') checkText() }}
+            />
+            <button className="check-btn" onClick={checkText}>Check</button>
+          </div>
+          <div className="thumbs-row">
+            <div className={`thumb ${result === 'correct' ? 'active' : ''}`}>👍</div>
+            <div className={`thumb ${result === 'wrong' ? 'active' : ''}`}>👎</div>
+          </div>
+        </>
       )}
 
       <div className="team-score-bar">
@@ -250,7 +233,6 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
   )
 }
 
-// ── Main Game ─────────────────────────────────────────
 function Game({ botEnabled, difficulty }) {
   const [sector, setSector] = useState('Arithmetic')
   const [grade, setGrade] = useState(gradeRanges['Arithmetic'][0])
@@ -263,21 +245,21 @@ function Game({ botEnabled, difficulty }) {
   ])
   const [newName, setNewName] = useState('')
 
-  // Flatten questions based on sector
-  const rawList = formulaData[sector]?.[grade] || []
-const list = (() => {
+  const getList = () => {
     try {
+      const rawList = formulaData[sector]?.[grade] || []
       return rawList.flatMap(item => {
         if (!item) return []
         if (item.concept && Array.isArray(item.items)) {
           return item.items.map(q => {
-            const parts = String(q).split('= ')
-            const questionPart = String(q).split('?')[0].replace('What is ', '').trim()
+            const str = String(q)
+            const questionPart = str.split('?')[0].replace('What is ', '').trim()
+            const answerPart = str.includes('= ') ? str.split('= ')[1]?.trim() : ''
             return {
               name: questionPart + '?',
               question: questionPart + '?',
-              answer: parts[1]?.trim() || '',
-              display: String(q),
+              answer: answerPart,
+              display: str,
             }
           })
         }
@@ -287,7 +269,9 @@ const list = (() => {
     } catch (e) {
       return []
     }
-  })()
+  }
+
+  const list = getList()
 
   useEffect(() => {
     if (!timerActive) return
@@ -327,16 +311,14 @@ const list = (() => {
         ))}
       </div>
 
-      {!botEnabled && (
+      {!botEnabled ? (
         <div className="add-team-row">
           <input className="team-name-input" placeholder="Enter team name..." value={newName}
             onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTeam()} />
           <button className="add-team-btn" onClick={addTeam}>+ Add Team</button>
           <button className="reset-btn" onClick={resetScores}>Reset Scores</button>
         </div>
-      )}
-
-      {botEnabled && (
+      ) : (
         <div className="add-team-row">
           <div style={{ background: '#EEF2FF', border: '2px solid #C7D2FE', borderRadius: 10, padding: '8px 16px', fontSize: 14, fontWeight: 700, color: '#4F46E5' }}>
             🤖 BOT Mode — {difficulty} difficulty
@@ -347,11 +329,13 @@ const list = (() => {
 
       <div className="question-picker">
         <label>Pick the active question: </label>
-        <select value={selectedQuestion ? (selectedQuestion.name || selectedQuestion.question) : ''}
-          onChange={e => handleSelectQuestion(e.target.value)}>
+        <select
+          value={selectedQuestion ? (selectedQuestion.name || selectedQuestion.question || '') : ''}
+          onChange={e => handleSelectQuestion(e.target.value)}
+        >
           <option value="">-- Select a question --</option>
           {list.map((f, i) => (
-            <option key={i} value={f.name || f.question}>{f.name || f.question}</option>
+            <option key={i} value={f.name || f.question || ''}>{f.name || f.question || ''}</option>
           ))}
         </select>
       </div>
@@ -360,7 +344,7 @@ const list = (() => {
         <>
           <div className="active-question">
             {sector === 'Geometry'
-              ? <>What are the properties of: <strong>{selectedQuestion.name}</strong>?</>
+              ? <><strong>{selectedQuestion.name}</strong> — What are the properties?</>
               : <><strong>{selectedQuestion.display || selectedQuestion.question}</strong></>
             }
           </div>
@@ -399,7 +383,7 @@ const list = (() => {
                 onScoreChange={(delta) => updateScore(i, delta)}
                 onCorrect={() => setTimerActive(false)}
                 isBot={isBot}
-                botDifficulty={difficulty}
+                botDifficulty={difficulty || 'Medium'}
               />
             </div>
           )
@@ -419,5 +403,5 @@ export default function MythMathChallenge() {
   }
 
   if (!config) return <SetupScreen onStart={handleStart} />
-  return <Game key={key} botEnabled={config.bot} difficulty={config.diff} />
+  return <Game key={key} botEnabled={config.bot} difficulty={config.diff || 'Medium'} />
 }
