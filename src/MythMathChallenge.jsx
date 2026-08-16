@@ -265,17 +265,29 @@ function Game({ botEnabled, difficulty }) {
 
   // Flatten questions based on sector
   const rawList = formulaData[sector]?.[grade] || []
-  const list = rawList.flatMap(item => {
-    if (item.concept) {
-      return item.items.map(q => ({
-        name: q.split('?')[0].replace('What is ', '').trim() + '?',
-        question: q.split('?')[0].replace('What is ', '').trim() + '?',
-        answer: q.split('= ')[1]?.trim() || '',
-        display: q,
-      }))
+const list = (() => {
+    try {
+      return rawList.flatMap(item => {
+        if (!item) return []
+        if (item.concept && Array.isArray(item.items)) {
+          return item.items.map(q => {
+            const parts = String(q).split('= ')
+            const questionPart = String(q).split('?')[0].replace('What is ', '').trim()
+            return {
+              name: questionPart + '?',
+              question: questionPart + '?',
+              answer: parts[1]?.trim() || '',
+              display: String(q),
+            }
+          })
+        }
+        if (item.name) return [item]
+        return []
+      })
+    } catch (e) {
+      return []
     }
-    return item.name ? [item] : []
-  })
+  })()
 
   useEffect(() => {
     if (!timerActive) return
