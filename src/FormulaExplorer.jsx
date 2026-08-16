@@ -30,7 +30,7 @@ function ConceptGroup({ concept, items, icon, bg, color }) {
               <span className="formula-num" style={{ background: bg, color }}>
                 {j + 1}
               </span>
-              <span className="formula-text">{f}</span>
+              <span className="formula-text">{String(f).split('=')[0].trim()}</span>
             </li>
           ))}
         </ul>
