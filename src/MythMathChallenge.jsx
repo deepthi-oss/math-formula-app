@@ -1,14 +1,77 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { formulaData, gradeRanges } from './formulaConfig'
 
 const sectors = ['Arithmetic', 'Algebra', 'Geometry']
 
 const BOT_DIFFICULTY = {
-  Easy: { speed: 15000, accuracy: 0.4 },
-  Medium: { speed: 7000, accuracy: 0.7 },
-  Hard: { speed: 3000, accuracy: 0.95 },
+  Easy: { speed: 12000, accuracy: 0.4 },
+  Medium: { speed: 6000, accuracy: 0.7 },
+  Hard: { speed: 2500, accuracy: 0.95 },
 }
 
+// ── AI Question Generator ─────────────────────────────
+async function generateAIQuestion(sector, grade) {
+  const prompt = `Generate 1 math question for a ${grade} student in the topic of ${sector}.
+Rules:
+- Question must be clear and simple
+- Provide the exact answer
+- Format your response as JSON only like this:
+{"question": "What is 15²?", "answer": "225"}
+- For Arithmetic: focus on squares, cubes, basic operations
+- For Algebra: focus on identities and expressions
+- For Geometry: focus on shapes, areas, perimeters
+Only return the JSON, nothing else.`
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 200,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    })
+    const data = await res.json()
+    const text = data.content?.map(c => c.text || '').join('') || ''
+    const clean = text.replace(/```json|```/g, '').trim()
+    return JSON.parse(clean)
+  } catch (e) {
+    return null
+  }
+}
+
+// ── AI Answer Checker ─────────────────────────────────
+async function checkAnswerWithAI(question, studentAnswer, correctAnswer) {
+  const prompt = `Math question: "${question}"
+Correct answer: "${correctAnswer}"
+Student's answer: "${studentAnswer}"
+
+Is the student's answer correct? Consider mathematical equivalence (e.g. "225" and "225.0" are the same).
+Reply with only: {"correct": true} or {"correct": false}`
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 50,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    })
+    const data = await res.json()
+    const text = data.content?.map(c => c.text || '').join('') || ''
+    const clean = text.replace(/```json|```/g, '').trim()
+    const parsed = JSON.parse(clean)
+    return parsed.correct === true
+  } catch (e) {
+    // fallback to simple string match
+    return studentAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase()
+  }
+}
+
+// ── Setup Screen ──────────────────────────────────────
 function SetupScreen({ onStart }) {
   const [mode, setMode] = useState('2team')
   const [difficulty, setDifficulty] = useState('Medium')
@@ -18,12 +81,12 @@ function SetupScreen({ onStart }) {
       <div className="tow2-setup-card">
         <div className="tow2-setup-icon">🎯</div>
         <h2 className="tow2-setup-title">Myth Math Challenge</h2>
-        <p className="tow2-setup-sub">Write the answer — compete or practice with BOT!</p>
+        <p className="tow2-setup-sub">Compete with teams or challenge the AI BOT!</p>
         <div className="tow2-setup-section">
           <label className="tow2-setup-label">Game Mode</label>
           <div className="tow2-mode-btns">
             <button className={`tow2-mode-btn ${mode === '2team' ? 'active' : ''}`} onClick={() => setMode('2team')}>👥 2 Teams</button>
-            <button className={`tow2-mode-btn ${mode === 'bot' ? 'active' : ''}`} onClick={() => setMode('bot')}>🤖 vs BOT</button>
+            <button className={`tow2-mode-btn ${mode === 'bot' ? 'active' : ''}`} onClick={() => setMode('bot')}>🤖 vs AI BOT</button>
           </div>
         </div>
         {mode === 'bot' && (
@@ -44,7 +107,8 @@ function SetupScreen({ onStart }) {
   )
 }
 
-function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, botDifficulty }) {
+// ── Whiteboard ────────────────────────────────────────
+function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, botDifficulty, aiMode }) {
   const canvasRef = useRef(null)
   const ctxRef = useRef(null)
   const drawingRef = useRef(false)
@@ -54,6 +118,7 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
   const [botResult, setBotResult] = useState(null)
   const [answer, setAnswer] = useState('')
   const [result, setResult] = useState(null)
+  const [checking, setChecking] = useState(false)
   const [geoAnswers, setGeoAnswers] = useState({ sides: '', corners: '', angles: '' })
   const [geoResults, setGeoResults] = useState({ sides: null, corners: null, angles: null })
   const botRef = useRef(null)
@@ -74,6 +139,7 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
     setBotResult(null)
     setAnswer('')
     setResult(null)
+    setChecking(false)
     setGeoAnswers({ sides: '', corners: '', angles: '' })
     setGeoResults({ sides: null, corners: null, angles: null })
     clearTimeout(botRef.current)
@@ -87,10 +153,7 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
       const correct = Math.random() < diff.accuracy
       setBotAnswered(true)
       setBotResult(correct ? 'correct' : 'wrong')
-      if (correct) {
-        onScoreChange(1)
-        onCorrect()
-      }
+      if (correct) { onScoreChange(1); onCorrect() }
     }, delay)
     return () => clearTimeout(botRef.current)
   }, [question, isBot, botAnswered, botDifficulty])
@@ -113,16 +176,26 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
     if (isBot || !canvasRef.current || !ctxRef.current) return
     ctxRef.current.fillStyle = '#ffffff'
     ctxRef.current.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-    setAnswer('')
-    setResult(null)
+    setAnswer(''); setResult(null)
     setGeoAnswers({ sides: '', corners: '', angles: '' })
     setGeoResults({ sides: null, corners: null, angles: null })
   }
 
-  const checkText = () => {
-    if (!question || !answer.trim()) return
-    const correct = answer.trim() === String(question.answer || '').trim()
+  const checkText = async () => {
+    if (!question || !answer.trim() || checking) return
+    setChecking(true)
+    let correct = false
+    if (aiMode) {
+      correct = await checkAnswerWithAI(
+        question.question || question.name,
+        answer.trim(),
+        question.answer || ''
+      )
+    } else {
+      correct = answer.trim() === String(question.answer || '').trim()
+    }
     setResult(correct ? 'correct' : 'wrong')
+    setChecking(false)
     if (correct) { onScoreChange(1); onCorrect() }
   }
 
@@ -144,7 +217,7 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
 
   return (
     <div className="whiteboard-panel">
-      <h3>{isBot ? '🤖 BOT' : team.name}</h3>
+      <h3>{isBot ? '🤖 AI BOT' : team.name}</h3>
 
       {isBot ? (
         <div style={{ background: '#F8FAFF', border: '2px solid #E8EDFF', borderRadius: 12, height: 160, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
@@ -152,7 +225,7 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
           {question && !botAnswered && <div className="tow2-bot-dots"><span /><span /><span /></div>}
           {botAnswered && (
             <p style={{ fontSize: 13, fontWeight: 700, color: botResult === 'correct' ? '#059669' : '#DC2626' }}>
-              {botResult === 'correct' ? '✅ BOT answered correctly!' : '❌ BOT got it wrong!'}
+              {botResult === 'correct' ? '✅ AI BOT answered correctly!' : '❌ AI BOT got it wrong!'}
             </p>
           )}
           {!question && <p style={{ color: '#9CA3AF', fontSize: 13 }}>Waiting for question...</p>}
@@ -214,9 +287,15 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
               value={answer}
               onChange={e => { setAnswer(e.target.value); setResult(null) }}
               onKeyDown={e => { if (e.key === 'Enter') checkText() }}
+              disabled={checking}
             />
-            <button className="check-btn" onClick={checkText}>Check</button>
+            <button className="check-btn" onClick={checkText} disabled={checking}>
+              {checking ? '🤔...' : 'Check'}
+            </button>
           </div>
+          {aiMode && !result && (
+            <p style={{ fontSize: 11, color: '#9CA3AF', marginTop: 4, textAlign: 'center' }}>✨ AI-powered answer checking</p>
+          )}
           <div className="thumbs-row">
             <div className={`thumb ${result === 'correct' ? 'active' : ''}`}>👍</div>
             <div className={`thumb ${result === 'wrong' ? 'active' : ''}`}>👎</div>
@@ -233,6 +312,7 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
   )
 }
 
+// ── Main Game ─────────────────────────────────────────
 function Game({ botEnabled, difficulty }) {
   const [sector, setSector] = useState('Arithmetic')
   const [grade, setGrade] = useState(gradeRanges['Arithmetic'][0])
@@ -241,9 +321,10 @@ function Game({ botEnabled, difficulty }) {
   const [timerActive, setTimerActive] = useState(false)
   const [teams, setTeams] = useState([
     { name: 'Team 1', score: 0 },
-    { name: botEnabled ? '🤖 BOT' : 'Team 2', score: 0 },
+    { name: botEnabled ? '🤖 AI BOT' : 'Team 2', score: 0 },
   ])
   const [newName, setNewName] = useState('')
+  const [loadingQuestion, setLoadingQuestion] = useState(false)
 
   const getList = () => {
     try {
@@ -255,23 +336,38 @@ function Game({ botEnabled, difficulty }) {
             const str = String(q)
             const questionPart = str.split('?')[0].replace('What is ', '').trim()
             const answerPart = str.includes('= ') ? str.split('= ')[1]?.trim() : ''
-            return {
-              name: questionPart + '?',
-              question: questionPart + '?',
-              answer: answerPart,
-              display: str,
-            }
+            return { name: questionPart + '?', question: questionPart + '?', answer: answerPart, display: str }
           })
         }
         if (item.name) return [item]
         return []
       })
-    } catch (e) {
-      return []
-    }
+    } catch (e) { return [] }
   }
 
   const list = getList()
+
+  // Auto-generate AI question for BOT mode
+  const fetchAIQuestion = useCallback(async () => {
+    setLoadingQuestion(true)
+    setSelectedQuestion(null)
+    const q = await generateAIQuestion(sector, grade)
+    if (q) {
+      setSelectedQuestion({
+        name: q.question,
+        question: q.question,
+        answer: q.answer,
+        display: q.question,
+      })
+      setTimeLeft(60)
+      setTimerActive(true)
+    }
+    setLoadingQuestion(false)
+  }, [sector, grade])
+
+  useEffect(() => {
+    if (botEnabled) fetchAIQuestion()
+  }, [botEnabled, sector, grade])
 
   useEffect(() => {
     if (!timerActive) return
@@ -321,33 +417,42 @@ function Game({ botEnabled, difficulty }) {
       ) : (
         <div className="add-team-row">
           <div style={{ background: '#EEF2FF', border: '2px solid #C7D2FE', borderRadius: 10, padding: '8px 16px', fontSize: 14, fontWeight: 700, color: '#4F46E5' }}>
-            🤖 BOT Mode — {difficulty} difficulty
+            ✨ AI BOT Mode — {difficulty} difficulty
           </div>
+          <button className="add-team-btn" onClick={fetchAIQuestion} disabled={loadingQuestion}>
+            {loadingQuestion ? '⏳ Generating...' : '🎲 New Question'}
+          </button>
           <button className="reset-btn" onClick={resetScores}>Reset Scores</button>
         </div>
       )}
 
-      <div className="question-picker">
-        <label>Pick the active question: </label>
-        <select
-          value={selectedQuestion ? (selectedQuestion.name || selectedQuestion.question || '') : ''}
-          onChange={e => handleSelectQuestion(e.target.value)}
-        >
-          <option value="">-- Select a question --</option>
-          {list.map((f, i) => (
-            <option key={i} value={f.name || f.question || ''}>{f.name || f.question || ''}</option>
-          ))}
-        </select>
-      </div>
+      {!botEnabled && (
+        <div className="question-picker">
+          <label>Pick the active question: </label>
+          <select value={selectedQuestion ? (selectedQuestion.name || selectedQuestion.question || '') : ''}
+            onChange={e => handleSelectQuestion(e.target.value)}>
+            <option value="">-- Select a question --</option>
+            {list.map((f, i) => (
+              <option key={i} value={f.name || f.question || ''}>{String(f.name || f.question || '').split('=')[0].trim()}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
-      {selectedQuestion && (
+      {loadingQuestion && (
+        <div className="active-question" style={{ textAlign: 'center' }}>
+          ✨ AI is generating a question for {grade} {sector}...
+        </div>
+      )}
+
+      {selectedQuestion && !loadingQuestion && (
         <>
-         <div className="active-question">
-  {sector === 'Geometry'
-    ? <><strong>{selectedQuestion.name}</strong> — What are the properties?</>
-    : <><strong>{String(selectedQuestion.display || selectedQuestion.question || '').split('=')[0].trim()}</strong></>
-  }
-</div>
+          <div className="active-question">
+            <span style={{ fontSize: 12, color: '#9CA3AF', marginRight: 8 }}>
+              {botEnabled ? '✨ AI Generated:' : ''}
+            </span>
+            <strong>{String(selectedQuestion.display || selectedQuestion.question || '').split('=')[0].trim()}</strong>
+          </div>
           <div className="timer-row">
             <div className="timer-circle" style={{ borderColor: timerColor, color: timerColor }}>
               <span className="timer-number">{timeLeft}</span>
@@ -361,7 +466,10 @@ function Game({ botEnabled, difficulty }) {
             </button>
           </div>
           {timeLeft === 0 && (
-            <div style={{ textAlign: 'center', color: '#C62828', fontWeight: 700, fontSize: 18, marginBottom: 10 }}>⏰ Time's up!</div>
+            <div style={{ textAlign: 'center', color: '#C62828', fontWeight: 700, fontSize: 18, marginBottom: 10 }}>
+              ⏰ Time's up!
+              {botEnabled && <button className="add-team-btn" style={{ marginLeft: 12, fontSize: 13 }} onClick={fetchAIQuestion}>Next Question 🎲</button>}
+            </div>
           )}
         </>
       )}
@@ -374,16 +482,22 @@ function Game({ botEnabled, difficulty }) {
               <div className="whiteboard-header-row">
                 <span className="whiteboard-rank">#{i + 1}</span>
                 {team.score === topScore && team.score > 0 && <span className="leader-badge">👑 Leading</span>}
-                {!isBot && <button className="remove-btn" onClick={() => removeTeam(i)}>✕ Remove</button>}
+                {!isBot && !botEnabled && <button className="remove-btn" onClick={() => removeTeam(i)}>✕ Remove</button>}
               </div>
               <Whiteboard
                 team={team}
                 question={selectedQuestion}
                 sector={sector}
                 onScoreChange={(delta) => updateScore(i, delta)}
-                onCorrect={() => setTimerActive(false)}
+                onCorrect={() => {
+                  setTimerActive(false)
+                  if (botEnabled && !isBot) {
+                    setTimeout(() => fetchAIQuestion(), 2000)
+                  }
+                }}
                 isBot={isBot}
                 botDifficulty={difficulty || 'Medium'}
+                aiMode={botEnabled}
               />
             </div>
           )
