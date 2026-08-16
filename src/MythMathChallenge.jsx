@@ -342,12 +342,12 @@ function Game({ botEnabled, difficulty }) {
 
       {selectedQuestion && (
         <>
-          <div className="active-question">
-            {sector === 'Geometry'
-              ? <><strong>{selectedQuestion.name}</strong> — What are the properties?</>
-              : <><strong>{selectedQuestion.display || selectedQuestion.question}</strong></>
-            }
-          </div>
+         <div className="active-question">
+  {sector === 'Geometry'
+    ? <><strong>{selectedQuestion.name}</strong> — What are the properties?</>
+    : <><strong>{String(selectedQuestion.display || selectedQuestion.question || '').split('=')[0].trim()}</strong></>
+  }
+</div>
           <div className="timer-row">
             <div className="timer-circle" style={{ borderColor: timerColor, color: timerColor }}>
               <span className="timer-number">{timeLeft}</span>
