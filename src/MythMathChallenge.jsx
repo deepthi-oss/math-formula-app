@@ -319,12 +319,13 @@ function Game({ botEnabled, difficulty }) {
   const [selectedQuestion, setSelectedQuestion] = useState(null)
   const [timeLeft, setTimeLeft] = useState(60)
   const [timerActive, setTimerActive] = useState(false)
+  const [aiLoading, setAiLoading] = useState(false)
   const [teams, setTeams] = useState([
     { name: 'Team 1', score: 0 },
-    { name: botEnabled ? '🤖 AI BOT' : 'Team 2', score: 0 },
+    { name: botEnabled ? '🤖 BOT' : 'Team 2', score: 0 },
   ])
   const [newName, setNewName] = useState('')
-  const [loadingQuestion, setLoadingQuestion] = useState(false)
+  const autoGenRef = useRef(false)
 
   const getList = () => {
     try {
@@ -336,38 +337,49 @@ function Game({ botEnabled, difficulty }) {
             const str = String(q)
             const questionPart = str.split('?')[0].replace('What is ', '').trim()
             const answerPart = str.includes('= ') ? str.split('= ')[1]?.trim() : ''
-            return { name: questionPart + '?', question: questionPart + '?', answer: answerPart, display: str }
+            return {
+              name: questionPart + '?',
+              question: questionPart + '?',
+              answer: answerPart,
+              display: str,
+            }
           })
         }
         if (item.name) return [item]
         return []
       })
-    } catch (e) { return [] }
+    } catch (e) {
+      return []
+    }
   }
 
   const list = getList()
 
-  // Auto-generate AI question for BOT mode
-  const fetchAIQuestion = useCallback(async () => {
-    setLoadingQuestion(true)
+  // Auto-generate first AI question when BOT mode starts
+  useEffect(() => {
+    if (botEnabled && !autoGenRef.current) {
+      autoGenRef.current = true
+      loadAIQuestion()
+    }
+  }, [botEnabled])
+
+  const loadAIQuestion = async () => {
+    setAiLoading(true)
     setSelectedQuestion(null)
+    setTimeLeft(60)
+    setTimerActive(false)
     const q = await generateAIQuestion(sector, grade)
     if (q) {
-      setSelectedQuestion({
-        name: q.question,
-        question: q.question,
-        answer: q.answer,
-        display: q.question,
-      })
-      setTimeLeft(60)
+      setSelectedQuestion(q)
       setTimerActive(true)
     }
-    setLoadingQuestion(false)
-  }, [sector, grade])
+    setAiLoading(false)
+  }
 
-  useEffect(() => {
-    if (botEnabled) fetchAIQuestion()
-  }, [botEnabled, sector, grade])
+  const handleNextAIQuestion = () => {
+    autoGenRef.current = true
+    loadAIQuestion()
+  }
 
   useEffect(() => {
     if (!timerActive) return
@@ -376,18 +388,55 @@ function Game({ botEnabled, difficulty }) {
     return () => clearInterval(interval)
   }, [timerActive, timeLeft])
 
-  const handleSector = (s) => { setSector(s); setGrade(gradeRanges[s][0]); setSelectedQuestion(null); setTimeLeft(60); setTimerActive(false) }
-  const handleGrade = (g) => { setGrade(g); setSelectedQuestion(null); setTimeLeft(60); setTimerActive(false) }
+  // Auto-generate next question when timer runs out in BOT mode
+  useEffect(() => {
+    if (botEnabled && timeLeft === 0 && !aiLoading) {
+      const timeout = setTimeout(() => {
+        loadAIQuestion()
+      }, 2000)
+      return () => clearTimeout(timeout)
+    }
+  }, [timeLeft, botEnabled])
+
+  const handleSector = (s) => {
+    setSector(s)
+    setGrade(gradeRanges[s][0])
+    setSelectedQuestion(null)
+    setTimeLeft(60)
+    setTimerActive(false)
+    autoGenRef.current = false
+  }
+
+  const handleGrade = (g) => {
+    setGrade(g)
+    setSelectedQuestion(null)
+    setTimeLeft(60)
+    setTimerActive(false)
+    autoGenRef.current = false
+  }
+
   const handleSelectQuestion = (name) => {
     const found = list.find(f => (f.name || f.question) === name)
     setSelectedQuestion(found || null)
     setTimeLeft(60)
     setTimerActive(true)
   }
-  const addTeam = () => { if (botEnabled) return; const name = newName.trim() || `Team ${teams.length + 1}`; setTeams([...teams, { name, score: 0 }]); setNewName('') }
+
+  const addTeam = () => {
+    if (botEnabled) return
+    const name = newName.trim() || `Team ${teams.length + 1}`
+    setTeams([...teams, { name, score: 0 }])
+    setNewName('')
+  }
   const removeTeam = (i) => setTeams(teams.filter((_, idx) => idx !== i))
   const updateScore = (i, delta) => setTeams(teams.map((t, idx) => idx === i ? { ...t, score: Math.max(0, t.score + delta) } : t))
-  const resetScores = () => setTeams(teams.map(t => ({ ...t, score: 0 })))
+  const resetScores = () => {
+    setTeams(teams.map(t => ({ ...t, score: 0 })))
+    autoGenRef.current = false
+    setSelectedQuestion(null)
+    setTimerActive(false)
+    setTimeLeft(60)
+  }
 
   const timerColor = timeLeft > 30 ? '#27500A' : timeLeft > 10 ? '#BA7517' : '#C62828'
   const timerPct = (timeLeft / 60) * 100
@@ -415,43 +464,48 @@ function Game({ botEnabled, difficulty }) {
           <button className="reset-btn" onClick={resetScores}>Reset Scores</button>
         </div>
       ) : (
-        <div className="add-team-row">
+        <div className="add-team-row" style={{ justifyContent: 'space-between' }}>
           <div style={{ background: '#EEF2FF', border: '2px solid #C7D2FE', borderRadius: 10, padding: '8px 16px', fontSize: 14, fontWeight: 700, color: '#4F46E5' }}>
-            ✨ AI BOT Mode — {difficulty} difficulty
+            🤖 BOT Mode — {difficulty} difficulty
           </div>
-          <button className="add-team-btn" onClick={fetchAIQuestion} disabled={loadingQuestion}>
-            {loadingQuestion ? '⏳ Generating...' : '🎲 New Question'}
-          </button>
-          <button className="reset-btn" onClick={resetScores}>Reset Scores</button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="add-team-btn" onClick={handleNextAIQuestion} disabled={aiLoading}>
+              {aiLoading ? '⏳ Generating...' : '⏭ Next Question'}
+            </button>
+            <button className="reset-btn" onClick={resetScores}>Reset Scores</button>
+          </div>
+        </div>
+      )}
+
+      {botEnabled && aiLoading && (
+        <div style={{ textAlign: 'center', padding: '20px', background: '#EEF2FF', borderRadius: 12, margin: '10px 0' }}>
+          <div className="tow2-bot-dots"><span /><span /><span /></div>
+          <p style={{ marginTop: 10, color: '#4F46E5', fontWeight: 700, fontSize: 14 }}>🤖 AI is generating a question...</p>
         </div>
       )}
 
       {!botEnabled && (
         <div className="question-picker">
           <label>Pick the active question: </label>
-          <select value={selectedQuestion ? (selectedQuestion.name || selectedQuestion.question || '') : ''}
-            onChange={e => handleSelectQuestion(e.target.value)}>
+          <select
+            value={selectedQuestion ? (selectedQuestion.name || selectedQuestion.question || '') : ''}
+            onChange={e => handleSelectQuestion(e.target.value)}
+          >
             <option value="">-- Select a question --</option>
             {list.map((f, i) => (
-              <option key={i} value={f.name || f.question || ''}>{String(f.name || f.question || '').split('=')[0].trim()}</option>
+              <option key={i} value={f.name || f.question || ''}>{f.name || f.question || ''}</option>
             ))}
           </select>
         </div>
       )}
 
-      {loadingQuestion && (
-        <div className="active-question" style={{ textAlign: 'center' }}>
-          ✨ AI is generating a question for {grade} {sector}...
-        </div>
-      )}
-
-      {selectedQuestion && !loadingQuestion && (
+      {selectedQuestion && !aiLoading && (
         <>
           <div className="active-question">
-            <span style={{ fontSize: 12, color: '#9CA3AF', marginRight: 8 }}>
-              {botEnabled ? '✨ AI Generated:' : ''}
-            </span>
-            <strong>{String(selectedQuestion.display || selectedQuestion.question || '').split('=')[0].trim()}</strong>
+            {sector === 'Geometry'
+              ? <><strong>{selectedQuestion.name}</strong> — What are the properties?</>
+              : <><strong>{String(selectedQuestion.display || selectedQuestion.question || '').split('=')[0].trim()}</strong></>
+            }
           </div>
           <div className="timer-row">
             <div className="timer-circle" style={{ borderColor: timerColor, color: timerColor }}>
@@ -461,14 +515,20 @@ function Game({ botEnabled, difficulty }) {
             <div className="timer-bar">
               <div className="timer-fill" style={{ width: timerPct + '%', background: timerColor, transition: 'width 1s linear' }} />
             </div>
-            <button className="timer-toggle-btn" onClick={() => setTimerActive(a => !a)} disabled={timeLeft === 0}>
-              {timerActive ? '⏸ Pause' : '▶ Resume'}
-            </button>
+            {!botEnabled && (
+              <button className="timer-toggle-btn" onClick={() => setTimerActive(a => !a)} disabled={timeLeft === 0}>
+                {timerActive ? '⏸ Pause' : '▶ Resume'}
+              </button>
+            )}
+            {botEnabled && (
+              <button className="timer-toggle-btn" onClick={handleNextAIQuestion} disabled={aiLoading}>
+                ⏭ Skip
+              </button>
+            )}
           </div>
           {timeLeft === 0 && (
             <div style={{ textAlign: 'center', color: '#C62828', fontWeight: 700, fontSize: 18, marginBottom: 10 }}>
-              ⏰ Time's up!
-              {botEnabled && <button className="add-team-btn" style={{ marginLeft: 12, fontSize: 13 }} onClick={fetchAIQuestion}>Next Question 🎲</button>}
+              ⏰ Time's up! {botEnabled && 'Loading next question...'}
             </div>
           )}
         </>
@@ -482,7 +542,7 @@ function Game({ botEnabled, difficulty }) {
               <div className="whiteboard-header-row">
                 <span className="whiteboard-rank">#{i + 1}</span>
                 {team.score === topScore && team.score > 0 && <span className="leader-badge">👑 Leading</span>}
-                {!isBot && !botEnabled && <button className="remove-btn" onClick={() => removeTeam(i)}>✕ Remove</button>}
+                {!isBot && <button className="remove-btn" onClick={() => removeTeam(i)}>✕ Remove</button>}
               </div>
               <Whiteboard
                 team={team}
@@ -491,13 +551,12 @@ function Game({ botEnabled, difficulty }) {
                 onScoreChange={(delta) => updateScore(i, delta)}
                 onCorrect={() => {
                   setTimerActive(false)
-                  if (botEnabled && !isBot) {
-                    setTimeout(() => fetchAIQuestion(), 2000)
+                  if (botEnabled) {
+                    setTimeout(() => loadAIQuestion(), 2000)
                   }
                 }}
                 isBot={isBot}
                 botDifficulty={difficulty || 'Medium'}
-                aiMode={botEnabled}
               />
             </div>
           )
@@ -505,17 +564,4 @@ function Game({ botEnabled, difficulty }) {
       </div>
     </div>
   )
-}
-
-export default function MythMathChallenge() {
-  const [config, setConfig] = useState(null)
-  const [key, setKey] = useState(0)
-
-  const handleStart = (bot, diff) => {
-    setConfig({ bot, diff })
-    setKey(k => k + 1)
-  }
-
-  if (!config) return <SetupScreen onStart={handleStart} />
-  return <Game key={key} botEnabled={config.bot} difficulty={config.diff || 'Medium'} />
 }
