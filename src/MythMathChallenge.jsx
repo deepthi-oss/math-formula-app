@@ -301,9 +301,9 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
 }
 
 // ── Main Game ─────────────────────────────────────────
-function Game({ botEnabled, difficulty }) {
-  const [sector, setSector] = useState('Arithmetic')
-  const [grade, setGrade] = useState(gradeRanges['Arithmetic'][0])
+function Game({ botEnabled, difficulty, initialSector, initialGrade }) {
+  const [sector, setSector] = useState(initialSector || 'Arithmetic')
+  const [grade, setGrade] = useState(initialGrade || gradeRanges['Arithmetic'][0])
   const [selectedQuestion, setSelectedQuestion] = useState(null)
   const [timeLeft, setTimeLeft] = useState(60)
   const [timerActive, setTimerActive] = useState(false)
@@ -313,7 +313,11 @@ function Game({ botEnabled, difficulty }) {
     { name: botEnabled ? '🤖 BOT' : 'Team 2', score: 0 },
   ])
   const [newName, setNewName] = useState('')
-  const autoGenRef = useRef(false)
+  const sectorRef = useRef(sector)
+  const gradeRef = useRef(grade)
+
+  useEffect(() => { sectorRef.current = sector }, [sector])
+  useEffect(() => { gradeRef.current = grade }, [grade])
 
   const getList = () => {
     try {
@@ -341,18 +345,22 @@ function Game({ botEnabled, difficulty }) {
     setSelectedQuestion(null)
     setTimeLeft(60)
     setTimerActive(false)
-    const q = await generateAIQuestion(sector, grade)
-    if (q) { setSelectedQuestion(q); setTimerActive(true) }
+    const q = await generateAIQuestion(sectorRef.current, gradeRef.current)
+    if (q) {
+      setSelectedQuestion(q)
+      setTimerActive(true)
+    }
     setAiLoading(false)
   }
 
+  // Auto-generate first question on mount when BOT mode
   useEffect(() => {
-    if (botEnabled && !autoGenRef.current) {
-      autoGenRef.current = true
+    if (botEnabled) {
       loadAIQuestion()
     }
-  }, [botEnabled])
+  }, [])
 
+  // Timer countdown
   useEffect(() => {
     if (!timerActive) return
     if (timeLeft <= 0) { setTimerActive(false); return }
@@ -360,6 +368,7 @@ function Game({ botEnabled, difficulty }) {
     return () => clearInterval(interval)
   }, [timerActive, timeLeft])
 
+  // Auto next question when timer runs out in BOT mode
   useEffect(() => {
     if (botEnabled && timeLeft === 0 && !aiLoading) {
       const timeout = setTimeout(() => loadAIQuestion(), 2000)
@@ -367,13 +376,43 @@ function Game({ botEnabled, difficulty }) {
     }
   }, [timeLeft, botEnabled])
 
-  const handleSector = (s) => { setSector(s); setGrade(gradeRanges[s][0]); setSelectedQuestion(null); setTimeLeft(60); setTimerActive(false); autoGenRef.current = false }
-  const handleGrade = (g) => { setGrade(g); setSelectedQuestion(null); setTimeLeft(60); setTimerActive(false); autoGenRef.current = false }
-  const handleSelectQuestion = (name) => { const found = list.find(f => (f.name || f.question) === name); setSelectedQuestion(found || null); setTimeLeft(60); setTimerActive(true) }
-  const addTeam = () => { if (botEnabled) return; const name = newName.trim() || `Team ${teams.length + 1}`; setTeams([...teams, { name, score: 0 }]); setNewName('') }
+  const handleSector = (s) => {
+    setSector(s)
+    setGrade(gradeRanges[s][0])
+    setSelectedQuestion(null)
+    setTimeLeft(60)
+    setTimerActive(false)
+  }
+
+  const handleGrade = (g) => {
+    setGrade(g)
+    setSelectedQuestion(null)
+    setTimeLeft(60)
+    setTimerActive(false)
+  }
+
+  const handleSelectQuestion = (name) => {
+    const found = list.find(f => (f.name || f.question) === name)
+    setSelectedQuestion(found || null)
+    setTimeLeft(60)
+    setTimerActive(true)
+  }
+
+  const addTeam = () => {
+    if (botEnabled) return
+    const name = newName.trim() || `Team ${teams.length + 1}`
+    setTeams([...teams, { name, score: 0 }])
+    setNewName('')
+  }
   const removeTeam = (i) => setTeams(teams.filter((_, idx) => idx !== i))
   const updateScore = (i, delta) => setTeams(teams.map((t, idx) => idx === i ? { ...t, score: Math.max(0, t.score + delta) } : t))
-  const resetScores = () => { setTeams(teams.map(t => ({ ...t, score: 0 }))); autoGenRef.current = false; setSelectedQuestion(null); setTimerActive(false); setTimeLeft(60) }
+  const resetScores = () => {
+    setTeams(teams.map(t => ({ ...t, score: 0 })))
+    setSelectedQuestion(null)
+    setTimerActive(false)
+    setTimeLeft(60)
+    if (botEnabled) setTimeout(() => loadAIQuestion(), 500)
+  }
 
   const timerColor = timeLeft > 30 ? '#27500A' : timeLeft > 10 ? '#BA7517' : '#C62828'
   const timerPct = (timeLeft / 60) * 100
