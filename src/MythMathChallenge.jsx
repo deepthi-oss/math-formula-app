@@ -92,9 +92,9 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
       feedbackRef.current = correct ? 'correct' : 'wrong'
       setBotAnswered(true)
       setBotResult(correct ? 'correct' : 'wrong')
-      if (correct) {
+     if (correct) {
         onScoreChange(1)
-        setTimeout(() => onCorrect(), 0)
+        setTimeout(() => onCorrect(), 1500)
       }
     }, delay)
     return () => clearTimeout(botRef.current)
@@ -127,7 +127,10 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
     if (!question || !answer.trim()) return
     const correct = answer.trim().toLowerCase().replace(/\s+/g, '') === String(question.answer || '').toLowerCase().replace(/\s+/g, '')
     setResult(correct ? 'correct' : 'wrong')
-    if (correct) { onScoreChange(1); setTimeout(() => onCorrect(), 0) }
+    if (correct) {
+      onScoreChange(1)
+      setTimeout(() => onCorrect(), 1500)
+    }
   }
 
   const checkGeo = () => {
@@ -140,7 +143,10 @@ function Whiteboard({ team, question, sector, onScoreChange, onCorrect, isBot, b
       corners: cornersOk ? 'correct' : 'wrong',
       angles: anglesOk ? 'correct' : 'wrong',
     })
-    if (sidesOk && cornersOk && anglesOk) { onScoreChange(1); setTimeout(() => onCorrect(), 0) }
+   if (sidesOk && cornersOk && anglesOk) {
+      onScoreChange(1)
+      setTimeout(() => onCorrect(), 1500)
+    }
   }
 
   const allGeoCorrect = geoResults.sides === 'correct' && geoResults.corners === 'correct' && geoResults.angles === 'correct'
@@ -457,7 +463,7 @@ function Game({ botEnabled, difficulty }) {
                 sector={sector}
                 onScoreChange={(delta) => updateScore(i, delta)}
                 onCorrect={() => {
-                  setTimeout(() => nextQuestion(), 1500)
+                  nextQuestion()
                 }}
                 isBot={isBot}
                 botDifficulty={difficulty || 'Medium'}
