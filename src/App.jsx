@@ -76,4 +76,4 @@ export default function App() {
       <AppContent user={user} onLogout={handleLogout} />
     </BrowserRouter>
   )
-}s
+}
