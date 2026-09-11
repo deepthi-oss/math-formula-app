@@ -1,7 +1,7 @@
-# Math Formula App — Project History
+# NUMERIX-PLAY — Project History
 
 ## 📋 Project Overview
-- **App Name:** Math Formula App
+- **App Name:** NUMERIX-PLAY
 - **Live URL:** https://math-formula-app.vercel.app
 - **GitHub:** https://github.com/deepthi-oss/math-formula-app
 - **Stack:** React + Vite + react-router-dom

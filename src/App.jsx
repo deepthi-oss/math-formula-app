@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-do
 import Login from './Login'
 import Home from './Home'
 import FormulaExplorer from './FormulaExplorer'
-import IdentityChallenge from './IdentityChallenge'
 import MythMathChallenge from './MythMathChallenge'
 import TugOfWar from './TugOfWar'
 import { logOut } from './firebase'
@@ -19,14 +18,11 @@ function NavBar({ user, onLogout }) {
         style={{ cursor: 'pointer' }}
         onClick={() => window.location.href = '/'}
       >
-        📐 Math Formula App
+        📐 NUMERIX-PLAY
       </div>
       <div className="nav-links">
         <Link to="/explore" className={location.pathname === '/explore' ? 'active' : ''}>
           Formula Explorer
-        </Link>
-        <Link to="/challenge" className={location.pathname === '/challenge' ? 'active' : ''}>
-          Identity Challenge
         </Link>
         <Link to="/myth" className={location.pathname === '/myth' ? 'active' : ''}>
           Myth Math
@@ -56,7 +52,6 @@ function AppContent({ user, onLogout }) {
       <Routes>
         <Route path="/" element={<Home user={user} />} />
         <Route path="/explore" element={<FormulaExplorer user={user} />} />
-        <Route path="/challenge" element={<IdentityChallenge />} />
         <Route path="/myth" element={<MythMathChallenge />} />
         <Route path="/tug" element={<TugOfWar />} />
       </Routes>
@@ -81,4 +76,4 @@ export default function App() {
       <AppContent user={user} onLogout={handleLogout} />
     </BrowserRouter>
   )
-}
+}s

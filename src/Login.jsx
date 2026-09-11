@@ -44,7 +44,7 @@ export default function Login({ onLogin }) {
 
       <div className="login-content">
         <div className="login-logo">📐</div>
-        <h1 className="login-title">Math Formula App</h1>
+        <h1 className="login-title">NUMERIX-PLAY</h1>
         <p className="login-sub">Who are you today?</p>
 
         <div className="login-cards">

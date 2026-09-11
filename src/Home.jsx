@@ -29,10 +29,6 @@ export default function Home({ user }) {
             <span className="feat-icon">📐</span>
             <span className="feat-label">Formula Explorer</span>
           </div>
-          <div className="home-feat-card feat-blue" onClick={() => navigate('/challenge')}>
-            <span className="feat-icon">⚡</span>
-            <span className="feat-label">Identity Challenge</span>
-          </div>
           <div className="home-feat-card feat-green" onClick={() => navigate('/myth')}>
             <span className="feat-icon">🎯</span>
             <span className="feat-label">Myth Math Challenge</span>
