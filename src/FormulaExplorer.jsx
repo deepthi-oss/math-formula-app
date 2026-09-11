@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
-import MythMathChallenge from './MythMathChallenge'
 import { formulaData, gradeRanges } from './formulaConfig'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
   { name: 'Algebra', icon: '📊', color: '#6366F1', bg: '#EEF2FF', border: '#C7D2FE' },
   { name: 'Geometry', icon: '📐', color: '#10B981', bg: '#ECFDF5', border: '#A7F3D0' },
-  { name: 'Myth Math Challenge', icon: '🏆', color: '#EC4899', bg: '#FDF2F8', border: '#FBCFE8' },
 ]
 
 function ConceptGroup({ concept, items, icon, bg, color }) {
@@ -48,8 +46,7 @@ export default function FormulaExplorer() {
     }
   }, [sector])
 
-  const isMythMath = sector === 'Myth Math Challenge'
-  const list = !isMythMath ? (formulaData[sector]?.[grade] || []) : []
+  const list = formulaData[sector]?.[grade] || []
   const activeSector = sectors.find(s => s.name === sector)
 
   return (
@@ -76,25 +73,21 @@ export default function FormulaExplorer() {
         ))}
       </div>
 
-      {isMythMath ? (
-        <MythMathChallenge />
-      ) : (
-        <>
-          <div className="grade-section">
-            <span className="grade-label">Select Grade:</span>
-            <div className="grade-pills">
-              {gradeRanges[sector].map(g => (
-                <button
-                  key={g}
-                  className={`grade-pill ${grade === g ? 'grade-pill-active' : ''}`}
-                  style={grade === g ? { background: activeSector?.color, borderColor: activeSector?.color } : {}}
-                  onClick={() => setGrade(g)}
-                >
-                  {g}
-                </button>
-              ))}
-            </div>
-          </div>
+      <div className="grade-section">
+        <span className="grade-label">Select Grade:</span>
+        <div className="grade-pills">
+          {gradeRanges[sector].map(g => (
+            <button
+              key={g}
+              className={`grade-pill ${grade === g ? 'grade-pill-active' : ''}`}
+              style={grade === g ? { background: activeSector?.color, borderColor: activeSector?.color } : {}}
+              onClick={() => setGrade(g)}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
+      </div>
 
           <div className="formula-box" style={{ borderLeftColor: activeSector?.color }}>
             <div className="formula-box-header" style={{ background: activeSector?.bg }}>
@@ -151,8 +144,6 @@ export default function FormulaExplorer() {
               )}
             </div>
           </div>
-        </>
-      )}
     </div>
   )
 }
