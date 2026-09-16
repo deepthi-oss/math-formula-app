@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { formulaData, gradeRanges } from './formulaConfig'
+import SquareFloorActivity from './SquareFloorActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -48,6 +49,7 @@ export default function FormulaExplorer() {
 
   const list = formulaData[sector]?.[grade] || []
   const activeSector = sectors.find(s => s.name === sector)
+  const isSquareFloorActivity = sector === 'Arithmetic' && grade === 'Class 9'
 
   return (
     <div className="explorer-v2">
@@ -89,6 +91,9 @@ export default function FormulaExplorer() {
         </div>
       </div>
 
+          {isSquareFloorActivity ? (
+            <SquareFloorActivity />
+          ) : (
           <div className="formula-box" style={{ borderLeftColor: activeSector?.color }}>
             <div className="formula-box-header" style={{ background: activeSector?.bg }}>
               <span className="formula-box-icon">{activeSector?.icon}</span>
@@ -144,6 +149,7 @@ export default function FormulaExplorer() {
               )}
             </div>
           </div>
+          )}
     </div>
   )
 }

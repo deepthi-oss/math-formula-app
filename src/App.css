@@ -219,6 +219,50 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .formula-num { min-width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
 .formula-text { font-family: 'Courier New', monospace; font-size: 14px; color: #374151; line-height: 1.6; }
 
+/* ===== SQUARE FLOOR ACTIVITY (Arithmetic / Class 9) ===== */
+.square-floor-card { margin: 0 40px 40px; border-radius: 20px; border: 2px solid #E8EDFF; border-left: 5px solid #F59E0B; overflow: hidden; box-shadow: 0 4px 24px rgba(245,158,11,0.1); background: #fff; }
+.square-floor-body { padding: 28px 24px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+
+.sf-controls { display: flex; align-items: center; gap: 16px; }
+.sf-btn { padding: 10px 18px; border-radius: 10px; border: 2px solid #FDE68A; background: #FFFBEB; color: #D97706; font-size: 13px; font-weight: 800; cursor: pointer; transition: all 0.15s; }
+.sf-btn:hover:not(:disabled) { background: #F59E0B; color: #fff; transform: translateY(-2px); }
+.sf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.sf-n-badge { min-width: 64px; text-align: center; font-family: 'Courier New', monospace; font-size: 16px; font-weight: 900; color: #F59E0B; background: #FFFBEB; border: 2px solid #FDE68A; border-radius: 10px; padding: 8px 14px; }
+
+.sf-stage { display: flex; align-items: stretch; gap: 10px; overflow-x: auto; max-width: 100%; padding: 4px; }
+.sf-breadth-col { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.sf-breadth-label { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11px; font-weight: 800; color: #D97706; white-space: nowrap; }
+.sf-brace-v { position: relative; width: 3px; background: #F59E0B; border-radius: 2px; flex-shrink: 0; }
+.sf-brace-v::before, .sf-brace-v::after { content: ''; position: absolute; left: -6px; width: 15px; height: 3px; background: #F59E0B; border-radius: 2px; }
+.sf-brace-v::before { top: 0; }
+.sf-brace-v::after { bottom: 0; }
+
+.sf-grid-col { display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
+.square-floor-grid { display: grid; }
+.square-floor-tile { background: linear-gradient(135deg, #60A5FA, #3B82F6); border-radius: 3px; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15); }
+
+.sf-brace-h { position: relative; height: 3px; background: #F59E0B; border-radius: 2px; }
+.sf-brace-h::before, .sf-brace-h::after { content: ''; position: absolute; top: -6px; width: 3px; height: 15px; background: #F59E0B; border-radius: 2px; }
+.sf-brace-h::before { left: 0; }
+.sf-brace-h::after { right: 0; }
+.sf-length-label { text-align: center; font-size: 11px; font-weight: 800; color: #D97706; white-space: nowrap; }
+
+.sf-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; width: 100%; }
+.sf-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; background: #F8FAFF; border: 2px solid #E8EDFF; border-radius: 14px; padding: 12px 20px; min-width: 140px; }
+.sf-stat-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.4px; }
+.sf-stat-value { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 900; color: #1a1a2e; }
+
+.sf-sequence { width: 100%; text-align: center; }
+.sf-sequence-label { display: block; font-size: 12px; font-weight: 700; color: #9CA3AF; margin-bottom: 10px; }
+.sf-sequence-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.sf-chip { padding: 6px 14px; border-radius: 20px; border: 2px solid #E8EDFF; background: #fff; font-family: 'Courier New', monospace; font-size: 13px; font-weight: 800; color: #6B7280; }
+.sf-chip-active { border-color: #F59E0B; background: #FFFBEB; color: #D97706; }
+
+@media (max-width: 600px) {
+  .square-floor-card { margin: 0 16px 24px; }
+  .square-floor-body { padding: 18px 14px; }
+}
+
 @media (max-width: 600px) {
   .explorer-hero { padding: 20px 16px 16px; }
   .explorer-heading { font-size: 22px; }
