@@ -5,7 +5,6 @@ const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
   { name: 'Algebra', icon: '📊', color: '#6366F1', bg: '#EEF2FF', border: '#C7D2FE' },
   { name: 'Geometry', icon: '📐', color: '#10B981', bg: '#ECFDF5', border: '#A7F3D0' },
-  { name: 'Sequences and Progressions', icon: '🔢', color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE' },
 ]
 
 function ConceptGroup({ concept, items, icon, bg, color }) {

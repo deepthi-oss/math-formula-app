@@ -1,8 +1,7 @@
 export const gradeRanges = {
-  Arithmetic: ['Class 1','Class 2','Class 3','Class 4','Class 5','Class 6','Class 7','Class 8','Class 9','Class 10','Class 11','Class 12'],
+  Arithmetic: ['Class 1','Class 2','Class 3','Class 4','Class 5','Class 6','Class 7','Class 8','Class 9','Class 10','Class 11','Class 12','Sequences and Progressions'],
   Algebra: ['Class 6','Class 7','Class 8','Class 9','Class 10','Class 11','Class 12'],
   Geometry: ['Class 3','Class 4','Class 5','Class 6','Class 7','Class 8','Class 9','Class 10','Class 11','Class 12'],
-  'Sequences and Progressions': ['Class 10','Class 11','Class 12'],
 }
 
 export const formulaData = {
@@ -100,5 +99,4 @@ export const formulaData = {
       { name: 'Sphere', sides: '-', corners: '-', angles: '-', note: '1 face, 0 edges, 0 vertices (3D shape)' },
     ],
   },
-  'Sequences and Progressions': {},
 }
