@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { formulaData, gradeRanges } from './formulaConfig'
+import NaturalNumberSumActivity from './NaturalNumberSumActivity'
 import SquareFloorActivity from './SquareFloorActivity'
 import APPredictCheckActivity from './APPredictCheckActivity'
 import APDragBuildActivity from './APDragBuildActivity'
@@ -142,6 +143,9 @@ export default function FormulaExplorer() {
   {hasSequencesActivity && (
     <div className="formula-topic-section">
       <h3 className="formula-topic-heading">📚 Sequences and Progressions</h3>
+      <ActivityConceptGroup title="Sum of First n Natural Numbers" icon="🪜">
+        <NaturalNumberSumActivity />
+      </ActivityConceptGroup>
       <ActivityConceptGroup title="Square Numbers — Expanding Floor" icon="🔢">
         <SquareFloorActivity />
       </ActivityConceptGroup>

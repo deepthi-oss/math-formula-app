@@ -330,6 +330,9 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .ap-formula-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.4px; }
 .ap-formula-value { font-family: 'Courier New', monospace; font-size: 13px; font-weight: 800; color: #1a1a2e; }
 
+/* ===== SUM OF FIRST N NATURAL NUMBERS (amber, reuses pc- and sf-predict- styles) ===== */
+.nn-activity { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 24px 20px; }
+
 /* ===== AP PRACTICE — PREDICT & CHECK (amber) ===== */
 .pc-activity { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 24px 20px; }
 .pc-brief { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; max-width: 480px; }
