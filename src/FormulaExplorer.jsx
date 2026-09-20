@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { formulaData, gradeRanges } from './formulaConfig'
 import SquareFloorActivity from './SquareFloorActivity'
+import ArithmeticProgressionActivity from './ArithmeticProgressionActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -39,7 +40,7 @@ function ConceptGroup({ concept, items, icon, bg, color }) {
 }
 
 function ActivityConceptGroup({ title, icon, children }) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   return (
     <div className="formula-concept-group">
       <div
@@ -134,9 +135,15 @@ export default function FormulaExplorer() {
               ) : (
                 <div className="formula-concepts">
   {hasSequencesActivity && (
-    <ActivityConceptGroup title="Sequences and Progressions" icon="🔢">
-      <SquareFloorActivity />
-    </ActivityConceptGroup>
+    <div className="formula-topic-section">
+      <h3 className="formula-topic-heading">📚 Sequences and Progressions</h3>
+      <ActivityConceptGroup title="Square Numbers — Expanding Floor" icon="🔢">
+        <SquareFloorActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Arithmetic Progressions" icon="🪜">
+        <ArithmeticProgressionActivity />
+      </ActivityConceptGroup>
+    </div>
   )}
   {list.map((item, i) => {
     if (item.concept) {
