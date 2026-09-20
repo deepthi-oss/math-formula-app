@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { formulaData, gradeRanges } from './formulaConfig'
 import SquareFloorActivity from './SquareFloorActivity'
-import ArithmeticProgressionActivity from './ArithmeticProgressionActivity'
+import APPredictCheckActivity from './APPredictCheckActivity'
+import APDragBuildActivity from './APDragBuildActivity'
+import APScoredGameActivity from './APScoredGameActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -140,8 +142,14 @@ export default function FormulaExplorer() {
       <ActivityConceptGroup title="Square Numbers — Expanding Floor" icon="🔢">
         <SquareFloorActivity />
       </ActivityConceptGroup>
-      <ActivityConceptGroup title="Arithmetic Progressions" icon="🪜">
-        <ArithmeticProgressionActivity />
+      <ActivityConceptGroup title="AP Practice — Predict & Check" icon="🏗️">
+        <APPredictCheckActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="AP Practice — Drag & Build" icon="🧲">
+        <APDragBuildActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="AP Practice — Scored Game" icon="🏆">
+        <APScoredGameActivity />
       </ActivityConceptGroup>
     </div>
   )}
