@@ -4,6 +4,9 @@ import SquareFloorActivity from './SquareFloorActivity'
 import APPredictCheckActivity from './APPredictCheckActivity'
 import APDragBuildActivity from './APDragBuildActivity'
 import APScoredGameActivity from './APScoredGameActivity'
+import APNumberLineActivity from './APNumberLineActivity'
+import APPairingActivity from './APPairingActivity'
+import APRealWorldActivity from './APRealWorldActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -150,6 +153,15 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="AP Practice — Scored Game" icon="🏆">
         <APScoredGameActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="AP Practice — Predict the Hop" icon="📍">
+        <APNumberLineActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="AP Practice — Pairing Match" icon="🤝">
+        <APPairingActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="AP Practice — Stadium Predict" icon="🏟️">
+        <APRealWorldActivity />
       </ActivityConceptGroup>
     </div>
   )}
