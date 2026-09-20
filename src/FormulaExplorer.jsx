@@ -37,6 +37,25 @@ function ConceptGroup({ concept, items, icon, bg, color }) {
     </div>
   )
 }
+
+function ActivityConceptGroup({ title, icon, children }) {
+  const [open, setOpen] = useState(true)
+  return (
+    <div className="formula-concept-group">
+      <div
+        className="formula-concept-heading"
+        onClick={() => setOpen(o => !o)}
+        style={{ cursor: 'pointer', userSelect: 'none' }}
+      >
+        <span className="formula-concept-icon">{icon}</span>
+        <span style={{ flex: 1 }}>{title}</span>
+        <span className="formula-concept-count">Activity</span>
+        <span className="formula-concept-arrow">{open ? '▼' : '▶'}</span>
+      </div>
+      {open && <div className="formula-activity-content">{children}</div>}
+    </div>
+  )
+}
 export default function FormulaExplorer() {
   const [sector, setSector] = useState('Algebra')
   const [grade, setGrade] = useState(gradeRanges['Algebra'][0])
@@ -49,7 +68,7 @@ export default function FormulaExplorer() {
 
   const list = formulaData[sector]?.[grade] || []
   const activeSector = sectors.find(s => s.name === sector)
-  const isSquareFloorActivity = sector === 'Arithmetic' && grade === 'Class 9'
+  const hasSequencesActivity = sector === 'Arithmetic' && grade === 'Class 9'
 
   return (
     <div className="explorer-v2">
@@ -91,9 +110,6 @@ export default function FormulaExplorer() {
         </div>
       </div>
 
-          {isSquareFloorActivity ? (
-            <SquareFloorActivity />
-          ) : (
           <div className="formula-box" style={{ borderLeftColor: activeSector?.color }}>
             <div className="formula-box-header" style={{ background: activeSector?.bg }}>
               <span className="formula-box-icon">{activeSector?.icon}</span>
@@ -109,7 +125,7 @@ export default function FormulaExplorer() {
             </div>
 
             <div className="formula-box-body">
-              {list.length === 0 ? (
+              {list.length === 0 && !hasSequencesActivity ? (
                 <div className="empty-state">
                   <div className="empty-icon">📭</div>
                   <p className="empty-title">No formulas added yet</p>
@@ -117,6 +133,11 @@ export default function FormulaExplorer() {
                 </div>
               ) : (
                 <div className="formula-concepts">
+  {hasSequencesActivity && (
+    <ActivityConceptGroup title="Sequences and Progressions" icon="🔢">
+      <SquareFloorActivity />
+    </ActivityConceptGroup>
+  )}
   {list.map((item, i) => {
     if (item.concept) {
   return (
@@ -149,7 +170,6 @@ export default function FormulaExplorer() {
               )}
             </div>
           </div>
-          )}
     </div>
   )
 }

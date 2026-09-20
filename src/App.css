@@ -219,8 +219,9 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .formula-num { min-width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
 .formula-text { font-family: 'Courier New', monospace; font-size: 14px; color: #374151; line-height: 1.6; }
 
-/* ===== SQUARE FLOOR ACTIVITY (Arithmetic / Class 9) ===== */
-.square-floor-card { margin: 0 40px 40px; border-radius: 20px; border: 2px solid #E8EDFF; border-left: 5px solid #F59E0B; overflow: hidden; box-shadow: 0 4px 24px rgba(245,158,11,0.1); background: #fff; }
+/* ===== SQUARE FLOOR ACTIVITY (Arithmetic / Class 9 / Sequences and Progressions) ===== */
+.formula-activity-content { padding: 16px 20px 20px; }
+.square-floor-card { border-radius: 16px; border: 2px solid #E8EDFF; border-left: 5px solid #F59E0B; overflow: hidden; box-shadow: 0 4px 24px rgba(245,158,11,0.1); background: #fff; }
 .square-floor-body { padding: 28px 24px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
 
 .sf-controls { display: flex; align-items: center; gap: 16px; }
@@ -259,7 +260,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .sf-chip-active { border-color: #F59E0B; background: #FFFBEB; color: #D97706; }
 
 @media (max-width: 600px) {
-  .square-floor-card { margin: 0 16px 24px; }
+  .formula-activity-content { padding: 12px 8px 16px; }
   .square-floor-body { padding: 18px 14px; }
 }
 
