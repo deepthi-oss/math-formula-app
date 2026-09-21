@@ -113,7 +113,7 @@ export default function APScoredGameActivity() {
             </p>
             <p className="game-formula-recap">
               {question.type === 'nth'
-                ? `aₙ = a + (n−1)d = ${question.a} + (${question.n}−1)×${question.d} = ${question.answer}`
+                ? `tn = a + (n-1) * d = ${question.a} + (${question.n}-1) * ${question.d} = ${question.answer}`
                 : `Sₙ = n/2 [2a+(n−1)d] = ${question.n}/2 × [${2 * question.a}+(${question.n}-1)×${question.d}] = ${question.answer}`}
             </p>
             <button className="game-next-btn" onClick={nextRound}>

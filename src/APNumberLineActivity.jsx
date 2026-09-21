@@ -110,7 +110,7 @@ export default function APNumberLineActivity() {
       {done && (
         <div className="nl-done-banner">
           🎉 You built the full sequence: {terms.join(', ')}
-          <p className="nl-formula">aₙ = a + (n−1)d = {ap.a} + ({ap.n}−1)×{ap.d} = {terms[terms.length - 1]}</p>
+          <p className="nl-formula">tn = a + (n-1) * d = {ap.a} + ({ap.n}-1) * {ap.d} = {terms[terms.length - 1]}</p>
         </div>
       )}
 
