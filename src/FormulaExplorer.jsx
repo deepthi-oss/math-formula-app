@@ -8,6 +8,7 @@ import APScoredGameActivity from './APScoredGameActivity'
 import APNumberLineActivity from './APNumberLineActivity'
 import APPairingActivity from './APPairingActivity'
 import APRealWorldActivity from './APRealWorldActivity'
+import CirclePartsActivity from './CirclePartsActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -76,6 +77,7 @@ export default function FormulaExplorer() {
   const list = formulaData[sector]?.[grade] || []
   const activeSector = sectors.find(s => s.name === sector)
   const hasSequencesActivity = sector === 'Arithmetic' && grade === 'Class 9'
+  const hasCirclesActivity = sector === 'Geometry' && grade === 'Class 6'
 
   return (
     <div className="explorer-v2">
@@ -132,7 +134,7 @@ export default function FormulaExplorer() {
             </div>
 
             <div className="formula-box-body">
-              {list.length === 0 && !hasSequencesActivity ? (
+              {list.length === 0 && !hasSequencesActivity && !hasCirclesActivity ? (
                 <div className="empty-state">
                   <div className="empty-icon">📭</div>
                   <p className="empty-title">No formulas added yet</p>
@@ -166,6 +168,14 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="AP Practice — Stadium Predict" icon="🏟️">
         <APRealWorldActivity />
+      </ActivityConceptGroup>
+    </div>
+  )}
+  {hasCirclesActivity && (
+    <div className="formula-topic-section">
+      <h3 className="formula-topic-heading">⭕ Circles</h3>
+      <ActivityConceptGroup title="Spot the Part — Parts of a Circle" icon="⭕">
+        <CirclePartsActivity />
       </ActivityConceptGroup>
     </div>
   )}
