@@ -66,57 +66,135 @@ const PARTS = [
   },
 ]
 
-function shuffledOrder() {
-  return [...PARTS].sort(() => Math.random() - 0.5).map(p => p.id)
+const ALL_IDS = PARTS.map(p => p.id)
+
+function shuffledIds(ids) {
+  return [...ids].sort(() => Math.random() - 0.5)
 }
 
 export default function CirclePartsActivity() {
-  const [order, setOrder] = useState(shuffledOrder)
+  const [order, setOrder] = useState(() => shuffledIds(ALL_IDS))
   const [step, setStep] = useState(0)
   const [revealed, setRevealed] = useState(() => new Set())
   const [wrongId, setWrongId] = useState(null)
-  const [score, setScore] = useState(0)
+  const [attempts, setAttempts] = useState({})
+  const [roundNumber, setRoundNumber] = useState(1)
+  const [phase, setPhase] = useState('quiz') // 'quiz' | 'round1-summary' | 'final-summary'
+  const [lastRoundAttempts, setLastRoundAttempts] = useState({})
 
   const done = step >= order.length
   const currentId = !done ? order[step] : null
   const currentPart = PARTS.find(p => p.id === currentId)
 
   const newRound = () => {
-    setOrder(shuffledOrder())
+    setOrder(shuffledIds(ALL_IDS))
     setStep(0)
     setRevealed(new Set())
     setWrongId(null)
-    setScore(0)
+    setAttempts({})
+    setRoundNumber(1)
+    setPhase('quiz')
+  }
+
+  const finishRound = currentAttempts => {
+    setLastRoundAttempts(currentAttempts)
+    if (roundNumber === 1) {
+      const struggling = ALL_IDS.filter(id => (currentAttempts[id] || 0) > 0)
+      setPhase(struggling.length === 0 ? 'final-summary' : 'round1-summary')
+    } else {
+      setPhase('final-summary')
+    }
+  }
+
+  const startReview = () => {
+    const struggling = ALL_IDS
+      .filter(id => (lastRoundAttempts[id] || 0) > 0)
+      .sort((a, b) => (lastRoundAttempts[b] || 0) - (lastRoundAttempts[a] || 0))
+    setOrder(shuffledIds(struggling))
+    setStep(0)
+    setRevealed(new Set())
+    setWrongId(null)
+    setAttempts({})
+    setRoundNumber(2)
+    setPhase('quiz')
   }
 
   const handleClick = partId => {
-    if (done || revealed.has(partId)) return
+    if (phase !== 'quiz' || done || revealed.has(partId)) return
     if (partId === currentId) {
-      const next = new Set(revealed)
-      next.add(partId)
-      setRevealed(next)
-      setScore(s => s + 1)
+      const nextRevealed = new Set(revealed)
+      nextRevealed.add(partId)
+      setRevealed(nextRevealed)
       setWrongId(null)
+      if (step + 1 >= order.length) {
+        finishRound(attempts)
+      }
       setStep(s => s + 1)
     } else {
       setWrongId(partId)
+      setAttempts(a => ({ ...a, [currentId]: (a[currentId] || 0) + 1 }))
       setTimeout(() => setWrongId(null), 450)
     }
   }
 
   const cls = id => `cp-hit ${revealed.has(id) ? 'cp-found' : ''} ${wrongId === id ? 'cp-wrong' : ''}`
 
+  if (phase === 'round1-summary') {
+    const struggling = ALL_IDS
+      .filter(id => (lastRoundAttempts[id] || 0) > 0)
+      .sort((a, b) => (lastRoundAttempts[b] || 0) - (lastRoundAttempts[a] || 0))
+    return (
+      <div className="cp-activity">
+        <p className="cp-prompt">🎯 Round 1 complete! Found: {PARTS.length} / {PARTS.length}</p>
+        <div className="cp-feedback-list">
+          {PARTS
+            .slice()
+            .sort((a, b) => (lastRoundAttempts[b.id] || 0) - (lastRoundAttempts[a.id] || 0))
+            .map(p => {
+              const misses = lastRoundAttempts[p.id] || 0
+              return (
+                <div key={p.id} className={`cp-feedback-row ${misses > 0 ? 'cp-feedback-missed' : 'cp-feedback-clean'}`}>
+                  <span>{p.label}</span>
+                  <span>{misses === 0 ? '✓ first try' : `${misses} wrong attempt${misses > 1 ? 's' : ''}`}</span>
+                </div>
+              )
+            })}
+        </div>
+        <p className="cp-review-note">
+          Let's review the {struggling.length} part{struggling.length > 1 ? 's' : ''} that took more tries:{' '}
+          <strong>{struggling.map(id => PARTS.find(p => p.id === id).label).join(', ')}</strong>
+        </p>
+        <button className="cp-new-btn cp-review-btn" onClick={startReview}>▶ Start Review Round</button>
+      </div>
+    )
+  }
+
+  if (phase === 'final-summary') {
+    const wasPerfect = roundNumber === 1
+    return (
+      <div className="cp-activity">
+        <p className="cp-prompt cp-prompt-done">
+          {wasPerfect
+            ? `🎉 Perfect! You identified all ${PARTS.length} parts on the first try.`
+            : '🎉 Review complete! Nice work getting those down.'}
+        </p>
+        <button className="cp-new-btn" onClick={newRound}>🔄 New Round</button>
+      </div>
+    )
+  }
+
   return (
     <div className="cp-activity">
+      {roundNumber === 2 && <div className="cp-progress cp-review-badge">Review Round</div>}
       {!done ? (
         <p className="cp-prompt">
           Click the <strong>{currentPart.label.toUpperCase()}</strong> on the diagram
         </p>
       ) : (
-        <p className="cp-prompt cp-prompt-done">🎉 Fully labeled! You found all {PARTS.length} parts.</p>
+        <p className="cp-prompt cp-prompt-done">🎉 Round complete!</p>
       )}
 
-      <div className="cp-progress">Found: {score} / {PARTS.length}</div>
+      <div className="cp-progress">Found: {step} / {order.length}</div>
 
       <svg viewBox="0 0 320 320" className="cp-svg">
         {/* circumference (base circle) */}
