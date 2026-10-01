@@ -8,6 +8,7 @@ import APScoredGameActivity from './APScoredGameActivity'
 import APNumberLineActivity from './APNumberLineActivity'
 import APPairingActivity from './APPairingActivity'
 import APRealWorldActivity from './APRealWorldActivity'
+import CircleLearnActivity from './CircleLearnActivity'
 import CirclePartsActivity from './CirclePartsActivity'
 
 const sectors = [
@@ -174,6 +175,9 @@ export default function FormulaExplorer() {
   {hasCirclesActivity && (
     <div className="formula-topic-section">
       <h3 className="formula-topic-heading">⭕ Circles</h3>
+      <ActivityConceptGroup title="Discover the Parts of a Circle" icon="🔍">
+        <CircleLearnActivity />
+      </ActivityConceptGroup>
       <ActivityConceptGroup title="Spot the Part — Parts of a Circle" icon="⭕">
         <CirclePartsActivity />
       </ActivityConceptGroup>
