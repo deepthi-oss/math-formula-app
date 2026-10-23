@@ -189,9 +189,6 @@ export default function FormulaExplorer() {
       <ActivityConceptGroup title="How Many Circles? — Circles Through Points" icon="🔵">
         <CircleThroughPointsActivity />
       </ActivityConceptGroup>
-      <ActivityConceptGroup title="Where's the Center? — Circumcenter & Triangles" icon="🔺">
-        <CircumcenterLocationActivity />
-      </ActivityConceptGroup>
     </div>
   )}
   {hasSymmetryActivity && (
@@ -202,6 +199,9 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Spin & Count — Rotational Symmetry" icon="🌀">
         <RotationalSymmetryActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Where's the Center? — Circumcenter & Triangles" icon="🔺">
+        <CircumcenterLocationActivity />
       </ActivityConceptGroup>
     </div>
   )}
