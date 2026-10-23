@@ -82,7 +82,7 @@ export default function FormulaExplorer() {
   const activeSector = sectors.find(s => s.name === sector)
   const hasSequencesActivity = sector === 'Arithmetic' && grade === 'Class 9'
   const hasCirclesActivity = sector === 'Geometry' && grade === 'Class 6'
-  const hasSymmetryActivity = sector === 'Geometry' && grade === 'Class 7'
+  const hasSymmetryActivity = sector === 'Geometry' && grade === 'Class 9'
   const hasCircleTheoremsActivity = sector === 'Geometry' && grade === 'Class 9'
 
   return (
