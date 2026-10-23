@@ -10,6 +10,8 @@ import APPairingActivity from './APPairingActivity'
 import APRealWorldActivity from './APRealWorldActivity'
 import CircleLearnActivity from './CircleLearnActivity'
 import CirclePartsActivity from './CirclePartsActivity'
+import ReflectionSymmetryActivity from './ReflectionSymmetryActivity'
+import RotationalSymmetryActivity from './RotationalSymmetryActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -79,6 +81,7 @@ export default function FormulaExplorer() {
   const activeSector = sectors.find(s => s.name === sector)
   const hasSequencesActivity = sector === 'Arithmetic' && grade === 'Class 9'
   const hasCirclesActivity = sector === 'Geometry' && grade === 'Class 6'
+  const hasSymmetryActivity = sector === 'Geometry' && grade === 'Class 7'
 
   return (
     <div className="explorer-v2">
@@ -135,7 +138,7 @@ export default function FormulaExplorer() {
             </div>
 
             <div className="formula-box-body">
-              {list.length === 0 && !hasSequencesActivity && !hasCirclesActivity ? (
+              {list.length === 0 && !hasSequencesActivity && !hasCirclesActivity && !hasSymmetryActivity ? (
                 <div className="empty-state">
                   <div className="empty-icon">📭</div>
                   <p className="empty-title">No formulas added yet</p>
@@ -180,6 +183,17 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Spot the Part — Parts of a Circle" icon="⭕">
         <CirclePartsActivity />
+      </ActivityConceptGroup>
+    </div>
+  )}
+  {hasSymmetryActivity && (
+    <div className="formula-topic-section">
+      <h3 className="formula-topic-heading">🦋 Symmetry</h3>
+      <ActivityConceptGroup title="Find the Lines — Reflection Symmetry" icon="🪞">
+        <ReflectionSymmetryActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Spin & Count — Rotational Symmetry" icon="🌀">
+        <RotationalSymmetryActivity />
       </ActivityConceptGroup>
     </div>
   )}
