@@ -83,8 +83,7 @@ export default function FormulaExplorer() {
   const list = formulaData[sector]?.[grade] || []
   const activeSector = sectors.find(s => s.name === sector)
   const hasSequencesActivity = sector === 'Arithmetic' && grade === 'Class 9'
-  const hasCirclesActivity = sector === 'Geometry' && grade === 'Class 9'
-  const hasSymmetryActivity = sector === 'Geometry' && grade === 'Class 9'
+  const hasGeometryClass9Activities = sector === 'Geometry' && grade === 'Class 9'
 
   return (
     <div className="explorer-v2">
@@ -141,7 +140,7 @@ export default function FormulaExplorer() {
             </div>
 
             <div className="formula-box-body">
-              {list.length === 0 && !hasSequencesActivity && !hasCirclesActivity && !hasSymmetryActivity ? (
+              {list.length === 0 && !hasSequencesActivity && !hasGeometryClass9Activities ? (
                 <div className="empty-state">
                   <div className="empty-icon">📭</div>
                   <p className="empty-title">No formulas added yet</p>
@@ -178,36 +177,30 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
     </div>
   )}
-  {hasCirclesActivity && (
-    <div className="formula-topic-section">
-      <h3 className="formula-topic-heading">⭕ Circles</h3>
+  {hasGeometryClass9Activities && (
+    <>
       <ActivityConceptGroup title="Discover the Parts of a Circle" icon="🔍">
         <CircleLearnActivity />
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Spot the Part — Parts of a Circle" icon="⭕">
         <CirclePartsActivity />
       </ActivityConceptGroup>
-      <ActivityConceptGroup title="How Many Circles? — Circles Through Points" icon="🔵">
-        <CircleThroughPointsActivity />
-      </ActivityConceptGroup>
-      <ActivityConceptGroup title="Spin the Thread — Chords and the Angles They Subtend" icon="🚲">
-        <ChordAngleActivity />
-      </ActivityConceptGroup>
-    </div>
-  )}
-  {hasSymmetryActivity && (
-    <div className="formula-topic-section">
-      <h3 className="formula-topic-heading">🦋 Symmetry</h3>
       <ActivityConceptGroup title="Find the Lines — Reflection Symmetry" icon="🪞">
         <ReflectionSymmetryActivity />
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Spin & Count — Rotational Symmetry" icon="🌀">
         <RotationalSymmetryActivity />
       </ActivityConceptGroup>
+      <ActivityConceptGroup title="How Many Circles? — Circles Through Points" icon="🔵">
+        <CircleThroughPointsActivity />
+      </ActivityConceptGroup>
       <ActivityConceptGroup title="Where's the Center? — Circumcenter & Triangles" icon="🔺">
         <CircumcenterLocationActivity />
       </ActivityConceptGroup>
-    </div>
+      <ActivityConceptGroup title="Spin the Thread — Chords and the Angles They Subtend" icon="🚲">
+        <ChordAngleActivity />
+      </ActivityConceptGroup>
+    </>
   )}
   {list.map((item, i) => {
     if (item.concept) {
