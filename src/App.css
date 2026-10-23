@@ -648,12 +648,38 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .ctp-done-banner { text-align: center; background: #EFF6FF; border: 2px solid #BFDBFE; color: #1E40AF; font-weight: 800; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 460px; }
 .ctp-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
 
+/* ===== WHERE'S THE CENTER? — CIRCUMCENTER & TRIANGLES (teal, Geometry) ===== */
+.ccl-activity { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px 20px; }
+.ccl-stepper { font-size: 12px; font-weight: 800; color: #0D9488; background: #F0FDFA; border: 2px solid #99F6E4; padding: 6px 16px; border-radius: 20px; }
+.ccl-instruction { font-size: 13px; color: #4B5563; text-align: center; max-width: 440px; line-height: 1.6; margin: 0; }
+
+.ccl-svg { width: 280px; max-width: 100%; height: auto; }
+.ccl-triangle { fill: #CCFBF1; stroke: #5EEAD4; stroke-width: 2.5; }
+.ccl-bisector { stroke: #2DD4BF; stroke-width: 2; stroke-dasharray: 6 5; }
+.ccl-circle { fill: none; stroke: #0D9488; stroke-width: 2; }
+.ccl-center-dot { fill: #0F766E; }
+
+.ccl-choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.ccl-choice-btn { padding: 11px 18px; border-radius: 10px; border: 2px solid #99F6E4; background: #fff; color: #0D9488; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+.ccl-choice-btn:hover { background: #0D9488; color: #fff; }
+
+.ccl-insight { display: flex; flex-direction: column; align-items: center; gap: 8px; background: #F0FDFA; border: 2px solid #99F6E4; padding: 14px 20px; border-radius: 14px; max-width: 440px; text-align: center; }
+.ccl-insight p { margin: 0; }
+.ccl-feedback-correct { font-weight: 800; font-size: 13px; color: #059669; }
+.ccl-feedback-wrong { font-weight: 800; font-size: 13px; color: #B45309; }
+.ccl-term-note { font-size: 12.5px; color: #134E4A; line-height: 1.6; }
+.ccl-term-note-muted { color: #6B7280; font-size: 12px; }
+.ccl-next-btn { padding: 9px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #14B8A6, #0D9488); color: #fff; font-weight: 800; cursor: pointer; font-size: 12.5px; margin-top: 4px; }
+
+.ccl-done-banner { text-align: center; background: #F0FDFA; border: 2px solid #99F6E4; color: #134E4A; font-weight: 800; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 460px; }
+.ccl-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
+
 @media (max-width: 600px) {
   .formula-activity-content { padding: 12px 8px 16px; }
   .square-floor-body { padding: 18px 14px; }
   .ap-activity { padding: 18px 10px; }
   .ap-controls { gap: 12px; }
-  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity, .ctp-activity { padding: 16px 10px; }
+  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity, .ctp-activity, .ccl-activity { padding: 16px 10px; }
 }
 
 @media (max-width: 600px) {

@@ -13,6 +13,7 @@ import CirclePartsActivity from './CirclePartsActivity'
 import ReflectionSymmetryActivity from './ReflectionSymmetryActivity'
 import RotationalSymmetryActivity from './RotationalSymmetryActivity'
 import CircleThroughPointsActivity from './CircleThroughPointsActivity'
+import CircumcenterLocationActivity from './CircumcenterLocationActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -187,6 +188,9 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="How Many Circles? — Circles Through Points" icon="🔵">
         <CircleThroughPointsActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Where's the Center? — Circumcenter & Triangles" icon="🔺">
+        <CircumcenterLocationActivity />
       </ActivityConceptGroup>
     </div>
   )}
