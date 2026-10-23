@@ -81,9 +81,8 @@ export default function FormulaExplorer() {
   const list = formulaData[sector]?.[grade] || []
   const activeSector = sectors.find(s => s.name === sector)
   const hasSequencesActivity = sector === 'Arithmetic' && grade === 'Class 9'
-  const hasCirclesActivity = sector === 'Geometry' && grade === 'Class 6'
+  const hasCirclesActivity = sector === 'Geometry' && grade === 'Class 9'
   const hasSymmetryActivity = sector === 'Geometry' && grade === 'Class 9'
-  const hasCircleTheoremsActivity = sector === 'Geometry' && grade === 'Class 9'
 
   return (
     <div className="explorer-v2">
@@ -140,7 +139,7 @@ export default function FormulaExplorer() {
             </div>
 
             <div className="formula-box-body">
-              {list.length === 0 && !hasSequencesActivity && !hasCirclesActivity && !hasSymmetryActivity && !hasCircleTheoremsActivity ? (
+              {list.length === 0 && !hasSequencesActivity && !hasCirclesActivity && !hasSymmetryActivity ? (
                 <div className="empty-state">
                   <div className="empty-icon">📭</div>
                   <p className="empty-title">No formulas added yet</p>
@@ -186,6 +185,9 @@ export default function FormulaExplorer() {
       <ActivityConceptGroup title="Spot the Part — Parts of a Circle" icon="⭕">
         <CirclePartsActivity />
       </ActivityConceptGroup>
+      <ActivityConceptGroup title="How Many Circles? — Circles Through Points" icon="🔵">
+        <CircleThroughPointsActivity />
+      </ActivityConceptGroup>
     </div>
   )}
   {hasSymmetryActivity && (
@@ -196,14 +198,6 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Spin & Count — Rotational Symmetry" icon="🌀">
         <RotationalSymmetryActivity />
-      </ActivityConceptGroup>
-    </div>
-  )}
-  {hasCircleTheoremsActivity && (
-    <div className="formula-topic-section">
-      <h3 className="formula-topic-heading">⭕ Circles</h3>
-      <ActivityConceptGroup title="How Many Circles? — Circles Through Points" icon="🔵">
-        <CircleThroughPointsActivity />
       </ActivityConceptGroup>
     </div>
   )}
