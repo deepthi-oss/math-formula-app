@@ -14,6 +14,7 @@ import ReflectionSymmetryActivity from './ReflectionSymmetryActivity'
 import RotationalSymmetryActivity from './RotationalSymmetryActivity'
 import CircleThroughPointsActivity from './CircleThroughPointsActivity'
 import CircumcenterLocationActivity from './CircumcenterLocationActivity'
+import ChordAngleActivity from './ChordAngleActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -188,6 +189,9 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="How Many Circles? — Circles Through Points" icon="🔵">
         <CircleThroughPointsActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Spin the Thread — Chords and the Angles They Subtend" icon="🚲">
+        <ChordAngleActivity />
       </ActivityConceptGroup>
     </div>
   )}
