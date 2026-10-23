@@ -621,12 +621,39 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .rt-done-banner { text-align: center; background: #FDF2F8; border: 2px solid #FBCFE8; color: #9D174D; font-weight: 800; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 440px; }
 .rt-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
 
+/* ===== HOW MANY CIRCLES? — CIRCLES THROUGH POINTS (blue, Geometry) ===== */
+.ctp-activity { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px 20px; }
+.ctp-stepper { font-size: 12px; font-weight: 800; color: #1D4ED8; background: #EFF6FF; border: 2px solid #BFDBFE; padding: 6px 16px; border-radius: 20px; }
+.ctp-instruction { font-size: 13px; color: #4B5563; text-align: center; max-width: 440px; line-height: 1.6; margin: 0; }
+.ctp-progress { font-size: 12px; font-weight: 800; color: #1D4ED8; }
+
+.ctp-svg { width: 280px; max-width: 100%; height: auto; touch-action: manipulation; }
+.ctp-point { fill: #1F2937; }
+.ctp-label { font-size: 14px; font-weight: 800; fill: #1F2937; }
+.ctp-bisector { stroke: #93C5FD; stroke-width: 2.5; stroke-dasharray: 6 5; }
+.ctp-example-circle { fill: none; stroke: #60A5FA; stroke-width: 2; opacity: 0.7; }
+
+.ctp-hit { cursor: pointer; }
+.ctp-candidate { fill: #fff; stroke: #9CA3AF; stroke-width: 3; transition: all 0.15s; }
+.ctp-found .ctp-candidate { fill: #10B981; stroke: #059669; }
+.ctp-wrong .ctp-candidate { fill: #EF4444; stroke: #DC2626; }
+.ctp-tried .ctp-candidate { fill: #FEE2E2; stroke: #FCA5A5; }
+
+.ctp-no-circle-btn { padding: 10px 18px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+.ctp-no-circle-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.ctp-insight { display: flex; flex-direction: column; align-items: center; gap: 10px; background: #EFF6FF; border: 2px solid #BFDBFE; color: #1E40AF; font-weight: 700; font-size: 13px; padding: 14px 20px; border-radius: 14px; max-width: 440px; text-align: center; }
+.ctp-insight p { margin: 0; }
+.ctp-next-btn { padding: 9px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: #fff; font-weight: 800; cursor: pointer; font-size: 12.5px; }
+.ctp-done-banner { text-align: center; background: #EFF6FF; border: 2px solid #BFDBFE; color: #1E40AF; font-weight: 800; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 460px; }
+.ctp-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
+
 @media (max-width: 600px) {
   .formula-activity-content { padding: 12px 8px 16px; }
   .square-floor-body { padding: 18px 14px; }
   .ap-activity { padding: 18px 10px; }
   .ap-controls { gap: 12px; }
-  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity { padding: 16px 10px; }
+  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity, .ctp-activity { padding: 16px 10px; }
 }
 
 @media (max-width: 600px) {

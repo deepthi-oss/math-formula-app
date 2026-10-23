@@ -12,6 +12,7 @@ import CircleLearnActivity from './CircleLearnActivity'
 import CirclePartsActivity from './CirclePartsActivity'
 import ReflectionSymmetryActivity from './ReflectionSymmetryActivity'
 import RotationalSymmetryActivity from './RotationalSymmetryActivity'
+import CircleThroughPointsActivity from './CircleThroughPointsActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -82,6 +83,7 @@ export default function FormulaExplorer() {
   const hasSequencesActivity = sector === 'Arithmetic' && grade === 'Class 9'
   const hasCirclesActivity = sector === 'Geometry' && grade === 'Class 6'
   const hasSymmetryActivity = sector === 'Geometry' && grade === 'Class 7'
+  const hasCircleTheoremsActivity = sector === 'Geometry' && grade === 'Class 9'
 
   return (
     <div className="explorer-v2">
@@ -138,7 +140,7 @@ export default function FormulaExplorer() {
             </div>
 
             <div className="formula-box-body">
-              {list.length === 0 && !hasSequencesActivity && !hasCirclesActivity && !hasSymmetryActivity ? (
+              {list.length === 0 && !hasSequencesActivity && !hasCirclesActivity && !hasSymmetryActivity && !hasCircleTheoremsActivity ? (
                 <div className="empty-state">
                   <div className="empty-icon">📭</div>
                   <p className="empty-title">No formulas added yet</p>
@@ -194,6 +196,14 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Spin & Count — Rotational Symmetry" icon="🌀">
         <RotationalSymmetryActivity />
+      </ActivityConceptGroup>
+    </div>
+  )}
+  {hasCircleTheoremsActivity && (
+    <div className="formula-topic-section">
+      <h3 className="formula-topic-heading">⭕ Circles</h3>
+      <ActivityConceptGroup title="How Many Circles? — Circles Through Points" icon="🔵">
+        <CircleThroughPointsActivity />
       </ActivityConceptGroup>
     </div>
   )}
