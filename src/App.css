@@ -703,12 +703,54 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .cha-done-banner { text-align: center; background: #FFF7ED; border: 2px solid #FED7AA; color: #7C2D12; font-weight: 700; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 460px; line-height: 1.6; }
 .cha-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
 
+/* ===== THE SPINNING STATUE — EQUAL ANGLES, EQUAL CHORDS (cartoonish, Geometry) ===== */
+.sst-activity { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px 20px; }
+.sst-stepper { font-size: 12px; font-weight: 800; color: #7C3AED; background: #F5F3FF; border: 2px solid #DDD6FE; padding: 6px 16px; border-radius: 20px; }
+.sst-instruction { font-size: 13px; color: #4B5563; text-align: center; max-width: 440px; line-height: 1.6; margin: 0; }
+
+.sst-svg { width: 260px; max-width: 100%; height: auto; transition: opacity 0.2s; }
+.sst-dimmed { opacity: 0.45; }
+.sst-room { fill: #FDF4FF; }
+.sst-floor-line { stroke: #F3E8FF; stroke-width: 1.5; }
+.sst-room-edge { fill: none; stroke: #C084FC; stroke-width: 3; }
+
+.sst-arm { stroke: #FBBF24; stroke-width: 7; stroke-linecap: round; }
+.sst-hand { fill: #F59E0B; stroke: #B45309; stroke-width: 2; }
+.sst-chord { stroke: #EC4899; stroke-width: 3; stroke-dasharray: 7 5; }
+
+.sst-body { fill: #60A5FA; stroke: #2563EB; stroke-width: 2.5; }
+.sst-head { fill: #93C5FD; stroke: #2563EB; stroke-width: 2.5; }
+.sst-eye { fill: #1E293B; }
+.sst-cheek { fill: #F9A8D4; opacity: 0.8; }
+.sst-smile { fill: none; stroke: #1E293B; stroke-width: 2; stroke-linecap: round; }
+.sst-antenna { fill: none; stroke: #2563EB; stroke-width: 2.5; stroke-linecap: round; }
+.sst-antenna-tip { fill: #FBBF24; stroke: #B45309; stroke-width: 1.5; }
+
+.sst-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; font-size: 12.5px; font-weight: 700; color: #6B7280; align-items: center; }
+.sst-ruler-row { display: flex; align-items: center; gap: 8px; }
+.sst-ruler { height: 10px; background: linear-gradient(135deg, #EC4899, #DB2777); border-radius: 5px; display: inline-block; transition: width 0.3s ease; }
+
+.sst-btn { padding: 10px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #A855F7, #7C3AED); color: #fff; font-weight: 800; cursor: pointer; font-size: 13px; }
+
+.sst-choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.sst-choice-btn { padding: 11px 18px; border-radius: 10px; border: 2px solid #DDD6FE; background: #fff; color: #7C3AED; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+.sst-choice-btn:hover { background: #7C3AED; color: #fff; }
+
+.sst-insight { display: flex; flex-direction: column; align-items: center; gap: 8px; background: #F5F3FF; border: 2px solid #DDD6FE; padding: 14px 20px; border-radius: 14px; max-width: 420px; text-align: center; }
+.sst-insight p { margin: 0; }
+.sst-feedback-correct { font-weight: 800; font-size: 13px; color: #059669; }
+.sst-feedback-wrong { font-weight: 800; font-size: 13px; color: #B45309; }
+.sst-next-btn { padding: 9px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #A855F7, #7C3AED); color: #fff; font-weight: 800; cursor: pointer; font-size: 12.5px; margin-top: 4px; }
+
+.sst-done-banner { text-align: center; background: #F5F3FF; border: 2px solid #DDD6FE; color: #4C1D95; font-weight: 700; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 460px; line-height: 1.6; }
+.sst-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
+
 @media (max-width: 600px) {
   .formula-activity-content { padding: 12px 8px 16px; }
   .square-floor-body { padding: 18px 14px; }
   .ap-activity { padding: 18px 10px; }
   .ap-controls { gap: 12px; }
-  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity, .ctp-activity, .ccl-activity, .cha-activity { padding: 16px 10px; }
+  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity, .ctp-activity, .ccl-activity, .cha-activity, .sst-activity { padding: 16px 10px; }
 }
 
 @media (max-width: 600px) {
