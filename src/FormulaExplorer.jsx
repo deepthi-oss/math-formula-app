@@ -17,6 +17,8 @@ import CircumcenterLocationActivity from './CircumcenterLocationActivity'
 import ChordAngleActivity from './ChordAngleActivity'
 import SpinningStatueActivity from './SpinningStatueActivity'
 import IsoscelesChordActivity from './IsoscelesChordActivity'
+import FlagpoleMidpointActivity from './FlagpoleMidpointActivity'
+import RightAngleDetectiveActivity from './RightAngleDetectiveActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -207,6 +209,12 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Kite Strings — Chords Make Isosceles Triangles" icon="🪁">
         <IsoscelesChordActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Flagpole at the Midpoint — Discover the Right Angle" icon="🚩">
+        <FlagpoleMidpointActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Right-Angle Detective — Find the True Midpoint" icon="🕵️">
+        <RightAngleDetectiveActivity />
       </ActivityConceptGroup>
     </>
   )}
