@@ -16,6 +16,7 @@ import CircleThroughPointsActivity from './CircleThroughPointsActivity'
 import CircumcenterLocationActivity from './CircumcenterLocationActivity'
 import ChordAngleActivity from './ChordAngleActivity'
 import SpinningStatueActivity from './SpinningStatueActivity'
+import IsoscelesChordActivity from './IsoscelesChordActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -203,6 +204,9 @@ export default function FormulaExplorer() {
       </ActivityConceptGroup>
       <ActivityConceptGroup title="The Spinning Statue — Equal Angles, Equal Chords" icon="🤸">
         <SpinningStatueActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Kite Strings — Chords Make Isosceles Triangles" icon="🪁">
+        <IsoscelesChordActivity />
       </ActivityConceptGroup>
     </>
   )}

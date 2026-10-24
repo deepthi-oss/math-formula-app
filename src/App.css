@@ -745,12 +745,45 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .sst-done-banner { text-align: center; background: #F5F3FF; border: 2px solid #DDD6FE; color: #4C1D95; font-weight: 700; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 460px; line-height: 1.6; }
 .sst-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
 
+/* ===== KITE STRINGS — CHORDS MAKE ISOSCELES TRIANGLES (sky blue, Geometry) ===== */
+.isc-activity { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px 20px; }
+.isc-stepper { font-size: 12px; font-weight: 800; color: #0369A1; background: #F0F9FF; border: 2px solid #BAE6FD; padding: 6px 16px; border-radius: 20px; }
+.isc-instruction { font-size: 13px; color: #4B5563; text-align: center; max-width: 440px; line-height: 1.6; margin: 0; }
+
+.isc-svg { width: 270px; max-width: 100%; height: auto; }
+.isc-field { fill: #F0F9FF; stroke: #7DD3FC; stroke-width: 2.5; }
+.isc-post { fill: #78350F; stroke: #451A03; stroke-width: 1.5; }
+
+.isc-string { fill: none; stroke: #94A3B8; stroke-width: 2.5; }
+.isc-string-equal { stroke: #10B981; stroke-width: 3; }
+.isc-chord { stroke: #F472B6; stroke-width: 2.5; stroke-dasharray: 6 5; }
+
+.isc-kite-a { fill: #FB923C; stroke: #C2410C; stroke-width: 2; }
+.isc-kite-b { fill: #38BDF8; stroke: #0369A1; stroke-width: 2; }
+.isc-tail { stroke: #F472B6; stroke-width: 2; stroke-linecap: round; }
+
+.isc-tri-fill { fill: #BAE6FD; opacity: 0.55; stroke: #38BDF8; stroke-width: 1.5; }
+
+.isc-choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.isc-choice-btn { padding: 11px 18px; border-radius: 10px; border: 2px solid #BAE6FD; background: #fff; color: #0369A1; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+.isc-choice-btn:hover { background: #0369A1; color: #fff; }
+
+.isc-insight { display: flex; flex-direction: column; align-items: center; gap: 8px; background: #F0F9FF; border: 2px solid #BAE6FD; padding: 14px 20px; border-radius: 14px; max-width: 440px; text-align: center; }
+.isc-insight p { margin: 0; }
+.isc-feedback-correct { font-weight: 800; font-size: 13px; color: #059669; }
+.isc-feedback-wrong { font-weight: 800; font-size: 13px; color: #B45309; }
+.isc-term-note { font-size: 12.5px; color: #075985; line-height: 1.6; }
+.isc-next-btn { padding: 9px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #38BDF8, #0369A1); color: #fff; font-weight: 800; cursor: pointer; font-size: 12.5px; margin-top: 4px; }
+
+.isc-done-banner { text-align: center; background: #F0F9FF; border: 2px solid #BAE6FD; color: #075985; font-weight: 700; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 460px; line-height: 1.6; }
+.isc-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
+
 @media (max-width: 600px) {
   .formula-activity-content { padding: 12px 8px 16px; }
   .square-floor-body { padding: 18px 14px; }
   .ap-activity { padding: 18px 10px; }
   .ap-controls { gap: 12px; }
-  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity, .ctp-activity, .ccl-activity, .cha-activity, .sst-activity { padding: 16px 10px; }
+  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity, .ctp-activity, .ccl-activity, .cha-activity, .sst-activity, .isc-activity { padding: 16px 10px; }
 }
 
 @media (max-width: 600px) {
