@@ -19,6 +19,7 @@ import SpinningStatueActivity from './SpinningStatueActivity'
 import IsoscelesChordActivity from './IsoscelesChordActivity'
 import FlagpoleMidpointActivity from './FlagpoleMidpointActivity'
 import RightAngleDetectiveActivity from './RightAngleDetectiveActivity'
+import TigerStretchActivity from './TigerStretchActivity'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -88,6 +89,7 @@ export default function FormulaExplorer() {
   const activeSector = sectors.find(s => s.name === sector)
   const hasSequencesActivity = sector === 'Arithmetic' && grade === 'Class 9'
   const hasGeometryClass9Activities = sector === 'Geometry' && grade === 'Class 9'
+  const hasProportionalReasoningActivity = sector === 'Arithmetic' && grade === 'Class 8'
 
   return (
     <div className="explorer-v2">
@@ -144,7 +146,7 @@ export default function FormulaExplorer() {
             </div>
 
             <div className="formula-box-body">
-              {list.length === 0 && !hasSequencesActivity && !hasGeometryClass9Activities ? (
+              {list.length === 0 && !hasSequencesActivity && !hasGeometryClass9Activities && !hasProportionalReasoningActivity ? (
                 <div className="empty-state">
                   <div className="empty-icon">📭</div>
                   <p className="empty-title">No formulas added yet</p>
@@ -152,6 +154,14 @@ export default function FormulaExplorer() {
                 </div>
               ) : (
                 <div className="formula-concepts">
+  {hasProportionalReasoningActivity && (
+    <div className="formula-topic-section">
+      <h3 className="formula-topic-heading">⚖️ Proportional Reasoning - 1</h3>
+      <ActivityConceptGroup title="Stretch the Tiger! — Keeping Images Proportional" icon="🐯">
+        <TigerStretchActivity />
+      </ActivityConceptGroup>
+    </div>
+  )}
   {hasSequencesActivity && (
     <div className="formula-topic-section">
       <h3 className="formula-topic-heading">📚 Sequences and Progressions</h3>
