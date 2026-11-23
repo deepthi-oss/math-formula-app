@@ -1,15 +1,19 @@
 import { useState } from 'react'
 
 const LEVEL_LABEL = { knowledge: 'Knowledge', understanding: 'Understanding', application: 'Application' }
+const KIND_LABEL = { quick: '⚡ One-word answer', word: '📖 Word problem' }
+
+// lower-case, no spaces, "2 to 3" → "2:3", no trailing full stop
+const normalize = s => s.toLowerCase().replace(/\s+/g, '').replace(/(\d)to(\d)/g, '$1:$2').replace(/\.$/, '')
 
 function Answer({ q }) {
   if (q.type === 'number') return q.unit === '₹' ? `₹${q.answer}` : `${q.answer} ${q.unit || ''}`
   return q.answer
 }
 
-// One question at a time, endless. `makeQuestion()` returns a fresh question each call.
+// One question at a time, endless. `makeQuestion(n)` returns a fresh question for question number n.
 export function PracticeQuiz({ makeQuestion, intro }) {
-  const [q, setQ] = useState(() => makeQuestion())
+  const [q, setQ] = useState(() => makeQuestion(1))
   const [count, setCount] = useState(1)
   const [score, setScore] = useState(0)
   const [chosen, setChosen] = useState(null)
@@ -37,11 +41,12 @@ export function PracticeQuiz({ makeQuestion, intro }) {
 
   const checkTyped = () => {
     if (finished || typed.trim() === '') return
-    mark(Number(typed.replace(/[₹,\s]/g, '')) === q.answer)
+    if (q.type === 'word') mark(q.accept.includes(normalize(typed)))
+    else mark(Number(typed.replace(/[₹,\s]/g, '')) === q.answer)
   }
 
   const next = () => {
-    setQ(makeQuestion())
+    setQ(makeQuestion(count + 1))
     setCount(c => c + 1)
     setChosen(null)
     setTyped('')
@@ -56,6 +61,7 @@ export function PracticeQuiz({ makeQuestion, intro }) {
         <span className="pp-qnum">Question {count}</span>
         <span className="pp-score">⭐ {score} right first time</span>
       </div>
+      {q.kind && <span className={`pp-kind pp-kind-${q.kind}`}>{KIND_LABEL[q.kind]}</span>}
 
       <p className="pp-question">{q.text}</p>
 
@@ -77,10 +83,10 @@ export function PracticeQuiz({ makeQuestion, intro }) {
           {q.unit === '₹' && <span className="pp-unit">₹</span>}
           <input
             className="pp-input"
-            inputMode="decimal"
+            inputMode={q.type === 'word' ? 'text' : 'decimal'}
             value={typed}
             disabled={finished}
-            placeholder="Your answer"
+            placeholder={q.placeholder || 'Your answer'}
             onChange={e => { setTyped(e.target.value); if (result === 'retry') setResult(null) }}
             onKeyDown={e => e.key === 'Enter' && checkTyped()}
           />
@@ -123,24 +129,34 @@ export function HomeworkSheet({ makeSheet, title }) {
       <div className="pp-hw-sheet">
         <h4 className="pp-hw-title">{title}</h4>
         <p className="pp-hw-sub">Name: ____________________ &nbsp;&nbsp; Date: ____________</p>
-        <ol className="pp-hw-list">
-          {sheet.map((q, i) => (
-            <li key={i} className="pp-hw-item">
-              <span className="pp-hw-level">{LEVEL_LABEL[q.level]}</span>
-              <p className="pp-hw-q">{q.text}</p>
-              {q.type === 'mcq' && (
-                <div className="pp-hw-opts">
-                  {q.options.map((opt, j) => <span key={j}>({'abcd'[j]}) {opt}</span>)}
-                </div>
-              )}
-              {showKey && (
-                <p className="pp-hw-key">
-                  <strong>Answer: <Answer q={q} /></strong> — {q.working}
-                </p>
-              )}
-            </li>
-          ))}
-        </ol>
+        {[['quick', 'Section A: One-word answers'], ['word', 'Section B: Word problems']].map(([kind, heading]) => {
+          const items = sheet.map((q, i) => ({ q, i })).filter(x => x.q.kind === kind)
+          if (items.length === 0) return null
+          return (
+            <div key={kind}>
+              <h5 className="pp-hw-section">{heading}</h5>
+              <ol className="pp-hw-list" start={items[0].i + 1}>
+                {items.map(({ q, i }) => (
+                  <li key={i} className="pp-hw-item">
+                    <span className="pp-hw-level">{LEVEL_LABEL[q.level]}</span>
+                    <p className="pp-hw-q">{q.text}</p>
+                    {q.type === 'mcq' && (
+                      <div className="pp-hw-opts">
+                        {q.options.map((opt, j) => <span key={j}>({'abcd'[j]}) {opt}</span>)}
+                      </div>
+                    )}
+                    {q.type !== 'mcq' && !showKey && <p className="pp-hw-blank">Answer: ____________</p>}
+                    {showKey && (
+                      <p className="pp-hw-key">
+                        <strong>Answer: <Answer q={q} /></strong> — {q.working}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

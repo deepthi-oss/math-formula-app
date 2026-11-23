@@ -172,13 +172,13 @@ export default function FormulaExplorer() {
         <RatioActivity />
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Knowledge Problems" icon="📘">
-        <PracticeQuiz makeQuestion={() => makeRatioQuestion('knowledge')} intro="Remember the words and the basic idea of ratios. New questions every time!" />
+        <PracticeQuiz makeQuestion={n => makeRatioQuestion('knowledge', n)} intro="Remember the words and the basic idea of ratios. First 5: one-word answers, then word problems. New questions every time!" />
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Understanding Problems" icon="💡">
-        <PracticeQuiz makeQuestion={() => makeRatioQuestion('understanding')} intro="Use the idea: compare ratios, find missing terms, and spot mistakes." />
+        <PracticeQuiz makeQuestion={n => makeRatioQuestion('understanding', n)} intro="Use the idea: compare ratios, find missing terms, and spot mistakes. First 5: one-word answers, then word problems." />
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Application Problems" icon="🛠️">
-        <PracticeQuiz makeQuestion={() => makeRatioQuestion('application')} intro="Real-life problems: recipes, sharing money, photos and more. Type your answer." />
+        <PracticeQuiz makeQuestion={n => makeRatioQuestion('application', n)} intro="Use ratios to solve problems. First 5: quick one-number answers, then real-life word problems." />
       </ActivityConceptGroup>
       <ActivityConceptGroup title="Home Work Problems" icon="📝">
         <HomeworkSheet makeSheet={makeRatioHomework} title="Ratios: Home Work" />
