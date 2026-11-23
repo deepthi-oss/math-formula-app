@@ -111,6 +111,26 @@ export function PracticeQuiz({ makeQuestion, intro }) {
   )
 }
 
+// One topic = its activity + practice sets, switched with a row of tabs.
+// Every tab stays mounted (just hidden) so switching doesn't lose a student's progress.
+export function TopicWithPractice({ tabs }) {
+  const [active, setActive] = useState(0)
+  return (
+    <div className="pp-topic">
+      <div className="pp-tabs">
+        {tabs.map((t, i) => (
+          <button key={t.label} className={`pp-tab ${i === active ? 'pp-tab-active' : ''}`} onClick={() => setActive(i)}>
+            <span>{t.icon}</span> {t.label}
+          </button>
+        ))}
+      </div>
+      {tabs.map((t, i) => (
+        <div key={t.label} style={{ display: i === active ? 'block' : 'none' }}>{t.content}</div>
+      ))}
+    </div>
+  )
+}
+
 // A printable sheet of mixed questions with a hidden answer key. `makeSheet()` returns a fresh list.
 export function HomeworkSheet({ makeSheet, title }) {
   const [sheet, setSheet] = useState(() => makeSheet())

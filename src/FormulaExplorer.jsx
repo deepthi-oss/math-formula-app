@@ -21,7 +21,7 @@ import FlagpoleMidpointActivity from './FlagpoleMidpointActivity'
 import RightAngleDetectiveActivity from './RightAngleDetectiveActivity'
 import TigerStretchActivity from './TigerStretchActivity'
 import RatioActivity from './RatioActivity'
-import { PracticeQuiz, HomeworkSheet } from './PracticeProblems'
+import { PracticeQuiz, HomeworkSheet, TopicWithPractice } from './PracticeProblems'
 import { makeRatioQuestion, makeRatioHomework } from './ratioQuestions'
 
 const sectors = [
@@ -168,20 +168,14 @@ export default function FormulaExplorer() {
   {hasProportionalReasoningActivity && (
     <div className="formula-topic-section">
       <h3 className="formula-topic-heading">➗ Ratios</h3>
-      <ActivityConceptGroup title="Ratio Shrinker — Simplest Form" icon="🔍">
-        <RatioActivity />
-      </ActivityConceptGroup>
-      <ActivityConceptGroup title="Knowledge Problems" icon="📘">
-        <PracticeQuiz makeQuestion={n => makeRatioQuestion('knowledge', n)} intro="Remember the words and the basic idea of ratios. First 5: one-word answers, then word problems. New questions every time!" />
-      </ActivityConceptGroup>
-      <ActivityConceptGroup title="Understanding Problems" icon="💡">
-        <PracticeQuiz makeQuestion={n => makeRatioQuestion('understanding', n)} intro="Use the idea: compare ratios, find missing terms, and spot mistakes. First 5: one-word answers, then word problems." />
-      </ActivityConceptGroup>
-      <ActivityConceptGroup title="Application Problems" icon="🛠️">
-        <PracticeQuiz makeQuestion={n => makeRatioQuestion('application', n)} intro="Use ratios to solve problems. First 5: quick one-number answers, then real-life word problems." />
-      </ActivityConceptGroup>
-      <ActivityConceptGroup title="Home Work Problems" icon="📝">
-        <HomeworkSheet makeSheet={makeRatioHomework} title="Ratios: Home Work" />
+      <ActivityConceptGroup title="Ratios — Activity & Practice Problems" icon="🔍">
+        <TopicWithPractice tabs={[
+          { label: 'Activity', icon: '🔍', content: <RatioActivity /> },
+          { label: 'Knowledge', icon: '📘', content: <PracticeQuiz makeQuestion={n => makeRatioQuestion('knowledge', n)} intro="Remember the words and the basic idea of ratios. First 5: one-word answers, then word problems. New questions every time!" /> },
+          { label: 'Understanding', icon: '💡', content: <PracticeQuiz makeQuestion={n => makeRatioQuestion('understanding', n)} intro="Use the idea: compare ratios, find missing terms, and spot mistakes. First 5: one-word answers, then word problems." /> },
+          { label: 'Application', icon: '🛠️', content: <PracticeQuiz makeQuestion={n => makeRatioQuestion('application', n)} intro="Use ratios to solve problems. First 5: quick one-number answers, then real-life word problems." /> },
+          { label: 'Home Work', icon: '📝', content: <HomeworkSheet makeSheet={makeRatioHomework} title="Ratios: Home Work" /> },
+        ]} />
       </ActivityConceptGroup>
     </div>
   )}

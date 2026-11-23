@@ -120,7 +120,7 @@ const knowledgeWord = [
     const [a, b] = coprimePair(9, 2)
     return {
       type: 'mcq',
-      text: `In a basket, for every ${a} ${x} there are ${b} ${y}. What is the ratio of ${x} to ${y}?`,
+      text: `In a box, for every ${a} ${x} there are ${b} ${y}. What is the ratio of ${x} to ${y}?`,
       options: mcq(r(a, b), [r(b, a), r(a, a + b), r(a + b, b)], randomRatio),
       answer: r(a, b),
       working: `"${x} to ${y}" means ${x} come first: ${r(a, b)}.`,
