@@ -839,30 +839,42 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .rad-done-banner { text-align: center; background: #FFFBEB; border: 2px solid #FDE68A; color: #78350F; font-weight: 700; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 460px; line-height: 1.6; }
 .rad-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
 
-/* ===== STRETCH THE TIGER — PROPORTIONAL REASONING (amber/tiger, Arithmetic) ===== */
+/* ===== STRETCH THE TIGER — SPOT THE SAME SHAPE (amber/tiger, Arithmetic) ===== */
 .tst-activity { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px 20px; }
-.tst-stepper { font-size: 12px; font-weight: 800; color: #B45309; background: #FFFBEB; border: 2px solid #FDE68A; padding: 6px 16px; border-radius: 20px; }
-.tst-instruction { font-size: 13px; color: #4B5563; text-align: center; max-width: 440px; line-height: 1.6; margin: 0; }
+.tst-stepper { font-size: 12px; font-weight: 800; color: #B45309; background: #FFFBEB; border: 2px solid #FDE68A; padding: 6px 16px; border-radius: 20px; text-align: center; }
+.tst-instruction { font-size: 13.5px; color: #374151; text-align: center; max-width: 520px; line-height: 1.6; margin: 0; }
 
-.tst-svg { width: 300px; max-width: 100%; height: auto; }
-.tst-box { fill: #F59E0B; }
-.tst-box-outline { fill: none; stroke: #92400E; stroke-width: 3; transition: all 0.1s; }
-.tst-stripe { fill: #292524; opacity: 0.85; }
+.tst-pic { display: block; }
+.tst-original { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px; border-radius: 12px; border: 2px solid #FDE68A; background: #FFFBEB; }
+.tst-cards { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 14px; max-width: 100%; }
+.tst-card { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px; border-radius: 12px; border: 3px solid #E8EDFF; background: #fff; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.tst-card:hover { border-color: #FCD34D; }
+.tst-card-picked { border-color: #D97706; background: #FFFBEB; box-shadow: 0 0 0 3px #FDE68A; }
+.tst-card-wrong { border: 3px dashed #DC2626; background: #FEF2F2; }
+.tst-card-good { border-color: #10B981; background: #ECFDF5; }
+.tst-card-bad { border-color: #F87171; background: #FEF2F2; }
+.tst-card-label { font-size: 14px; font-weight: 800; color: #374151; }
+.tst-size { font-size: 11.5px; font-family: 'Courier New', monospace; font-weight: 700; color: #6B7280; }
 
-.tst-status { font-size: 13px; font-weight: 800; padding: 8px 18px; border-radius: 20px; }
-.tst-status-good { background: #ECFDF5; color: #059669; border: 2px solid #A7F3D0; }
-.tst-status-bad { background: #FEF2F2; color: #DC2626; border: 2px solid #FCA5A5; }
+.tst-btn { padding: 10px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; font-weight: 800; cursor: pointer; font-size: 13px; }
+.tst-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.tst-retry { display: flex; flex-direction: column; align-items: center; gap: 8px; max-width: 460px; text-align: center; }
+.tst-link-btn { background: none; border: none; color: #6366F1; font-weight: 700; font-size: 12.5px; text-decoration: underline; cursor: pointer; }
 
-.tst-sliders { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 320px; }
-.tst-slider-row { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; font-weight: 700; color: #374151; }
-.tst-slider { width: 100%; accent-color: #D97706; cursor: pointer; }
+.tst-choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.tst-choice-btn { padding: 11px 18px; border-radius: 10px; border: 2px solid #FDE68A; background: #fff; color: #B45309; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+.tst-choice-btn:hover { border-color: #D97706; }
+.tst-choice-good { background: #10B981; border-color: #10B981; color: #fff; }
+.tst-choice-bad { background: #FEF2F2; border-color: #F87171; color: #DC2626; }
 
-.tst-goal-note { font-size: 12px; color: #92400E; background: #FFFBEB; border: 1px solid #FDE68A; padding: 8px 14px; border-radius: 10px; text-align: center; max-width: 380px; margin: 0; }
-
-.tst-insight { display: flex; flex-direction: column; align-items: center; gap: 10px; background: #ECFDF5; border: 2px solid #A7F3D0; padding: 14px 20px; border-radius: 14px; max-width: 420px; text-align: center; }
+.tst-insight { display: flex; flex-direction: column; align-items: stretch; gap: 8px; background: #F8FAFF; border: 2px solid #E8EDFF; padding: 14px 18px; border-radius: 14px; max-width: 520px; }
 .tst-insight p { margin: 0; }
-.tst-feedback-correct { font-weight: 800; font-size: 13px; color: #059669; }
-.tst-next-btn { padding: 9px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #10B981, #059669); color: #fff; font-weight: 800; cursor: pointer; font-size: 12.5px; }
+.tst-why { font-size: 12.5px; line-height: 1.5; padding: 6px 10px; border-radius: 8px; }
+.tst-why-good { background: #ECFDF5; color: #065F46; }
+.tst-why-bad { background: #FEF2F2; color: #991B1B; }
+.tst-feedback-correct { font-weight: 800; font-size: 13px; color: #059669; text-align: center; }
+.tst-feedback-wrong { font-weight: 800; font-size: 13px; color: #B45309; text-align: center; margin: 0; }
+.tst-next-btn { align-self: center; padding: 9px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #10B981, #059669); color: #fff; font-weight: 800; cursor: pointer; font-size: 12.5px; }
 
 .tst-done-banner { text-align: center; background: #FFFBEB; border: 2px solid #FDE68A; color: #78350F; font-weight: 700; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 460px; line-height: 1.6; }
 .tst-new-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }

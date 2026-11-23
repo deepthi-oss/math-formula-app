@@ -157,7 +157,7 @@ export default function FormulaExplorer() {
   {hasProportionalReasoningActivity && (
     <div className="formula-topic-section">
       <h3 className="formula-topic-heading">⚖️ Proportional Reasoning - 1</h3>
-      <ActivityConceptGroup title="Stretch the Tiger! — Keeping Images Proportional" icon="🐯">
+      <ActivityConceptGroup title="Stretch the Tiger! — Spot the Same Shape" icon="🐯">
         <TigerStretchActivity />
       </ActivityConceptGroup>
     </div>
