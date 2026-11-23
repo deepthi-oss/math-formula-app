@@ -20,6 +20,9 @@ import IsoscelesChordActivity from './IsoscelesChordActivity'
 import FlagpoleMidpointActivity from './FlagpoleMidpointActivity'
 import RightAngleDetectiveActivity from './RightAngleDetectiveActivity'
 import TigerStretchActivity from './TigerStretchActivity'
+import RatioActivity from './RatioActivity'
+import { PracticeQuiz, HomeworkSheet } from './PracticeProblems'
+import { makeRatioQuestion, makeRatioHomework } from './ratioQuestions'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -159,6 +162,26 @@ export default function FormulaExplorer() {
       <h3 className="formula-topic-heading">⚖️ Proportional Reasoning - 1</h3>
       <ActivityConceptGroup title="Stretch the Tiger! — Spot the Same Shape" icon="🐯">
         <TigerStretchActivity />
+      </ActivityConceptGroup>
+    </div>
+  )}
+  {hasProportionalReasoningActivity && (
+    <div className="formula-topic-section">
+      <h3 className="formula-topic-heading">➗ Ratios</h3>
+      <ActivityConceptGroup title="Ratio Shrinker — Simplest Form" icon="🔍">
+        <RatioActivity />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Knowledge Problems" icon="📘">
+        <PracticeQuiz makeQuestion={() => makeRatioQuestion('knowledge')} intro="Remember the words and the basic idea of ratios. New questions every time!" />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Understanding Problems" icon="💡">
+        <PracticeQuiz makeQuestion={() => makeRatioQuestion('understanding')} intro="Use the idea: compare ratios, find missing terms, and spot mistakes." />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Application Problems" icon="🛠️">
+        <PracticeQuiz makeQuestion={() => makeRatioQuestion('application')} intro="Real-life problems: recipes, sharing money, photos and more. Type your answer." />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Home Work Problems" icon="📝">
+        <HomeworkSheet makeSheet={makeRatioHomework} title="Ratios: Home Work" />
       </ActivityConceptGroup>
     </div>
   )}

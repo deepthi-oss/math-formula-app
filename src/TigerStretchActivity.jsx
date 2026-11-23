@@ -46,7 +46,7 @@ const MISSING = {
 const isSame = o => Math.abs(o.w / ORIGINAL.w - o.h / ORIGINAL.h) < 0.001
 const fmt = n => (Number.isInteger(n) ? String(n) : String(Math.round(n * 1000) / 1000))
 
-function TigerPicture({ w, h }) {
+export function TigerPicture({ w, h }) {
   return (
     <svg
       width={w * PX_PER_MM}
