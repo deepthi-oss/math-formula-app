@@ -134,15 +134,18 @@ export function TopicWithPractice({ tabs }) {
 // A printable sheet of mixed questions with a hidden answer key. `makeSheet()` returns a fresh list.
 export function HomeworkSheet({ makeSheet, title }) {
   const [sheet, setSheet] = useState(() => makeSheet())
-  const [showKey, setShowKey] = useState(false)
+  const [revealed, setRevealed] = useState([]) // indices whose answer is showing
 
-  const fresh = () => { setSheet(makeSheet()); setShowKey(false) }
+  const allShown = revealed.length === sheet.length
+  const fresh = () => { setSheet(makeSheet()); setRevealed([]) }
+  const toggleOne = i => setRevealed(r => (r.includes(i) ? r.filter(x => x !== i) : [...r, i]))
+  const toggleAll = () => setRevealed(allShown ? [] : sheet.map((_, i) => i))
 
   return (
     <div className="pp-activity">
       <div className="pp-hw-actions">
         <button className="pp-check-btn" onClick={fresh}>🔄 New Homework Sheet</button>
-        <button className="pp-hw-btn" onClick={() => setShowKey(k => !k)}>{showKey ? 'Hide' : 'Show'} Answer Key</button>
+        <button className="pp-hw-btn" onClick={toggleAll}>{allShown ? 'Hide' : 'Show'} All Answers</button>
         <button className="pp-hw-btn" onClick={() => window.print()}>🖨️ Print</button>
       </div>
 
@@ -156,23 +159,31 @@ export function HomeworkSheet({ makeSheet, title }) {
             <div key={kind}>
               <h5 className="pp-hw-section">{heading}</h5>
               <ol className="pp-hw-list" start={items[0].i + 1}>
-                {items.map(({ q, i }) => (
-                  <li key={i} className="pp-hw-item">
-                    <span className="pp-hw-level">{LEVEL_LABEL[q.level]}</span>
-                    <p className="pp-hw-q">{q.text}</p>
-                    {q.type === 'mcq' && (
-                      <div className="pp-hw-opts">
-                        {q.options.map((opt, j) => <span key={j}>({'abcd'[j]}) {opt}</span>)}
+                {items.map(({ q, i }) => {
+                  const shown = revealed.includes(i)
+                  return (
+                    <li key={i} className="pp-hw-item">
+                      <div className="pp-hw-item-top">
+                        <span className="pp-hw-level">{LEVEL_LABEL[q.level]}</span>
+                        <button className={`pp-hw-reveal ${shown ? 'pp-hw-reveal-on' : ''}`} onClick={() => toggleOne(i)}>
+                          {shown ? '🙈 Hide Answer' : '👁 Show Answer'}
+                        </button>
                       </div>
-                    )}
-                    {q.type !== 'mcq' && !showKey && <p className="pp-hw-blank">Answer: ____________</p>}
-                    {showKey && (
-                      <p className="pp-hw-key">
-                        <strong>Answer: <Answer q={q} /></strong> — {q.working}
-                      </p>
-                    )}
-                  </li>
-                ))}
+                      <p className="pp-hw-q">{q.text}</p>
+                      {q.type === 'mcq' && (
+                        <div className="pp-hw-opts">
+                          {q.options.map((opt, j) => <span key={j}>({'abcd'[j]}) {opt}</span>)}
+                        </div>
+                      )}
+                      {q.type !== 'mcq' && !shown && <p className="pp-hw-blank">Answer: ____________</p>}
+                      {shown && (
+                        <p className="pp-hw-key">
+                          <strong>Answer: <Answer q={q} /></strong> — {q.working}
+                        </p>
+                      )}
+                    </li>
+                  )
+                })}
               </ol>
             </div>
           )
