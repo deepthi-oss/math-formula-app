@@ -160,15 +160,10 @@ export default function FormulaExplorer() {
   {hasProportionalReasoningActivity && (
     <div className="formula-topic-section">
       <h3 className="formula-topic-heading">⚖️ Proportional Reasoning - 1</h3>
-      <ActivityConceptGroup title="Stretch the Tiger! — Spot the Same Shape" icon="🐯">
+      <ActivityConceptGroup title="Spot the Same Shape" icon="🐯">
         <TigerStretchActivity />
       </ActivityConceptGroup>
-    </div>
-  )}
-  {hasProportionalReasoningActivity && (
-    <div className="formula-topic-section">
-      <h3 className="formula-topic-heading">➗ Ratios</h3>
-      <ActivityConceptGroup title="Ratios — Activity & Practice Problems" icon="🔍">
+      <ActivityConceptGroup title="Ratios" icon="➗">
         <TopicWithPractice tabs={[
           { label: 'Activity', icon: '🔍', content: <RatioActivity /> },
           { label: 'Knowledge', icon: '📘', content: <PracticeQuiz makeQuestion={n => makeRatioQuestion('knowledge', n)} intro="Remember the words and the basic idea of ratios. First 5: one-word answers, then word problems. New questions every time!" /> },
