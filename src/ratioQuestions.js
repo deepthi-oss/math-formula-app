@@ -1,7 +1,8 @@
-// Endless ratio questions (Ganita Prakash Gr 8, Ch 7.2) — every call makes fresh numbers.
+// Endless ratio questions modelled on Ganita Prakash Gr 8, Ch 7.3 (simplest form via HCF, "::")
+// and 7.4 (problem solving: lemonade, walls, teachers : students, ages, missing terms, filter coffee).
 // Each level has 'quick' (one-word answer) and 'word' (word problem) generators.
 // Question shape: { text, type: 'mcq' | 'number' | 'word', options?, answer, accept?, unit?, working }
-//   'word' = type a single word or ratio; `accept` lists every spelling we mark right.
+//   'word' = type a single word, ratio or fraction; `accept` lists every spelling we mark right.
 
 const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1))
 const pick = arr => arr[Math.floor(Math.random() * arr.length)]
@@ -15,15 +16,25 @@ const shuffle = arr => {
   return a
 }
 const r = (a, b) => `${a} : ${b}`
+const simp = (a, b) => { const g = gcd(a, b); return [a / g, b / g] }
+const rs = (a, b) => r(...simp(a, b))
 
 export const QUICK_COUNT = 5
 
-// two different whole numbers that share no common factor, e.g. 3 and 2
+// two different whole numbers that share no common factor, e.g. 3 and 4
 function coprimePair(max = 9, min = 1) {
   for (;;) {
     const a = rand(min, max), b = rand(min, max)
     if (a !== b && gcd(a, b) === 1) return [a, b]
   }
+}
+
+// two different multipliers, e.g. 2 and 6 (6 : 10 and 18 : 30 from 3 : 5)
+function twoFactors(max = 9) {
+  const k1 = rand(2, max)
+  let k2 = rand(2, max)
+  if (k2 === k1) k2 = k1 === max ? 2 : k1 + 1
+  return [k1, k2]
 }
 
 // correct answer + unique distractors, topped up from `extra()` until there are 4
@@ -40,8 +51,7 @@ function mcq(answer, distractors, extra) {
 
 const randomRatio = () => {
   const [a, b] = coprimePair()
-  const k = rand(1, 6)
-  return r(a * k, b * k)
+  return r(a * rand(1, 6), b * rand(1, 6))
 }
 
 const fmtFrac = (n, d) => {
@@ -49,120 +59,128 @@ const fmtFrac = (n, d) => {
   n /= g; d /= g
   return d === 1 ? String(n) : `${n}/${d}`
 }
+// a fraction answer typed as "3/7"; also take an exact decimal like 1.5
+const fracAccept = (n, d) => {
+  const acc = [fmtFrac(n, d)]
+  const milli = (n / d) * 1000
+  if (Math.abs(milli - Math.round(milli)) < 1e-9) acc.push(String(Math.round(milli) / 1000))
+  return acc
+}
 
 const ratioWord = (a, b, working, text) => ({
-  type: 'word', text, answer: r(a, b), accept: [`${a}:${b}`], placeholder: 'e.g. 2 : 3', working,
+  type: 'word', text, answer: r(a, b), accept: [`${a}:${b}`], placeholder: 'e.g. 3 : 4', working,
 })
 const yesNo = (yes, text, working) => ({
   type: 'word', text, answer: yes ? 'Yes' : 'No', accept: [yes ? 'yes' : 'no'], placeholder: 'yes / no', working,
 })
+const hcfWorking = (a, b) => {
+  const g = gcd(a, b)
+  return g === 1
+    ? `The HCF of ${a} and ${b} is 1, so ${r(a, b)} is already in its simplest form.`
+    : `The HCF of ${a} and ${b} is ${g}. ${a} ÷ ${g} = ${a / g}, ${b} ÷ ${g} = ${b / g}. Simplest form: ${r(a / g, b / g)}.`
+}
 
-const PAIRS = [
-  ['red beads', 'blue beads'], ['mangoes', 'apples'], ['girls', 'boys'],
-  ['cups of rice', 'cups of water'], ['pencils', 'pens'], ['blue tiles', 'white tiles'],
-]
-const NAMES = ['Asha', 'Rohan', 'Meera', 'Kabir', 'Priya', 'Arjun', 'Diya', 'Vikram', 'Sana', 'Aditya']
+const NAMES = ['Kesang', 'Nitin', 'Hari', 'Neelima', 'Manjunath', 'Asha', 'Rohan', 'Meera', 'Kabir', 'Priya', 'Arjun', 'Diya']
+const twoNames = () => shuffle(NAMES).slice(0, 2)
+
+// "regular" filter coffee in the textbook: 15 mL decoction : 35 mL milk = 3 : 7
+const REGULAR = [3, 7]
+const COFFEE_MIXES = [[1, 2], [2, 3], [3, 7], [1, 3], [2, 5], [3, 10], [1, 4], [3, 5], [4, 9], [3, 7], [1, 1]]
+function coffeeStrength(d, m) {
+  const diff = d * REGULAR[1] - m * REGULAR[0]
+  return diff === 0 ? 'Regular' : diff > 0 ? 'Strong' : 'Light'
+}
 
 const CONCEPTS = [
-  { text: 'The numbers in a ratio are called its ___.', answer: 'terms', accept: ['terms', 'term'],
-    working: 'In a ratio like 3 : 2, the numbers 3 and 2 are called its terms.' },
-  { text: 'Ratios that show the same comparison, like 3 : 2 and 6 : 4, are called ___ ratios.', answer: 'proportional',
-    accept: ['proportional', 'equivalent', 'equal'], working: '3 : 2 and 6 : 4 have the same simplest form, so they are proportional.' },
-  { text: 'To write a ratio in simplest form, we ___ both terms by the same number.', answer: 'divide',
-    accept: ['divide', 'divided'], working: 'Divide both terms by a common factor, e.g. 6 : 4 → ÷ 2 → 3 : 2.' },
-  { text: 'A ratio whose terms have no common factor other than 1 is in its ___ form.', answer: 'simplest',
-    accept: ['simplest', 'lowest'], working: 'For example 3 : 2 is in simplest form, because 3 and 2 share no factor except 1.' },
-  { text: 'The ratio 3 : 2 is read as "3 ___ 2".', answer: 'to', accept: ['to'],
-    working: 'The sign ":" is read as "to". 3 : 2 is read "3 to 2".' },
-  { text: 'Does the order of the terms matter in a ratio? (yes / no)', answer: 'Yes', accept: ['yes'],
-    working: '3 : 2 and 2 : 3 are different ratios. Order matters!' },
+  { text: 'To write a ratio in its simplest form, we divide both terms by their ___.', answer: 'HCF',
+    accept: ['hcf', 'highestcommonfactor', 'gcd'], working: 'Divide both terms by their HCF. For 60 : 40, the HCF is 20, so 60 : 40 = 3 : 2.' },
+  { text: 'When two ratios are the same in their simplest forms, we say they are in ___.', answer: 'proportion',
+    accept: ['proportion', 'proportional'], working: '60 : 40 and 90 : 60 are both 3 : 2 in simplest form, so they are in proportion.' },
+  { text: 'Which symbol do we use to show that two ratios are proportional?', answer: '::',
+    accept: ['::'], working: 'We write 60 : 40 :: 90 : 60 to show the two ratios are proportional.' },
+  { text: 'If we add the same number to both terms of a ratio, does it always stay proportional to the original ratio? (yes / no)',
+    answer: 'No', accept: ['no'], working: 'Neelima\'s age example: 3 : 30 = 1 : 10, but 9 years later 12 : 39 = 4 : 13. Adding the same number changes the ratio.' },
+  { text: 'If we multiply both terms of a ratio by the same number, is the new ratio proportional to the original? (yes / no)',
+    answer: 'Yes', accept: ['yes'], working: 'Multiplying both terms by the same factor keeps the simplest form the same, e.g. 6 : 10 :: 18 : 30.' },
+  { text: 'a : b :: c : d tells us that the ratios a : b and c : d are ___.', answer: 'proportional',
+    accept: ['proportional', 'proportion', 'equal', 'equivalent'], working: 'The "::" symbol means the two ratios are proportional.' },
 ]
 
 /* ================= KNOWLEDGE ================= */
 const knowledgeQuick = [
   () => ({ type: 'word', ...pick(CONCEPTS), placeholder: 'one word' }),
   () => {
-    const [a, b] = [rand(2, 40), rand(2, 40)]
-    if (a === b) return knowledgeQuick[1]()
-    const first = Math.random() < 0.5
+    const [p, q] = coprimePair()
+    const k = rand(2, 24)
     return {
       type: 'number',
-      text: `In the ratio ${r(a, b)}, what is the ${first ? 'first' : 'second'} term?`,
-      answer: first ? a : b,
-      working: `In ${r(a, b)}, the first term is ${a} and the second term is ${b}.`,
+      text: `What is the HCF of ${p * k} and ${q * k}?`,
+      answer: k,
+      working: `${k} is the largest number that divides both ${p * k} (= ${p} × ${k}) and ${q * k} (= ${q} × ${k}).`,
     }
   },
   () => {
-    const [a, b] = [rand(1, 20), rand(1, 20)]
-    if (a === b) return knowledgeQuick[2]()
-    return ratioWord(a, b, `"${a} to ${b}" is written ${r(a, b)}.`, `Write "${a} to ${b}" as a ratio.`)
-  },
-  () => {
     const [p, q] = coprimePair()
-    const k = rand(2, 9)
-    return ratioWord(p, q,
-      `Divide both terms by ${k}: ${p * k} ÷ ${k} = ${p}, ${q * k} ÷ ${k} = ${q}.`,
-      `Write ${r(p * k, q * k)} in simplest form.`)
+    const k = rand(3, 24)
+    return ratioWord(p, q, hcfWorking(p * k, q * k), `Write ${r(p * k, q * k)} in its simplest form.`)
   },
   () => {
     const [p, q] = coprimePair(12)
-    const k = Math.random() < 0.5 ? 1 : rand(2, 5)
-    return yesNo(k === 1, `Is ${r(p * k, q * k)} in its simplest form? (yes / no)`,
-      k === 1
-        ? `${p} and ${q} have no common factor except 1, so yes.`
-        : `No. Both ${p * k} and ${q * k} can be divided by ${k}, giving ${r(p, q)}.`)
+    const k = Math.random() < 0.5 ? 1 : rand(2, 8)
+    return yesNo(k === 1, `Is ${r(p * k, q * k)} in its simplest form? (yes / no)`, hcfWorking(p * k, q * k))
   },
 ]
 
 const knowledgeWord = [
   () => {
-    const [x, y] = pick(PAIRS)
-    const [a, b] = coprimePair(9, 2)
+    const [p, q] = pick([[2, 1], [1, 1], [3, 2], [4, 3], [5, 3], [3, 4], [5, 2]])
+    const k = rand(4, 30)
     return {
       type: 'mcq',
-      text: `In a box, for every ${a} ${x} there are ${b} ${y}. What is the ratio of ${x} to ${y}?`,
-      options: mcq(r(a, b), [r(b, a), r(a, a + b), r(a + b, b)], randomRatio),
-      answer: r(a, b),
-      working: `"${x} to ${y}" means ${x} come first: ${r(a, b)}.`,
-    }
-  },
-  () => {
-    const [a, b] = coprimePair(9, 2)
-    const thing = pick([['width', 'height', 'cm'], ['flour', 'sugar', 'cups'], ['sand', 'cement', 'bags']])
-    return {
-      type: 'mcq',
-      text: `A builder says the ratio of ${thing[0]} to ${thing[1]} is ${r(a, b)}. What does this mean?`,
-      options: shuffle([
-        `For every ${a} ${thing[2]} of ${thing[0]}, there are ${b} ${thing[2]} of ${thing[1]}`,
-        `For every ${b} ${thing[2]} of ${thing[0]}, there are ${a} ${thing[2]} of ${thing[1]}`,
-        `There are exactly ${a} ${thing[2]} of ${thing[0]} and nothing more`,
-        `There are always exactly ${a + b} ${thing[2]} in total`,
-      ]),
-      answer: `For every ${a} ${thing[2]} of ${thing[0]}, there are ${b} ${thing[2]} of ${thing[1]}`,
-      working: 'In a ratio a : b, for every a units of the first quantity there are b units of the second.',
-    }
-  },
-  () => {
-    const name = pick(NAMES)
-    const [p, q] = coprimePair(9, 2)
-    const k = rand(2, 6)
-    return {
-      type: 'mcq',
-      text: `${name} has ${p * k} pencils and ${q * k} pens. What is the ratio of pencils to pens in simplest form?`,
-      options: mcq(r(p, q), [r(q, p), r(p + 1, q), r(p, q + 1)], randomRatio),
+      text: `A photo is ${p * k} mm wide and ${q * k} mm tall. What is the ratio of its width to height in simplest form?`,
+      options: mcq(r(p, q), [r(q, p), r(p, q + 1), r(p + 1, q)], randomRatio),
       answer: r(p, q),
-      working: `Pencils : pens = ${r(p * k, q * k)}. Divide both by ${k}: ${r(p, q)}.`,
+      working: hcfWorking(p * k, q * k),
     }
   },
   () => {
-    const [g, b] = coprimePair(9, 2)
-    const k = rand(2, 5)
+    const [p, q] = coprimePair(7, 2)
+    const [k1, k2] = twoFactors(10)
+    const right = `${r(p * k1, q * k1)} :: ${r(p * k2, q * k2)}`
+    const wrongs = [
+      `${r(p * k1, q * k1)} :: ${r(q * k2, p * k2)}`,
+      `${r(p * k1, q * k1)} :: ${r(p * k1 + 10, q * k1 + 10)}`,
+      `${r(p * k1, q * k1)} :: ${r(p * k2, q * k2 + 1)}`,
+    ]
     return {
       type: 'mcq',
-      text: `A class has ${g * k} girls and ${b * k} boys. What is the ratio of boys to girls in simplest form?`,
-      options: mcq(r(b, g), [r(g, b), r(b * k, g * k + 1), r(b, g + b)], randomRatio),
-      answer: r(b, g),
-      working: `Boys come first: ${r(b * k, g * k)}. Divide both by ${k}: ${r(b, g)}.`,
+      text: 'Which of these is written correctly? ("::" means the two ratios are proportional.)',
+      options: shuffle([right, ...wrongs]),
+      answer: right,
+      working: `${r(p * k1, q * k1)} and ${r(p * k2, q * k2)} are both ${r(p, q)} in simplest form, so they are proportional. The others have different simplest forms.`,
+    }
+  },
+  () => {
+    const [p, q] = pick([[3, 7], [1, 2], [2, 3], [1, 3], [2, 5], [3, 5]])
+    const k = pick([5, 10, 20, 50, 100])
+    return {
+      type: 'mcq',
+      text: `Manjunath mixes ${p * k} mL of coffee decoction with ${q * k} mL of milk. What is the ratio of decoction to milk in simplest form?`,
+      options: mcq(r(p, q), [r(q, p), r(p * 5, q * 5), r(p + 1, q + 1)], randomRatio),
+      answer: r(p, q),
+      working: hcfWorking(p * k, q * k),
+    }
+  },
+  () => {
+    const t = rand(3, 9)
+    const s = rand(20, 40)
+    const [a, b] = simp(t, t * s)
+    return {
+      type: 'mcq',
+      text: `A school has ${t} teachers and ${t * s} students. What is the ratio of teachers to students in simplest form?`,
+      options: mcq(r(a, b), [r(b, a), r(t, t * s - 1), r(1, t)], randomRatio),
+      answer: r(a, b),
+      working: hcfWorking(t, t * s),
     }
   },
 ]
@@ -170,116 +188,110 @@ const knowledgeWord = [
 /* ================= UNDERSTANDING ================= */
 const understandingQuick = [
   () => {
-    const [a, b] = coprimePair()
+    const [p, q] = coprimePair(9, 2)
+    const k = rand(3, 30)
     const yes = Math.random() < 0.5
-    const m = rand(2, 6)
-    const [c, d] = yes ? [a * m, b * m] : [a + m, b + m]
-    return yesNo(yes, `Are ${r(a, b)} and ${r(c, d)} proportional? (yes / no)`,
-      yes ? `${c} = ${a} × ${m} and ${d} = ${b} × ${m}. Same factor, so yes.`
-        : `${r(c, d)} is ${r(a, b)} with ${m} ADDED to each term. Adding does not keep a ratio the same, so no.`)
+    const [c, d] = yes ? [p * k, q * k] : [p * k, q * k + pick([-1, 1, 2])]
+    return yesNo(yes, `Are ${r(p, q)} and ${r(c, d)} proportional? (yes / no)`,
+      `${r(p, q)} is in simplest form. ${hcfWorking(c, d)} ${yes ? 'Same simplest form, so yes.' : 'Different simplest forms, so no.'}`)
   },
   () => {
-    const [a, b] = coprimePair()
-    const k = rand(2, 9)
+    const [p, q] = coprimePair(7, 2)
+    const [k1, k2] = twoFactors()
     return {
       type: 'number',
-      text: `${r(a, b)} = ${a * k} : ?`,
-      answer: b * k,
-      working: `${a} × ${k} = ${a * k}, so ${b} × ${k} = ${b * k}.`,
+      text: `${r(p * k1, q * k1)} :: ${p * k2} : ?`,
+      answer: q * k2,
+      working: `The first term changed from ${p * k1} to ${p * k2}, a factor of ${fmtFrac(k2, k1)}. So ${q * k1} × ${fmtFrac(k2, k1)} = ${q * k2}.`,
     }
   },
   () => {
-    const [a, b] = coprimePair()
-    const k = rand(2, 9)
-    return ratioWord(a * k, b * k, `${a} × ${k} = ${a * k} and ${b} × ${k} = ${b * k}.`,
-      `Multiply both terms of ${r(a, b)} by ${k}. What is the new ratio?`)
-  },
-  () => {
-    const [a, b] = coprimePair()
-    const k = rand(2, 9)
+    const [p, q] = coprimePair(7, 2)
+    const [k1, k2] = twoFactors()
     return {
       type: 'number',
-      text: `By what number do we multiply both terms of ${r(a, b)} to get ${r(a * k, b * k)}?`,
-      answer: k,
-      working: `${a * k} ÷ ${a} = ${k} and ${b * k} ÷ ${b} = ${k}.`,
+      text: `? : ${q * k2} :: ${r(p * k1, q * k1)}`,
+      answer: p * k2,
+      working: `The second term changed from ${q * k1} to ${q * k2}, a factor of ${fmtFrac(k2, k1)}. So ${p * k1} × ${fmtFrac(k2, k1)} = ${p * k2}.`,
     }
   },
   () => {
-    const [a, b] = coprimePair()
-    return ratioWord(b, a, `Swap the order: ${r(b, a)}.`, `If boys : girls = ${r(a, b)}, then girls : boys = ?`)
+    const [p] = coprimePair(7, 2)
+    const [k1, k2] = twoFactors()
+    const [a, b] = [p * k1, p * k2]
+    return {
+      type: 'word',
+      text: `What factor should we multiply ${a} by to get ${b}? (A fraction like 3/7 is fine.)`,
+      answer: fmtFrac(b, a), accept: fracAccept(b, a), placeholder: 'e.g. 3/7',
+      working: `${a} × y = ${b}, so y = ${b}/${a} = ${fmtFrac(b, a)}.`,
+    }
+  },
+  () => {
+    const [p, q] = coprimePair()
+    const n = rand(2, 9)
+    const add = Math.random() < 0.5
+    return yesNo(!add,
+      `We ${add ? `add ${n} to both terms of ${r(p, q)}` : `multiply both terms of ${r(p, q)} by ${n}`}. Is the new ratio proportional to ${r(p, q)}? (yes / no)`,
+      add
+        ? `${r(p + n, q + n)} in simplest form is ${rs(p + n, q + n)}, not ${r(p, q)}. Adding the same number changes the ratio.`
+        : `${r(p * n, q * n)} in simplest form is ${r(p, q)}. Multiplying by the same factor keeps the ratio proportional.`)
   },
 ]
 
 const understandingWord = [
   () => {
-    const [p1, p2] = shuffle(NAMES).slice(0, 2)
-    const [a, b] = pick([[3, 2], [4, 3], [5, 4], [3, 4], [5, 3]])
-    const m = rand(2, 4), n = m + rand(1, 3)
-    const yes = Math.random() < 0.5
-    const [c, d] = yes ? [a * n, b * n] : [a * n, b * n + pick([-1, 1, 2])]
-    const g = gcd(c, d)
-    const second = g === 1 ? `${r(c, d)} is already in simplest form` : `${r(c, d)} = ${r(c / g, d / g)}`
+    const name = pick(['Neelima', 'Asha', 'Diya', 'Kabir', 'Rohan'])
+    const c = rand(2, 5), m = rand(6, 10), n = rand(5, 12)
+    const [mAge, cLater, mLater] = [c * m, c + n, c * m + n]
+    const ans = rs(cLater, mLater)
     return {
       type: 'mcq',
-      text: `${p1}'s photo is ${a * m} cm × ${b * m} cm. ${p2}'s photo is ${c} cm × ${d} cm. Are the two photos proportional (the same shape)?`,
-      options: ['Yes, proportional', 'No, not proportional'],
-      answer: yes ? 'Yes, proportional' : 'No, not proportional',
-      working: `${r(a * m, b * m)} = ${r(a, b)}. ${second}. ${yes ? 'Same simplest form, so yes.' : 'Different simplest forms, so no.'}`,
-    }
-  },
-  () => {
-    const name = pick(NAMES)
-    const [a, b] = coprimePair(5)
-    const k = rand(2, 4)
-    const yes = Math.random() < 0.5
-    const sugar = yes ? b * k : b + (a * k - a)
-    return {
-      type: 'mcq',
-      text: `A recipe uses flour and sugar in the ratio ${r(a, b)}. ${name} uses ${a * k} cups of flour and ${sugar} cups of sugar. Did ${name} keep the same ratio?`,
-      options: ['Yes', 'No'],
-      answer: yes ? 'Yes' : 'No',
-      working: yes
-        ? `${a} × ${k} = ${a * k} and ${b} × ${k} = ${b * k}. Both multiplied by ${k}, so yes.`
-        : `Flour was multiplied by ${k}, so sugar should be ${b} × ${k} = ${b * k}, not ${sugar}. So no.`,
-    }
-  },
-  () => {
-    const f = pick([[2, 1], [3, 1], [5, 2], [3, 2], [1, 2], [4, 3]])
-    const [x, y] = coprimePair(6, 2)
-    const m = f[1] * rand(1, 3)
-    const [a, b] = [x * m, y * m]
-    const [c, d] = [(a * f[0]) / f[1], (b * f[0]) / f[1]]
-    const ans = fmtFrac(f[0], f[1])
-    return {
-      type: 'mcq',
-      text: `A ${a} cm × ${b} cm photo is resized to ${c} cm × ${d} cm without stretching. By what factor was each side multiplied?`,
-      options: mcq(ans, [fmtFrac(f[1], f[0]), String(Math.abs(c - a)), fmtFrac(f[0] + 1, f[1])], () => fmtFrac(rand(1, 6), rand(1, 4))),
+      text: `When ${name} was ${c} years old, ${name}'s mother was ${mAge}, which is ${m} times ${name}'s age. What will be the ratio of ${name}'s age to the mother's age after ${n} years, in simplest form?`,
+      options: mcq(ans, [r(1, m), rs(c, mLater), rs(cLater, mAge)], randomRatio),
       answer: ans,
-      working: `${c} ÷ ${a} = ${ans} and ${d} ÷ ${b} = ${ans}.`,
+      working: `Then: ${r(c, mAge)} = ${r(1, m)}. After ${n} years: ${r(cLater, mLater)} = ${ans}. Adding the same number of years to both ages changes the ratio.`,
     }
   },
   () => {
-    const name = pick(NAMES)
-    const [a, b] = coprimePair()
-    const k = rand(2, 9)
-    const add = b + (a * k - a)
+    const [n1, n2] = twoNames()
+    const [len, bags] = pick([[20, 1], [15, 1], [25, 2], [30, 1], [10, 1], [40, 3]])
+    const [k1, k2] = twoFactors(5)
+    const L1 = len * k1, c1 = bags * k1, L2 = len * k2
+    const kind = pick(['same', 'more', 'less'])
+    const c2 = kind === 'same' ? bags * k2 : kind === 'more' ? bags * k2 + 1 : Math.max(1, bags * k2 - 1)
+    const realKind = c2 * L1 === c1 * L2 ? 'same' : c2 * L1 > c1 * L2 ? 'more' : 'less'
+    const label = { same: 'Yes, both walls are equally strong', more: `No, ${n2}'s wall is stronger`, less: `No, ${n2}'s wall is weaker` }
     return {
       type: 'mcq',
-      text: `${name} says ${r(a, b)} = ${r(a * k, add)}, because ${a * k - a} was added to both terms. ${name} is wrong. What should the second term be?`,
-      options: mcq(String(b * k), [String(add), String(b * k + b), String(b * (k - 1))], () => String(rand(2, 90))),
-      answer: String(b * k),
-      working: `${a} was multiplied by ${k} to get ${a * k}, so ${b} must be multiplied by ${k} too: ${b * k}. Adding does not keep a ratio the same.`,
+      text: `${n1} built a ${L1} ft long wall using ${c1} bags of cement. ${n2} built a ${L2} ft long wall using ${c2} bag${c2 > 1 ? 's' : ''}. Are the walls equally strong?`,
+      options: shuffle(Object.values(label)),
+      answer: label[realKind],
+      working: `${n1}: ${r(L1, c1)} = ${rs(L1, c1)}. ${n2}: ${r(L2, c2)} = ${rs(L2, c2)}. ${realKind === 'same' ? 'Same simplest form, so they are proportional and equally strong.' : realKind === 'more' ? `${n2} used more cement for each foot of wall, so it is stronger.` : `${n2} used less cement for each foot of wall, so it is weaker.`}`,
     }
   },
   () => {
-    const [x, y] = pick(PAIRS)
-    const [a, b] = coprimePair(9, 2)
+    const [p, q] = coprimePair(7, 2)
+    const [k1, k2] = twoFactors()
+    const [a, b] = [p * k1, q * k1]
+    const ans = r(p * k2, q * k2)
     return {
       type: 'mcq',
-      text: `In a box, the ratio of ${x} to ${y} is ${r(a, b)}. What is the ratio of ${y} to ${x}?`,
-      options: mcq(r(b, a), [r(a, b), r(b, a + b), r(a, a + b)], randomRatio),
-      answer: r(b, a),
-      working: `Swapping the order of the things swaps the terms: ${r(b, a)}.`,
+      text: `Which ratio is proportional to ${r(a, b)}?`,
+      options: mcq(ans, [r(p * k2, q * k2 + 1), r(a + 2, b + 2), r(q * k2, p * k2)], randomRatio),
+      answer: ans,
+      working: `${hcfWorking(a, b)} ${ans} in simplest form is also ${r(p, q)}, so ${r(a, b)} :: ${ans}.`,
+    }
+  },
+  () => {
+    const [d, m] = pick(COFFEE_MIXES)
+    const k = pick([10, 20, 50, 100])
+    const kind = coffeeStrength(d, m)
+    return {
+      type: 'mcq',
+      text: `Regular filter coffee uses 15 mL decoction with 35 mL milk. Manjunath mixes ${d * k} mL decoction with ${m * k} mL milk. Is this coffee Regular, Strong or Light?`,
+      options: ['Regular', 'Strong', 'Light'],
+      answer: kind,
+      working: `Regular: 15 : 35 = 3 : 7, so 3 mL decoction for every 7 mL milk (about ${(3 / 7).toFixed(2)} mL for each mL of milk). This mix: ${r(d * k, m * k)} = ${r(d, m)} (about ${(d / m).toFixed(2)} mL for each mL of milk). ${kind === 'Regular' ? 'Same as regular.' : kind === 'Strong' ? 'More decoction for the same milk, so stronger.' : 'Less decoction for the same milk, so lighter.'}`,
     }
   },
 ]
@@ -287,99 +299,92 @@ const understandingWord = [
 /* ================= APPLICATION ================= */
 const applicationQuick = [
   () => {
-    const [a, b] = coprimePair()
-    return { type: 'number', text: `How many parts in all are there in the ratio ${r(a, b)}?`, answer: a + b,
-      working: `${a} + ${b} = ${a + b} parts.` }
+    const [g, s] = pick([[6, 10], [3, 5], [4, 6], [2, 3], [5, 8]])
+    const k = rand(2, 6)
+    return { type: 'number', text: `${g} glasses of lemonade need ${s} spoons of sugar. How many spoons for ${g * k} glasses?`,
+      answer: s * k, unit: 'spoons', working: `${g} × ${k} = ${g * k}, so ${s} × ${k} = ${s * k} spoons.` }
   },
   () => {
-    const [a, b] = coprimePair()
-    const k = rand(2, 9)
-    return { type: 'number', text: `x : y = ${r(a, b)}. If x = ${a * k}, what is y?`, answer: b * k,
-      working: `${a} × ${k} = ${a * k}, so y = ${b} × ${k} = ${b * k}.` }
+    const [len, bags] = pick([[20, 1], [15, 1], [25, 2], [30, 1], [10, 1]])
+    const k = rand(2, 6)
+    return { type: 'number', text: `${len} ft of wall needs ${bags} bag${bags > 1 ? 's' : ''} of cement. How many bags for ${len * k} ft?`,
+      answer: bags * k, unit: 'bags', working: `${len} × ${k} = ${len * k}, so ${bags} × ${k} = ${bags * k} bags.` }
   },
   () => {
-    const [a, b] = coprimePair(6)
-    const k = rand(2, 10)
-    return { type: 'number', text: `Divide ${(a + b) * k} in the ratio ${r(a, b)}. What is the smaller part?`,
-      answer: Math.min(a, b) * k,
-      working: `${a + b} parts = ${(a + b) * k}, so 1 part = ${k}. Smaller part = ${Math.min(a, b)} × ${k} = ${Math.min(a, b) * k}.` }
+    const s = pick([25, 30, 34, 35, 40])
+    const t = rand(2, 9)
+    return { type: 'number', text: `A school has 1 teacher for every ${s} students. How many students are there for ${t} teachers?`,
+      answer: s * t, unit: 'students', working: `1 : ${s} :: ${t} : ?, multiply by ${t}: ${s} × ${t} = ${s * t}.` }
   },
   () => {
-    const n = rand(2, 9), k = rand(2, 12)
-    return { type: 'number', text: `If ${n} parts = ${n * k}, what is 1 part?`, answer: k,
-      working: `${n * k} ÷ ${n} = ${k}.` }
+    const k = rand(2, 12)
+    return { type: 'number', text: `Regular coffee is 3 mL decoction for every 7 mL milk. How much milk goes with ${3 * k} mL decoction?`,
+      answer: 7 * k, unit: 'mL', working: `3 × ${k} = ${3 * k}, so 7 × ${k} = ${7 * k} mL.` }
   },
 ]
 
 const applicationWord = [
   () => {
-    const [a, b] = coprimePair(6)
+    const name = pick(['Kesang', 'Meera', 'Diya', 'Asha'])
+    const [g, s] = pick([[6, 10], [3, 5], [4, 6], [2, 3], [5, 8], [4, 10]])
+    const more = g * rand(2, 5)
+    return {
+      type: 'number',
+      text: `${name} made ${g} glasses of lemonade using ${s} spoons of sugar. More guests came, so ${name} has to make ${more} more glasses with the same sweetness. How many spoons of sugar are needed for them?`,
+      answer: (s * more) / g, unit: 'spoons',
+      working: `${r(g, s)} :: ${more} : ?. The factor of change is ${more} ÷ ${g} = ${more / g}. So ${s} × ${more / g} = ${(s * more) / g} spoons.`,
+    }
+  },
+  () => {
+    const [n1, n2] = twoNames()
+    const [len, bags] = pick([[20, 1], [15, 1], [25, 2], [30, 1], [10, 1], [40, 3]])
+    const [k1, k2] = twoFactors(5)
+    return {
+      type: 'number',
+      text: `${n1} built a ${len * k1} ft long wall using ${bags * k1} bags of cement. ${n2} is building a ${len * k2} ft long wall. How many bags should ${n2} use so the wall is just as strong?`,
+      answer: bags * k2, unit: 'bags',
+      working: `${r(len * k1, bags * k1)} = ${r(len, bags)}. For ${len * k2} ft: ${len * k2} ÷ ${len} = ${k2}, so ${bags} × ${k2} = ${bags * k2} bags.`,
+    }
+  },
+  () => {
+    const t = rand(3, 8), s = pick([25, 30, 34, 35, 40])
+    const t2 = t + rand(2, 6)
+    return {
+      type: 'number',
+      text: `A school has ${t} teachers and ${t * s} students. Another school has ${t2} teachers and wants the same teacher-to-student ratio. How many students should it have?`,
+      answer: t2 * s, unit: 'students',
+      working: `${r(t, t * s)} = ${r(1, s)}. So ${t2} teachers go with ${t2} × ${s} = ${t2 * s} students.`,
+    }
+  },
+  () => {
+    const [w, h] = pick([[4, 3], [3, 2], [2, 1], [5, 3], [5, 2], [8, 5]])
+    const big = pick([30, 40, 50, 60])
+    const n = rand(2, 4)
+    return {
+      type: 'number',
+      text: `A blackboard is ${w * big} cm wide and ${h * big} cm tall. You draw a proportional rectangle in your notebook that is ${w * n} cm wide. How tall should it be?`,
+      answer: h * n, unit: 'cm',
+      working: `${r(w * big, h * big)} = ${r(w, h)} (HCF ${big}). ${w * n} = ${w} × ${n}, so the height is ${h} × ${n} = ${h * n} cm.`,
+    }
+  },
+  () => {
     const k = rand(2, 8)
-    const [first, second] = pick([['lemon juice', 'water'], ['cement', 'sand'], ['milk', 'water'], ['red paint', 'white paint']])
     return {
       type: 'number',
-      text: `A mix uses ${first} and ${second} in the ratio ${r(a, b)}. If ${b * k} cups of ${second} are used, how many cups of ${first} are needed?`,
-      answer: a * k, unit: 'cups',
-      working: `${second}: ${b} → ${b * k}, so the factor is ${b * k} ÷ ${b} = ${k}. ${first}: ${a} × ${k} = ${a * k} cups.`,
+      text: `Manjunath makes regular filter coffee with 15 mL decoction for every 35 mL milk. For a big jug he uses ${35 * k} mL of milk. How much decoction should he use so it tastes the same?`,
+      answer: 15 * k, unit: 'mL',
+      working: `15 : 35 :: ? : ${35 * k}. ${35 * k} ÷ 35 = ${k}, so 15 × ${k} = ${15 * k} mL.`,
     }
   },
   () => {
-    const [p1, p2] = shuffle(NAMES).slice(0, 2)
-    const [a, b] = coprimePair(7)
-    const unit = pick([10, 20, 50, 100])
-    const total = (a + b) * unit
-    const askFirst = Math.random() < 0.5
+    const [p, q] = coprimePair(7, 2)
+    const [k1, k2] = twoFactors()
+    const thing = pick([['sugar', 'flour', 'g'], ['blue paint', 'white paint', 'mL'], ['rice', 'water', 'cups']])
     return {
       type: 'number',
-      text: `${p1} and ${p2} share ₹${total} in the ratio ${r(a, b)}. How much does ${askFirst ? p1 : p2} get?`,
-      answer: (askFirst ? a : b) * unit, unit: '₹',
-      working: `Total parts = ${a} + ${b} = ${a + b}. One part = ${total} ÷ ${a + b} = ₹${unit}. ${askFirst ? p1 : p2} gets ${askFirst ? a : b} × ${unit} = ₹${(askFirst ? a : b) * unit}.`,
-    }
-  },
-  () => {
-    const [a, b] = pick([[3, 2], [4, 3], [5, 4], [3, 4], [5, 3], [7, 5]])
-    const m = rand(2, 5)
-    let n = rand(2, 9)
-    if (m === n) n++
-    return {
-      type: 'number',
-      text: `A photo is ${a * m} cm wide and ${b * m} cm tall. It is printed ${a * n} cm wide, without stretching. How tall is the new print?`,
-      answer: b * n, unit: 'cm',
-      working: `Width : height = ${r(a * m, b * m)} = ${r(a, b)}. New width ${a * n} = ${a} × ${n}, so the height = ${b} × ${n} = ${b * n} cm.`,
-    }
-  },
-  () => {
-    const [a, b] = coprimePair(7)
-    const k = rand(3, 6)
-    const askGirls = Math.random() < 0.5
-    return {
-      type: 'number',
-      text: `In a class of ${(a + b) * k} students, the ratio of girls to boys is ${r(a, b)}. How many ${askGirls ? 'girls' : 'boys'} are there?`,
-      answer: (askGirls ? a : b) * k, unit: askGirls ? 'girls' : 'boys',
-      working: `Total parts = ${a} + ${b} = ${a + b}. One part = ${(a + b) * k} ÷ ${a + b} = ${k}. ${askGirls ? 'Girls' : 'Boys'} = ${askGirls ? a : b} × ${k} = ${(askGirls ? a : b) * k}.`,
-    }
-  },
-  () => {
-    const name = pick(NAMES)
-    const [a, b] = pick([[2, 7], [1, 3], [2, 5], [1, 4], [3, 8], [2, 9]])
-    const k = rand(3, 6)
-    return {
-      type: 'number',
-      text: `The ratio of ${name}'s age to their grandparent's age is ${r(a, b)}. The grandparent is ${b * k} years old. How old is ${name}?`,
-      answer: a * k, unit: 'years',
-      working: `${b} → ${b * k}, so the factor is ${k}. ${name}'s age = ${a} × ${k} = ${a * k} years.`,
-    }
-  },
-  () => {
-    const [a, b] = coprimePair(9)
-    const [lo, hi] = a < b ? [a, b] : [b, a]
-    const k = rand(2, 9)
-    const [x, y] = pick([['blue marbles', 'green marbles'], ['story books', 'science books'], ['mango trees', 'neem trees']])
-    return {
-      type: 'number',
-      text: `The ratio of ${x} to ${y} is ${r(lo, hi)}. There are ${(hi - lo) * k} more ${y} than ${x}. How many ${x} are there?`,
-      answer: lo * k, unit: x,
-      working: `The difference in parts is ${hi} − ${lo} = ${hi - lo}. ${hi - lo} parts = ${(hi - lo) * k}, so 1 part = ${k}. ${x} = ${lo} × ${k} = ${lo * k}.`,
+      text: `A recipe uses ${p * k1} ${thing[2]} of ${thing[0]} with ${q * k1} ${thing[2]} of ${thing[1]}. If you use ${p * k2} ${thing[2]} of ${thing[0]}, how much ${thing[1]} keeps the same ratio?`,
+      answer: q * k2, unit: thing[2],
+      working: `${r(p * k1, q * k1)} :: ${p * k2} : ?. Factor = ${p * k2}/${p * k1} = ${fmtFrac(k2, k1)}. ${q * k1} × ${fmtFrac(k2, k1)} = ${q * k2} ${thing[2]}.`,
     }
   },
 ]

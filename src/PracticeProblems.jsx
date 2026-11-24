@@ -7,7 +7,7 @@ const KIND_LABEL = { quick: '⚡ One-word answer', word: '📖 Word problem' }
 const normalize = s => s.toLowerCase().replace(/\s+/g, '').replace(/(\d)to(\d)/g, '$1:$2').replace(/\.$/, '')
 
 function Answer({ q }) {
-  if (q.type === 'number') return q.unit === '₹' ? `₹${q.answer}` : `${q.answer} ${q.unit || ''}`
+  if (q.type === 'number') return q.unit === '₹' ? `₹${q.answer}` : q.unit ? `${q.answer} ${q.unit}` : String(q.answer)
   return q.answer
 }
 
