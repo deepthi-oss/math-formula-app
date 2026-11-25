@@ -23,6 +23,8 @@ import TigerStretchActivity from './TigerStretchActivity'
 import RatioActivity from './RatioActivity'
 import { PracticeQuiz, HomeworkSheet, TopicWithPractice } from './PracticeProblems'
 import { makeRatioQuestion, makeRatioHomework } from './ratioQuestions'
+import SharingActivity from './SharingActivity'
+import { makeSharingQuestion, makeSharingHomework } from './sharingQuestions'
 
 const sectors = [
   { name: 'Arithmetic', icon: '🧮', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
@@ -170,6 +172,15 @@ export default function FormulaExplorer() {
           { label: 'Understanding', icon: '💡', content: <PracticeQuiz makeQuestion={n => makeRatioQuestion('understanding', n)} intro="Use the idea: compare ratios, find missing terms, and spot mistakes. First 5: one-word answers, then word problems." /> },
           { label: 'Application', icon: '🛠️', content: <PracticeQuiz makeQuestion={n => makeRatioQuestion('application', n)} intro="Use ratios to solve problems. First 5: quick one-number answers, then real-life word problems." /> },
           { label: 'Home Work', icon: '📝', content: <HomeworkSheet makeSheet={makeRatioHomework} title="Ratios: Home Work" /> },
+        ]} />
+      </ActivityConceptGroup>
+      <ActivityConceptGroup title="Sharing, but Not Equally" icon="🤝">
+        <TopicWithPractice tabs={[
+          { label: 'Activity', icon: '🤝', content: <SharingActivity /> },
+          { label: 'Knowledge', icon: '📘', content: <PracticeQuiz makeQuestion={n => makeSharingQuestion('knowledge', n)} intro="Remember the steps for sharing in a ratio. First 5: one-word answers, then word problems. New questions every time!" /> },
+          { label: 'Understanding', icon: '💡', content: <PracticeQuiz makeQuestion={n => makeSharingQuestion('understanding', n)} intro="Find group sizes and shares, and spot wrong ways of sharing. First 5: one-word answers, then word problems." /> },
+          { label: 'Application', icon: '🛠️', content: <PracticeQuiz makeQuestion={n => makeSharingQuestion('application', n)} intro="Share money, ribbons, prizes and profits. First 5: quick one-number answers, then real-life word problems." /> },
+          { label: 'Home Work', icon: '📝', content: <HomeworkSheet makeSheet={makeSharingHomework} title="Sharing, but Not Equally: Home Work" /> },
         ]} />
       </ActivityConceptGroup>
     </div>

@@ -910,6 +910,53 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
 .rto-done-banner { text-align: center; background: #FFFBEB; border: 2px solid #FDE68A; color: #78350F; font-weight: 700; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 480px; line-height: 1.6; margin: 0; }
 .rto-again-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
 
+/* ===== SHARING, BUT NOT EQUALLY (amber/teal, Arithmetic) ===== */
+.shr-activity { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px 20px; }
+.shr-stepper { font-size: 12px; font-weight: 800; color: #B45309; background: #FFFBEB; border: 2px solid #FDE68A; padding: 6px 16px; border-radius: 20px; text-align: center; }
+.shr-instruction { font-size: 13.5px; color: #374151; text-align: center; max-width: 520px; line-height: 1.6; margin: 0; }
+.shr-predict { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #374151; text-align: center; }
+.shr-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
+.shr-input { width: 80px; padding: 9px 10px; border: 2px solid #E8EDFF; border-radius: 10px; font-size: 15px; font-weight: 700; text-align: center; }
+.shr-input:focus { outline: none; border-color: #D97706; }
+.shr-btn { padding: 10px 18px; border-radius: 10px; border: none; background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; font-weight: 800; cursor: pointer; font-size: 13px; font-family: inherit; }
+.shr-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.shr-choice { min-width: 56px; padding: 10px 14px; border-radius: 10px; border: 2px solid #FDE68A; background: #fff; color: #B45309; font-size: 16px; font-weight: 800; cursor: pointer; }
+.shr-choice:hover { background: #D97706; border-color: #D97706; color: #fff; }
+.shr-guess-note { font-size: 12.5px; color: #6B7280; margin: 0; }
+
+.shr-pile { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 480px; padding: 10px; border: 2px dashed #D1D5DB; border-radius: 12px; background: #F9FAFB; }
+.shr-pile-label { font-size: 12px; font-weight: 800; color: #6B7280; }
+.shr-emojis { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; font-size: 20px; line-height: 1.2; min-height: 24px; }
+.shr-baskets { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; width: 100%; }
+.shr-basket { flex: 1 1 180px; max-width: 240px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; border-radius: 12px; border: 2px solid; }
+.shr-basket-a { border-color: #FCD34D; background: #FFFBEB; }
+.shr-basket-b { border-color: #99F6E4; background: #F0FDFA; }
+.shr-basket-name { font-size: 13px; font-weight: 800; color: #374151; }
+.shr-basket-count { font-size: 20px; font-weight: 800; color: #1a1a2e; }
+
+.shr-whole { font-size: 14px; font-weight: 800; color: #1E3A8A; background: #DBEAFE; padding: 8px 22px; border-radius: 30px; }
+.shr-bar { display: flex; width: 100%; max-width: 560px; border-radius: 10px; overflow: hidden; border: 2px solid #374151; }
+.shr-block { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 48px; padding: 4px 2px; font-size: 12.5px; font-weight: 800; color: #1a1a2e; border-right: 2px solid #fff; text-align: center; min-width: 0; }
+.shr-block:last-child { border-right: none; }
+.shr-block-a { background: #FDE68A; }
+.shr-block-b { background: #99F6E4; }
+.shr-block-emojis { font-size: 9px; letter-spacing: -1px; word-break: break-all; line-height: 1.1; }
+.shr-bar-legend { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.shr-legend-a, .shr-legend-b { font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 12px; }
+.shr-legend-a { background: #FDE68A; color: #78350F; }
+.shr-legend-b { background: #99F6E4; color: #134E4A; }
+
+.shr-wrong { font-size: 12.5px; font-weight: 700; color: #DC2626; background: #FEF2F2; border: 1px solid #FCA5A5; padding: 8px 14px; border-radius: 10px; text-align: center; max-width: 480px; margin: 0; }
+.shr-right { font-weight: 800; color: #059669; }
+.shr-wrong-text { font-weight: 800; color: #B45309; }
+.shr-insight { display: flex; flex-direction: column; align-items: center; gap: 8px; background: #ECFDF5; border: 2px solid #A7F3D0; padding: 14px 20px; border-radius: 14px; max-width: 500px; text-align: center; font-size: 13px; color: #374151; line-height: 1.6; }
+.shr-insight p { margin: 0; }
+.shr-next-btn { padding: 9px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #10B981, #059669); color: #fff; font-weight: 800; cursor: pointer; font-size: 12.5px; }
+.shr-done-banner { background: #FFFBEB; border: 2px solid #FDE68A; color: #78350F; font-size: 14px; padding: 16px 22px; border-radius: 14px; max-width: 480px; line-height: 1.7; }
+.shr-done-banner p { margin: 0 0 6px; font-weight: 700; }
+.shr-done-banner ol { margin: 0; padding-left: 22px; text-align: left; }
+.shr-again-btn { padding: 8px 16px; border-radius: 10px; border: 2px solid #E8EDFF; background: #fff; color: #6366F1; font-size: 12px; font-weight: 700; cursor: pointer; }
+
 /* ===== PRACTICE PROBLEMS — endless generated questions + homework sheet ===== */
 .pp-topic { display: flex; flex-direction: column; }
 .pp-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 16px 12px 6px; border-bottom: 2px solid #E8EDFF; }
@@ -975,7 +1022,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #F0F4FF; colo
   .square-floor-body { padding: 18px 14px; }
   .ap-activity { padding: 18px 10px; }
   .ap-controls { gap: 12px; }
-  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity, .ctp-activity, .ccl-activity, .cha-activity, .sst-activity, .isc-activity, .fpm-activity, .rad-activity, .tst-activity, .rto-activity, .pp-activity { padding: 16px 10px; }
+  .pc-activity, .db-activity, .game-activity, .nl-activity, .pair-activity, .rw-activity, .cp-activity, .cl-activity, .rs-activity, .rt-activity, .ctp-activity, .ccl-activity, .cha-activity, .sst-activity, .isc-activity, .fpm-activity, .rad-activity, .tst-activity, .rto-activity, .pp-activity, .shr-activity { padding: 16px 10px; }
 }
 
 @media (max-width: 600px) {

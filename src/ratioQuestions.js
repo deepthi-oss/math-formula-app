@@ -1,33 +1,10 @@
 // Endless ratio questions modelled on Ganita Prakash Gr 8, Ch 7.3 (simplest form via HCF, "::")
 // and 7.4 (problem solving: lemonade, walls, teachers : students, ages, missing terms, filter coffee).
 // Each level has 'quick' (one-word answer) and 'word' (word problem) generators.
-// Question shape: { text, type: 'mcq' | 'number' | 'word', options?, answer, accept?, unit?, working }
-//   'word' = type a single word, ratio or fraction; `accept` lists every spelling we mark right.
-
-const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1))
-const pick = arr => arr[Math.floor(Math.random() * arr.length)]
-const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b))
-const shuffle = arr => {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
-const r = (a, b) => `${a} : ${b}`
-const simp = (a, b) => { const g = gcd(a, b); return [a / g, b / g] }
-const rs = (a, b) => r(...simp(a, b))
-
-export const QUICK_COUNT = 5
-
-// two different whole numbers that share no common factor, e.g. 3 and 4
-function coprimePair(max = 9, min = 1) {
-  for (;;) {
-    const a = rand(min, max), b = rand(min, max)
-    if (a !== b && gcd(a, b) === 1) return [a, b]
-  }
-}
+import {
+  rand, pick, gcd, shuffle, r, simp, rs, coprimePair, mcq, randomRatio, ratioWord, yesNo,
+  makeQuestionFrom, makeHomeworkFrom,
+} from './questionHelpers.js'
 
 // two different multipliers, e.g. 2 and 6 (6 : 10 and 18 : 30 from 3 : 5)
 function twoFactors(max = 9) {
@@ -35,23 +12,6 @@ function twoFactors(max = 9) {
   let k2 = rand(2, max)
   if (k2 === k1) k2 = k1 === max ? 2 : k1 + 1
   return [k1, k2]
-}
-
-// correct answer + unique distractors, topped up from `extra()` until there are 4
-function mcq(answer, distractors, extra) {
-  const opts = [answer]
-  for (const d of distractors) if (opts.length < 4 && !opts.includes(d)) opts.push(d)
-  let guard = 0
-  while (opts.length < 4 && guard++ < 50) {
-    const d = extra()
-    if (!opts.includes(d)) opts.push(d)
-  }
-  return shuffle(opts)
-}
-
-const randomRatio = () => {
-  const [a, b] = coprimePair()
-  return r(a * rand(1, 6), b * rand(1, 6))
 }
 
 const fmtFrac = (n, d) => {
@@ -67,12 +27,6 @@ const fracAccept = (n, d) => {
   return acc
 }
 
-const ratioWord = (a, b, working, text) => ({
-  type: 'word', text, answer: r(a, b), accept: [`${a}:${b}`], placeholder: 'e.g. 3 : 4', working,
-})
-const yesNo = (yes, text, working) => ({
-  type: 'word', text, answer: yes ? 'Yes' : 'No', accept: [yes ? 'yes' : 'no'], placeholder: 'yes / no', working,
-})
 const hcfWorking = (a, b) => {
   const g = gcd(a, b)
   return g === 1
@@ -395,17 +349,5 @@ export const RATIO_SETS = {
   application: { quick: applicationQuick, word: applicationWord },
 }
 
-// Question n (1-based): the first QUICK_COUNT are one-word questions, then word problems.
-export function makeRatioQuestion(level, n = 1) {
-  const kind = n <= QUICK_COUNT ? 'quick' : 'word'
-  return { ...pick(RATIO_SETS[level][kind])(), kind }
-}
-
-export function makeRatioHomework() {
-  const take = (level, kind, n) =>
-    shuffle(RATIO_SETS[level][kind]).slice(0, n).map(g => ({ ...g(), level, kind }))
-  return [
-    ...take('knowledge', 'quick', 2), ...take('understanding', 'quick', 2), ...take('application', 'quick', 2),
-    ...take('knowledge', 'word', 2), ...take('understanding', 'word', 2), ...take('application', 'word', 2),
-  ]
-}
+export const makeRatioQuestion = (level, n) => makeQuestionFrom(RATIO_SETS, level, n)
+export const makeRatioHomework = () => makeHomeworkFrom(RATIO_SETS)
